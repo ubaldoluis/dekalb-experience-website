@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import splide from '@splidejs/astro-splide';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,7 +15,6 @@ export default defineConfig({
   build: {
     assets: 'assets',
   },
-  integrations: [splide()],
   vite: {
     optimizeDeps: {
       include: ['@splidejs/splide'],

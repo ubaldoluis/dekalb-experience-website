@@ -11,8 +11,7 @@
   "dependencies": {
     "astro": "^5.16.4",
     "@prismicio/client": "^7.0.0",
-    "@splidejs/splide": "^4.1.4",
-    "@splidejs/astro-splide": "^0.1.0"
+    "@splidejs/splide": "^4.1.4"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

@@ -1,0 +1,123 @@
+{
+  "id": "producto",
+  "label": "Producto",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "nombre": {
+        "type": "Text",
+        "config": {
+          "label": "Nombre del Producto",
+          "placeholder": "Ej: DKC3045"
+        }
+      },
+      "codigo": {
+        "type": "Text",
+        "config": {
+          "label": "Código del Producto",
+          "placeholder": "Ej: DKC3045"
+        }
+      },
+      "imagen_saco": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen del Saco",
+          "constraint": {
+            "width": 800,
+            "height": 800
+          },
+          "thumbnails": []
+        }
+      },
+      "claim": {
+        "type": "Text",
+        "config": {
+          "label": "Claim Marketing",
+          "placeholder": "Ej: Alto rendimiento y resistencia"
+        }
+      },
+      "tipo_semilla": {
+        "type": "Select",
+        "config": {
+          "label": "Tipo de Semilla",
+          "options": [
+            "maiz",
+            "colza"
+          ],
+          "default_value": "maiz"
+        }
+      },
+      "uso": {
+        "type": "Select",
+        "config": {
+          "label": "Uso (solo si Maíz)",
+          "options": [
+            "grano",
+            "silo",
+            "preceon"
+          ]
+        }
+      },
+      "zona": {
+        "type": "Select",
+        "config": {
+          "label": "Zona Geográfica (solo si Maíz)",
+          "options": [
+            "ebro",
+            "centro-sur-extremadura-andalucia",
+            "noroeste",
+            "portugal"
+          ]
+        }
+      },
+      "categoria": {
+        "type": "Select",
+        "config": {
+          "label": "Categoría",
+          "options": [
+            "maiz-grano",
+            "silo",
+            "preceon",
+            "colza",
+            "fitosanitario"
+          ],
+          "default_value": "maiz-grano"
+        }
+      },
+      "proteccion": {
+        "type": "Select",
+        "config": {
+          "label": "Protección de Cultivo",
+          "options": [
+            "herbicida",
+            "insecticida",
+            "bioestimulante"
+          ]
+        }
+      },
+      "beneficios": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Beneficios",
+          "placeholder": "Lista de beneficios del producto"
+        }
+      },
+      "recomendaciones_uso": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Recomendaciones de Uso",
+          "placeholder": "Recomendaciones para el uso del producto"
+        }
+      },
+      "orden": {
+        "type": "Number",
+        "config": {
+          "label": "Orden en Carrusel",
+          "placeholder": "Ej: 1"
+        }
+      }
+    }
+  }
+}
+

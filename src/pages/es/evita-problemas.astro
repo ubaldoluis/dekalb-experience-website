@@ -1,8 +1,6 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import SolutionsHero from '../../components/SolutionsHero.astro';
-import { Splide, SplideSlide } from '@splidejs/astro-splide';
-import '@splidejs/splide/css';
 
 const lang = 'es';
 
@@ -41,49 +39,68 @@ const guides = [
       </div>
 
       <div class="guides-carousel-wrapper">
-        <Splide
-          options={{
-            type: 'loop',
-            perPage: 3,
-            perMove: 1,
-            gap: '2rem',
-            pagination: true,
-            arrows: true,
-            breakpoints: {
-              1024: {
-                perPage: 2,
-              },
-              768: {
-                perPage: 1,
-              },
-            },
-          }}
-          aria-label="Guías técnicas"
-          class="guides-carousel"
-        >
-          {guides.map((guide) => (
-            <SplideSlide>
-              <div class="guide-card">
-                <div class="guide-icon">📄</div>
-                <h3 class="guide-title">{guide.title}</h3>
-                <p class="guide-description">{guide.description}</p>
-                <a 
-                  href={guide.pdfUrl} 
-                  class="btn btn-primary"
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Descargar PDF
-                </a>
-              </div>
-            </SplideSlide>
-          ))}
-        </Splide>
+        <div class="splide guides-carousel" id="guides-carousel">
+          <div class="splide__track">
+            <ul class="splide__list">
+              {guides.map((guide) => (
+                <li class="splide__slide">
+                  <div class="guide-card">
+                    <div class="guide-icon">📄</div>
+                    <h3 class="guide-title">{guide.title}</h3>
+                    <p class="guide-description">{guide.description}</p>
+                    <a 
+                      href={guide.pdfUrl} 
+                      class="btn btn-primary"
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Descargar PDF
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="splide__arrows">
+            <button class="splide__arrow splide__arrow--prev" aria-label="Anterior"></button>
+            <button class="splide__arrow splide__arrow--next" aria-label="Siguiente"></button>
+          </div>
+          <ul class="splide__pagination"></ul>
+        </div>
       </div>
     </div>
   </section>
 </PageLayout>
+
+<script>
+  import Splide from '@splidejs/splide';
+  import '@splidejs/splide/css/core.css';
+  import '@splidejs/splide/css/theme.css';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const carouselElement = document.getElementById('guides-carousel');
+    if (carouselElement) {
+      const splide = new Splide(carouselElement, {
+        type: 'loop',
+        perPage: 3,
+        perMove: 1,
+        gap: '2rem',
+        pagination: true,
+        arrows: true,
+        breakpoints: {
+          1024: {
+            perPage: 2,
+          },
+          768: {
+            perPage: 1,
+          },
+        },
+      });
+      splide.mount();
+    }
+  });
+</script>
 
 <style>
   .guides-section {

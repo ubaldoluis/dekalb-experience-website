@@ -25,8 +25,10 @@ export const client = prismic.createClient(repositoryName, {
  */
 export async function getAllProducts(locale: string = 'es'): Promise<Producto[]> {
   try {
+    // Convert locale code: 'es' -> 'es-es', 'pt' -> 'pt-pt'
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('producto', {
-      lang: locale,
+      lang: prismicLocale,
       orderings: {
         field: 'my.producto.orden',
         direction: 'asc',
@@ -49,8 +51,21 @@ export async function getAllProducts(locale: string = 'es'): Promise<Producto[]>
       zona: doc.data.zona as any,
       categoria: (doc.data.categoria as any) || 'maiz-grano',
       proteccion: (doc.data.proteccion as any) || 'todos',
-      beneficios: doc.data.beneficios?.map((b: any) => b.text || '') || [],
-      recomendaciones_uso: doc.data.recomendaciones_uso || undefined,
+      beneficios: doc.data.beneficios 
+        ? (Array.isArray(doc.data.beneficios) 
+            ? doc.data.beneficios.map((b: any) => {
+                if (typeof b === 'string') return b;
+                if (b.text) return b.text;
+                if (b.type === 'paragraph' && b.text) return b.text;
+                return '';
+              }).filter(Boolean)
+            : [])
+        : [],
+      recomendaciones_uso: doc.data.recomendaciones_uso 
+        ? (typeof doc.data.recomendaciones_uso === 'string' 
+            ? doc.data.recomendaciones_uso 
+            : prismic.asText(doc.data.recomendaciones_uso) || '')
+        : undefined,
       orden: doc.data.orden || undefined,
     }));
   } catch (error) {
@@ -64,7 +79,8 @@ export async function getAllProducts(locale: string = 'es'): Promise<Producto[]>
  */
 export async function getProductById(id: string, locale: string = 'es'): Promise<Producto | null> {
   try {
-    const doc = await client.getByID(id, { lang: locale });
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    const doc = await client.getByID(id, { lang: prismicLocale });
     
     return {
       id: doc.id,
@@ -82,8 +98,21 @@ export async function getProductById(id: string, locale: string = 'es'): Promise
       zona: doc.data.zona as any,
       categoria: (doc.data.categoria as any) || 'maiz-grano',
       proteccion: (doc.data.proteccion as any) || 'todos',
-      beneficios: doc.data.beneficios?.map((b: any) => b.text || '') || [],
-      recomendaciones_uso: doc.data.recomendaciones_uso || undefined,
+      beneficios: doc.data.beneficios 
+        ? (Array.isArray(doc.data.beneficios) 
+            ? doc.data.beneficios.map((b: any) => {
+                if (typeof b === 'string') return b;
+                if (b.text) return b.text;
+                if (b.type === 'paragraph' && b.text) return b.text;
+                return '';
+              }).filter(Boolean)
+            : [])
+        : [],
+      recomendaciones_uso: doc.data.recomendaciones_uso 
+        ? (typeof doc.data.recomendaciones_uso === 'string' 
+            ? doc.data.recomendaciones_uso 
+            : prismic.asText(doc.data.recomendaciones_uso) || '')
+        : undefined,
       orden: doc.data.orden || undefined,
     };
   } catch (error) {
@@ -97,8 +126,9 @@ export async function getProductById(id: string, locale: string = 'es'): Promise
  */
 export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]> {
   try {
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('articulo', {
-      lang: locale,
+      lang: prismicLocale,
       filters: [prismic.filter.at('my.articulo.publicado', true)],
       orderings: {
         field: 'document.first_publication_date',
@@ -135,7 +165,8 @@ export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]>
  */
 export async function getArticleBySlug(slug: string, locale: string = 'es'): Promise<Articulo | null> {
   try {
-    const doc = await client.getByUID('articulo', slug, { lang: locale });
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    const doc = await client.getByUID('articulo', slug, { lang: prismicLocale });
     
     return {
       id: doc.id,
@@ -166,8 +197,9 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
  */
 export async function getAllCatalogs(locale: string = 'es'): Promise<CatalogoPDF[]> {
   try {
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('catalogo_pdf', {
-      lang: locale,
+      lang: prismicLocale,
       orderings: {
         field: 'my.catalogo_pdf.orden',
         direction: 'asc',

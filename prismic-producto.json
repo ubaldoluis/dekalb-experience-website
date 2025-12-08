@@ -1,0 +1,178 @@
+{
+  "id": "producto",
+  "label": "Producto",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "nombre": {
+        "type": "Text",
+        "config": {
+          "label": "Nombre del Producto",
+          "placeholder": "Ej: DKC3045"
+        }
+      },
+      "codigo": {
+        "type": "Text",
+        "config": {
+          "label": "Código del Producto",
+          "placeholder": "Ej: DKC3045"
+        }
+      },
+      "imagen_saco": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen del Saco",
+          "constraint": {
+            "width": 800,
+            "height": 800
+          },
+          "thumbnails": []
+        }
+      },
+      "claim": {
+        "type": "Text",
+        "config": {
+          "label": "Claim Marketing",
+          "placeholder": "Ej: Alto rendimiento y resistencia"
+        }
+      },
+      "tipo_semilla": {
+        "type": "Select",
+        "config": {
+          "label": "Tipo de Semilla",
+          "options": [
+            {
+              "id": "maiz",
+              "label": "Maíz"
+            },
+            {
+              "id": "colza",
+              "label": "Colza"
+            }
+          ],
+          "default_value": "maiz"
+        }
+      },
+      "uso": {
+        "type": "Select",
+        "config": {
+          "label": "Uso (solo si Maíz)",
+          "options": [
+            {
+              "id": "grano",
+              "label": "Grano"
+            },
+            {
+              "id": "silo",
+              "label": "Silo"
+            },
+            {
+              "id": "preceon",
+              "label": "Preceon"
+            }
+          ]
+        }
+      },
+      "zona": {
+        "type": "Select",
+        "config": {
+          "label": "Zona Geográfica (solo si Maíz)",
+          "options": [
+            {
+              "id": "ebro",
+              "label": "Ebro"
+            },
+            {
+              "id": "centro-sur-extremadura-andalucia",
+              "label": "Centro Sur, Extremadura, Andalucía"
+            },
+            {
+              "id": "noroeste",
+              "label": "Noroeste"
+            },
+            {
+              "id": "portugal",
+              "label": "Portugal"
+            }
+          ]
+        }
+      },
+      "categoria": {
+        "type": "Select",
+        "config": {
+          "label": "Categoría",
+          "options": [
+            {
+              "id": "maiz-grano",
+              "label": "Maíz Grano"
+            },
+            {
+              "id": "silo",
+              "label": "Silo"
+            },
+            {
+              "id": "preceon",
+              "label": "Preceon"
+            },
+            {
+              "id": "colza",
+              "label": "Colza"
+            },
+            {
+              "id": "fitosanitario",
+              "label": "Fitosanitario"
+            }
+          ],
+          "default_value": "maiz-grano"
+        }
+      },
+      "proteccion": {
+        "type": "Select",
+        "config": {
+          "label": "Protección de Cultivo",
+          "options": [
+            {
+              "id": "herbicida",
+              "label": "Herbicida"
+            },
+            {
+              "id": "insecticida",
+              "label": "Insecticida"
+            },
+            {
+              "id": "bioestimulante",
+              "label": "Bioestimulante"
+            }
+          ]
+        }
+      },
+      "beneficios": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Beneficios",
+          "placeholder": "Lista de beneficios del producto",
+          "allowTargetBlank": true,
+          "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "recomendaciones_uso": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Recomendaciones de Uso",
+          "placeholder": "Recomendaciones para el uso del producto",
+          "allowTargetBlank": true,
+          "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "orden": {
+        "type": "Number",
+        "config": {
+          "label": "Orden en Carrusel",
+          "placeholder": "Ej: 1"
+        }
+      }
+    }
+  },
+  "format": "custom"
+}

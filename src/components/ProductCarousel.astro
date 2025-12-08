@@ -1,6 +1,4 @@
 ---
-import { Splide, SplideSlide } from '@splidejs/astro-splide';
-import '@splidejs/splide/css';
 import type { Producto } from '../types';
 
 interface Props {
@@ -13,8 +11,62 @@ const { products = [], lang = 'es' } = Astro.props;
 
 <div class="product-carousel-wrapper">
   {products.length > 0 ? (
-    <Splide
-      options={{
+    <div class="splide product-carousel" id="product-carousel" data-products={JSON.stringify(products)}>
+      <div class="splide__track">
+        <ul class="splide__list">
+          {products.map((product) => (
+            <li class="splide__slide">
+              <div class="product-card" data-product-id={product.id}>
+                {product.imagen_saco?.url && (
+                  <div class="product-image-wrapper">
+                    <img
+                      src={product.imagen_saco.url}
+                      alt={product.imagen_saco.alt || product.nombre}
+                      class="product-image"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <div class="product-info">
+                  <h3 class="product-name">{product.nombre}</h3>
+                  {product.claim && (
+                    <p class="product-claim">{product.claim}</p>
+                  )}
+                  <button
+                    class="btn btn-primary product-view-btn"
+                    data-product-id={product.id}
+                    aria-label={`Ver detalles de ${product.nombre}`}
+                  >
+                    {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="splide__arrows">
+        <button class="splide__arrow splide__arrow--prev" aria-label="Anterior"></button>
+        <button class="splide__arrow splide__arrow--next" aria-label="Siguiente"></button>
+      </div>
+      <ul class="splide__pagination"></ul>
+    </div>
+  ) : (
+    <div class="product-carousel-empty">
+      <p>{lang === 'es' ? 'No se encontraron productos con los filtros seleccionados.' : 'Nenhum produto encontrado com os filtros selecionados.'}</p>
+    </div>
+  )}
+</div>
+
+<script>
+  import Splide from '@splidejs/splide';
+  import '@splidejs/splide/css/core.css';
+  import '@splidejs/splide/css/theme.css';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const carouselElement = document.getElementById('product-carousel');
+    if (carouselElement) {
+      const splide = new Splide(carouselElement, {
         type: 'loop',
         perPage: 4,
         perMove: 1,
@@ -32,63 +84,9 @@ const { products = [], lang = 'es' } = Astro.props;
             perPage: 1,
           },
         },
-      }}
-      aria-label="Carrusel de productos DEKALB"
-      class="product-carousel"
-      id="product-carousel"
-    >
-      {products.map((product) => (
-        <SplideSlide>
-          <div class="product-card" data-product-id={product.id}>
-            {product.imagen_saco?.url && (
-              <div class="product-image-wrapper">
-                <img
-                  src={product.imagen_saco.url}
-                  alt={product.imagen_saco.alt || product.nombre}
-                  class="product-image"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            <div class="product-info">
-              <h3 class="product-name">{product.nombre}</h3>
-              {product.claim && (
-                <p class="product-claim">{product.claim}</p>
-              )}
-              <button
-                class="btn btn-primary product-view-btn"
-                data-product-id={product.id}
-                aria-label={`Ver detalles de ${product.nombre}`}
-              >
-                {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
-              </button>
-            </div>
-          </div>
-        </SplideSlide>
-      ))}
-    </Splide>
-  ) : (
-    <div class="product-carousel-empty">
-      <p>{lang === 'es' ? 'No se encontraron productos con los filtros seleccionados.' : 'Nenhum produto encontrado com os filtros selecionados.'}</p>
-    </div>
-  )}
-</div>
-
-<script>
-  import { filterProducts } from '../utils/filterLogic';
-  import type { Producto, FilterState } from '../types';
-
-  let allProducts: Producto[] = [];
-  let currentFilterState: FilterState = { proteccion: 'todos' };
-
-  // Get products from data attribute or fetch
-  const carouselWrapper = document.querySelector('.product-carousel-wrapper');
-  if (carouselWrapper) {
-    // Listen for filter changes
-    document.addEventListener('filterChange', ((e: CustomEvent<FilterState>) => {
-      currentFilterState = e.detail;
-      updateCarousel();
-    }) as EventListener);
+      });
+      splide.mount();
+    }
 
     // Listen for product card clicks
     document.addEventListener('click', (e) => {
@@ -107,38 +105,7 @@ const { products = [], lang = 'es' } = Astro.props;
         }
       }
     });
-  }
-
-  function updateCarousel() {
-    // Get filter state from window function if available
-    if ((window as any).getFilterState) {
-      currentFilterState = (window as any).getFilterState();
-    }
-
-    // Filter products
-    const filtered = filterProducts(allProducts, currentFilterState);
-
-    // Update carousel (this would require Splide API)
-    // For now, we'll trigger a page update or use Splide's refresh method
-    const splideElement = document.querySelector('.product-carousel');
-    if (splideElement && (splideElement as any).splide) {
-      // Note: In a real implementation, you'd need to rebuild the carousel
-      // or use Splide's API to update slides dynamically
-      console.log('Filtered products:', filtered.length);
-    }
-  }
-
-  // Initialize products from page data
-  function initializeProducts() {
-    const productCards = document.querySelectorAll('.product-card');
-    // Extract product data from cards (in real implementation, pass as JSON)
-    // For now, products are passed as props and rendered server-side
-  }
-
-  // Initialize on load
-  if (typeof window !== 'undefined') {
-    initializeProducts();
-  }
+  });
 </script>
 
 <style>

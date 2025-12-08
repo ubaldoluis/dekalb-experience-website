@@ -1,0 +1,104 @@
+{
+  "id": "articulo",
+  "label": "Artículo",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "titulo": {
+        "type": "Title",
+        "config": {
+          "label": "Título del Artículo",
+          "placeholder": "Título del artículo"
+        }
+      },
+      "slug": {
+        "type": "UID",
+        "config": {
+          "label": "Slug (URL)",
+          "placeholder": "slug-del-articulo"
+        }
+      },
+      "categoria": {
+        "type": "Select",
+        "config": {
+          "label": "Categoría",
+          "options": [
+            {
+              "id": "noticia",
+              "label": "Noticia"
+            },
+            {
+              "id": "evento",
+              "label": "Evento"
+            },
+            {
+              "id": "articulo",
+              "label": "Artículo"
+            },
+            {
+              "id": "lanzamiento",
+              "label": "Lanzamiento"
+            }
+          ],
+          "default_value": "articulo"
+        }
+      },
+      "fecha": {
+        "type": "Date",
+        "config": {
+          "label": "Fecha de Publicación"
+        }
+      },
+      "extracto": {
+        "type": "Text",
+        "config": {
+          "label": "Extracto (200 caracteres máximo)",
+          "placeholder": "Breve descripción del artículo"
+        }
+      },
+      "imagen_destacada": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen Destacada",
+          "constraint": {
+            "width": 1200,
+            "height": 630
+          },
+          "thumbnails": []
+        }
+      },
+      "contenido": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Contenido del Artículo",
+          "placeholder": "Contenido completo del artículo",
+          "allowTargetBlank": true,
+          "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "autor": {
+        "type": "Text",
+        "config": {
+          "label": "Autor",
+          "placeholder": "Nombre del autor"
+        }
+      },
+      "tags": {
+        "type": "Select",
+        "config": {
+          "label": "Etiquetas",
+          "options": []
+        }
+      },
+      "publicado": {
+        "type": "Boolean",
+        "config": {
+          "label": "Publicado",
+          "default_value": false
+        }
+      }
+    }
+  }
+}
+

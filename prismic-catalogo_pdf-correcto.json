@@ -1,0 +1,63 @@
+{
+  "Main": {
+    "nombre": {
+      "type": "Text",
+      "config": {
+        "label": "Nombre del Catálogo",
+        "placeholder": "Ej: Catálogo Ebro"
+      }
+    },
+    "tipo": {
+      "type": "Select",
+      "config": {
+        "label": "Tipo",
+        "options": ["maiz", "colza"],
+        "default_value": "maiz"
+      }
+    },
+    "subcategoria": {
+      "type": "Select",
+      "config": {
+        "label": "Subcategoría",
+        "options": ["genetica-agronomia", "proteccion-cultivo", "otros"],
+        "default_value": "genetica-agronomia"
+      }
+    },
+    "pais": {
+      "type": "Select",
+      "config": {
+        "label": "País",
+        "options": ["espana", "portugal"],
+        "default_value": "espana"
+      }
+    },
+    "zona": {
+      "type": "Select",
+      "config": {
+        "label": "Zona (solo si Maíz)",
+        "options": [
+          "ebro",
+          "centro-sur",
+          "noroeste",
+          "portugal",
+          "centro-sur-extremadura-andalucia"
+        ]
+      }
+    },
+    "url_pdf": {
+      "type": "Link",
+      "config": {
+        "label": "URL del PDF",
+        "select": "media",
+        "allowTargetBlank": true
+      }
+    },
+    "orden": {
+      "type": "Number",
+      "config": {
+        "label": "Orden",
+        "placeholder": "Ej: 1"
+      }
+    }
+  }
+}

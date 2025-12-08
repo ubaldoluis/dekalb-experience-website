@@ -1,0 +1,116 @@
+{
+  "id": "catalogo_pdf",
+  "label": "Catálogo PDF",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "nombre": {
+        "type": "Title",
+        "config": {
+          "label": "Nombre del Catálogo",
+          "placeholder": "Ej: Catálogo Ebro"
+        }
+      },
+      "tipo": {
+        "type": "Select",
+        "config": {
+          "label": "Tipo",
+          "options": [
+            {
+              "id": "maiz",
+              "label": "Maíz"
+            },
+            {
+              "id": "colza",
+              "label": "Colza"
+            }
+          ],
+          "default_value": "maiz"
+        }
+      },
+      "subcategoria": {
+        "type": "Select",
+        "config": {
+          "label": "Subcategoría",
+          "options": [
+            {
+              "id": "genetica-agronomia",
+              "label": "Genética y Agronomía"
+            },
+            {
+              "id": "proteccion-cultivo",
+              "label": "Protección de Cultivo"
+            },
+            {
+              "id": "otros",
+              "label": "Otros"
+            }
+          ],
+          "default_value": "genetica-agronomia"
+        }
+      },
+      "pais": {
+        "type": "Select",
+        "config": {
+          "label": "País",
+          "options": [
+            {
+              "id": "espana",
+              "label": "España"
+            },
+            {
+              "id": "portugal",
+              "label": "Portugal"
+            }
+          ],
+          "default_value": "espana"
+        }
+      },
+      "zona": {
+        "type": "Select",
+        "config": {
+          "label": "Zona (solo si Maíz)",
+          "options": [
+            {
+              "id": "ebro",
+              "label": "Ebro"
+            },
+            {
+              "id": "centro-sur",
+              "label": "Centro Sur"
+            },
+            {
+              "id": "noroeste",
+              "label": "Noroeste"
+            },
+            {
+              "id": "portugal",
+              "label": "Portugal"
+            },
+            {
+              "id": "centro-sur-extremadura-andalucia",
+              "label": "Centro Sur, Extremadura, Andalucía"
+            }
+          ]
+        }
+      },
+      "url_pdf": {
+        "type": "Link",
+        "config": {
+          "label": "URL del PDF",
+          "select": "media",
+          "allowTargetBlank": true
+        }
+      },
+      "orden": {
+        "type": "Number",
+        "config": {
+          "label": "Orden",
+          "placeholder": "Ej: 1"
+        }
+      }
+    }
+  }
+}
+
