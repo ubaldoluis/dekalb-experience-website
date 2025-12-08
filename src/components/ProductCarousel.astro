@@ -1,5 +1,7 @@
 ---
 import type { Producto } from '../types';
+import '@splidejs/splide/css/core.css';
+import '@splidejs/splide/css/theme.css';
 
 interface Props {
   products: Producto[];
@@ -60,8 +62,6 @@ const { products = [], lang = 'es' } = Astro.props;
 
 <script>
   import Splide from '@splidejs/splide';
-  import '@splidejs/splide/css/core.css';
-  import '@splidejs/splide/css/theme.css';
 
   document.addEventListener('DOMContentLoaded', () => {
     const carouselElement = document.getElementById('product-carousel');
