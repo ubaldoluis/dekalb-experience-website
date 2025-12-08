@@ -1,0 +1,179 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="FieldView" description="Plataforma digital para gestión agrícola avanzada" lang={lang}>
+  <SolutionsHero 
+    title="FieldView"
+    subtitle="Plataforma digital para gestión agrícola avanzada"
+  />
+
+  <section class="fieldview-content">
+    <div class="container">
+      <div class="fieldview-intro">
+        <h2>Gestión Inteligente de Cultivos</h2>
+        <p>
+          FieldView es una plataforma digital integral que te permite gestionar tus cultivos de manera más eficiente y tomar decisiones basadas en datos precisos.
+        </p>
+      </div>
+
+      <div class="fieldview-subsections">
+        <div class="subsection">
+          <div class="subsection-content">
+            <h3>FieldView Drive</h3>
+            <p>
+              Sistema de monitoreo y análisis de datos en tiempo real para optimizar el rendimiento de tus cultivos.
+            </p>
+            <ul>
+              <li>Análisis de rendimiento por zona</li>
+              <li>Monitoreo de condiciones climáticas</li>
+              <li>Gestión de inventario</li>
+            </ul>
+          </div>
+          <div class="subsection-image">
+            <div class="placeholder-image">FieldView Drive</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-content">
+            <h3>Yield Kit</h3>
+            <p>
+              Herramientas avanzadas para medir y analizar el rendimiento de tus cultivos con precisión.
+            </p>
+            <ul>
+              <li>Medición precisa de producción</li>
+              <li>Mapas de rendimiento detallados</li>
+              <li>Análisis comparativo</li>
+            </ul>
+          </div>
+          <div class="subsection-image">
+            <div class="placeholder-image">Yield Kit</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-content">
+            <h3>SprayKit</h3>
+            <p>
+              Solución completa para la gestión y aplicación de tratamientos fitosanitarios.
+            </p>
+            <ul>
+              <li>Planificación de tratamientos</li>
+              <li>Seguimiento de aplicaciones</li>
+              <li>Optimización de dosis</li>
+            </ul>
+          </div>
+          <div class="subsection-image">
+            <div class="placeholder-image">SprayKit</div>
+          </div>
+        </div>
+      </div>
+
+      <CTASection
+        title="¿Listo para comenzar?"
+        description="Descubre cómo FieldView puede mejorar la gestión de tus cultivos"
+        buttonText="Contactar"
+        buttonLink="#contacto"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .fieldview-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .fieldview-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .fieldview-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .fieldview-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+
+  .fieldview-subsections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    margin-bottom: var(--spacing-12);
+  }
+
+  .subsection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-8);
+    align-items: center;
+  }
+
+  .subsection:nth-child(even) {
+    direction: rtl;
+  }
+
+  .subsection:nth-child(even) > * {
+    direction: ltr;
+  }
+
+  .subsection-content h3 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-dekalb-primary);
+  }
+
+  .subsection-content p {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .subsection-content ul {
+    list-style: disc;
+    padding-left: var(--spacing-6);
+    color: var(--color-gray-700);
+  }
+
+  .subsection-content li {
+    margin-bottom: var(--spacing-2);
+  }
+
+  .subsection-image {
+    background-color: var(--color-gray-100);
+    border-radius: var(--radius-lg);
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .placeholder-image {
+    color: var(--color-gray-500);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  @media (max-width: 767px) {
+    .subsection {
+      grid-template-columns: 1fr;
+    }
+
+    .subsection:nth-child(even) {
+      direction: ltr;
+    }
+  }
+</style>
+

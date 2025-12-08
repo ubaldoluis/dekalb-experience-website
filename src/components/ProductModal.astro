@@ -1,0 +1,339 @@
+---
+import type { Producto } from '../types';
+
+interface Props {
+  product?: Producto | null;
+  lang?: 'es' | 'pt';
+}
+
+const { product = null, lang = 'es' } = Astro.props;
+
+const translations = {
+  es: {
+    close: 'Cerrar',
+    category: 'Categoría',
+    benefits: 'Beneficios',
+    recommendations: 'Recomendaciones de uso',
+  },
+  pt: {
+    close: 'Fechar',
+    category: 'Categoria',
+    benefits: 'Benefícios',
+    recommendations: 'Recomendações de uso',
+  },
+};
+
+const t = translations[lang];
+
+const categoryLabels: Record<string, { es: string; pt: string }> = {
+  'maiz-grano': { es: 'Maíz Grano', pt: 'Milho Grão' },
+  'silo': { es: 'Silo', pt: 'Silagem' },
+  'preceon': { es: 'Preceon', pt: 'Preceon' },
+  'colza': { es: 'Colza', pt: 'Colza' },
+  'fitosanitario': { es: 'Fitosanitario', pt: 'Fitosanitário' },
+};
+---
+
+<dialog class="product-modal" id="product-modal" aria-labelledby="modal-title" aria-modal="true">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close" aria-label={t.close}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    {product ? (
+      <div class="modal-body">
+        <div class="modal-image-section">
+          {product.imagen_saco?.url && (
+            <img
+              src={product.imagen_saco.url}
+              alt={product.imagen_saco.alt || product.nombre}
+              class="modal-product-image"
+              loading="lazy"
+            />
+          )}
+        </div>
+
+        <div class="modal-info-section">
+          <h2 id="modal-title" class="modal-title">{product.nombre}</h2>
+          
+          {product.claim && (
+            <p class="modal-claim">{product.claim}</p>
+          )}
+
+          {product.categoria && (
+            <div class="modal-meta">
+              <span class="badge badge-primary">
+                {categoryLabels[product.categoria]?.[lang] || product.categoria}
+              </span>
+            </div>
+          )}
+
+          {product.beneficios && product.beneficios.length > 0 && (
+            <div class="modal-section">
+              <h3 class="modal-section-title">{t.beneficios}</h3>
+              <ul class="modal-benefits-list">
+                {product.beneficios.map((benefit) => (
+                  <li>{benefit}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {product.recomendaciones_uso && (
+            <div class="modal-section">
+              <h3 class="modal-section-title">{t.recommendations}</h3>
+              <div class="modal-recommendations">
+                {product.recomendaciones_uso}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+      <div class="modal-body">
+        <p>{lang === 'es' ? 'Cargando producto...' : 'Carregando produto...'}</p>
+      </div>
+    )}
+  </div>
+</dialog>
+
+<script>
+  const modal = document.getElementById('product-modal') as HTMLDialogElement;
+  const backdrop = document.getElementById('modal-backdrop');
+  const closeBtn = document.getElementById('modal-close');
+
+  function openModal() {
+    if (modal) {
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeModal() {
+    if (modal) {
+      modal.close();
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Listen for product click events
+  document.addEventListener('productClick', ((e: CustomEvent<{ productId: string }>) => {
+    const productId = e.detail.productId;
+    // Fetch product data and update modal
+    // For now, we'll open the modal and let the parent component handle data
+    openModal();
+  }) as EventListener);
+
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+
+  // Backdrop click
+  if (backdrop) {
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) {
+        closeModal();
+      }
+    });
+  }
+
+  // Escape key
+  if (modal) {
+    modal.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  }
+
+  // Export functions for external use
+  (window as any).openProductModal = openModal;
+  (window as any).closeProductModal = closeModal;
+</script>
+
+<style>
+  .product-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    z-index: var(--z-index-modal);
+  }
+
+  .product-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: relative;
+    background: var(--color-white);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    margin: 5vh auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    z-index: 10;
+    background: var(--color-white);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-full);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-gray-700);
+  }
+
+  .modal-close:hover {
+    background: var(--color-gray-100);
+    border-color: var(--color-dekalb-primary);
+    color: var(--color-dekalb-primary);
+  }
+
+  .modal-close:focus {
+    outline: 2px solid var(--color-dekalb-primary);
+    outline-offset: 2px;
+  }
+
+  .modal-body {
+    padding: var(--spacing-6);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+
+  .modal-image-section {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: var(--color-gray-100);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .modal-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: var(--spacing-4);
+  }
+
+  .modal-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .modal-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .modal-claim {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-700);
+    margin: 0;
+  }
+
+  .modal-meta {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .modal-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .modal-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .modal-benefits-list {
+    list-style: disc;
+    padding-left: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    color: var(--color-gray-700);
+  }
+
+  .modal-recommendations {
+    color: var(--color-gray-700);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* Mobile: Full screen with different background */
+  @media (max-width: 767px) {
+    .modal-content {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+      margin: 0;
+      border-radius: 0;
+      background: var(--color-gray-50); /* Different background for mobile */
+    }
+
+    .modal-body {
+      padding: var(--spacing-4);
+    }
+
+    .modal-close {
+      top: var(--spacing-2);
+      right: var(--spacing-2);
+    }
+  }
+</style>
+

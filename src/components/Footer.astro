@@ -1,0 +1,142 @@
+---
+import { getLocalizedPath } from '../utils/i18n';
+import type { Idioma } from '../types';
+
+interface Props {
+  lang?: Idioma;
+}
+
+const { lang = 'es' } = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="footer-title">{lang === 'es' ? 'DEKALB Experience' : 'DEKALB Experience'}</h3>
+        <p class="footer-description">
+          {lang === 'es' 
+            ? 'Expertos a tu lado. Soluciones agrícolas innovadoras para maximizar tu producción.'
+            : 'Especialistas ao seu lado. Soluções agrícolas inovadoras para maximizar sua produção.'}
+        </p>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-subtitle">{lang === 'es' ? 'Enlaces' : 'Links'}</h4>
+        <ul class="footer-links">
+          <li><a href={getLocalizedPath('/', lang)}>{lang === 'es' ? 'Inicio' : 'Início'}</a></li>
+          <li><a href={getLocalizedPath('/fieldview', lang)}>FieldView</a></li>
+          <li><a href={getLocalizedPath('/maiz', lang)}>{lang === 'es' ? 'Maíz' : 'Milho'}</a></li>
+          <li><a href={getLocalizedPath('/colza', lang)}>Colza</a></li>
+          <li><a href={getLocalizedPath('/blog', lang)}>Blog</a></li>
+          <li><a href={getLocalizedPath('/catalogo', lang)}>{lang === 'es' ? 'Catálogos' : 'Catálogos'}</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-subtitle">{lang === 'es' ? 'Soluciones' : 'Soluções'}</h4>
+        <ul class="footer-links">
+          <li><a href={getLocalizedPath('/acceleron', lang)}>Acceleron</a></li>
+          <li><a href={getLocalizedPath('/fieldshield', lang)}>FieldShield</a></li>
+          <li><a href={getLocalizedPath('/silo-extra', lang)}>Silo Extra</a></li>
+          <li><a href={getLocalizedPath('/preceon', lang)}>Preceon</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4 class="footer-subtitle">{lang === 'es' ? 'Contacto' : 'Contato'}</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.bayer.com" target="_blank" rel="noopener noreferrer">Bayer</a></li>
+          <li><a href="https://www.dekalb.com" target="_blank" rel="noopener noreferrer">DEKALB</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        &copy; {currentYear} DEKALB / Bayer. {lang === 'es' ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-gray-900);
+    color: var(--color-gray-200);
+    padding: var(--spacing-12) 0 var(--spacing-6);
+    margin-top: var(--spacing-16);
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-8);
+  }
+
+  .footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .footer-title {
+    color: var(--color-white);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .footer-subtitle {
+    color: var(--color-white);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .footer-description {
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .footer-links a {
+    color: var(--color-gray-400);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-dekalb-primary);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--color-gray-800);
+    padding-top: var(--spacing-6);
+    text-align: center;
+  }
+
+  .footer-copyright {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-xs);
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-6);
+    }
+  }
+</style>
+

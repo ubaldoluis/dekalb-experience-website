@@ -1,0 +1,67 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="DEKALB Colza" description="Soluciones para cultivo de colza" lang={lang}>
+  <SolutionsHero 
+    title="DEKALB Colza"
+    subtitle="Soluciones especializadas para colza"
+  />
+
+  <section class="solution-content">
+    <div class="container">
+      <div class="solution-intro">
+        <h2>Excelencia en Colza</h2>
+        <p>
+          DEKALB ofrece variedades de colza de alto rendimiento, adaptadas a las condiciones específicas de cada región, con protección integrada y tecnología avanzada.
+        </p>
+      </div>
+
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Alto Rendimiento', description: 'Variedades probadas en campo' },
+          { title: 'Adaptación Regional', description: 'Optimizadas para diferentes zonas' },
+          { title: 'Protección Integrada', description: 'Resistencia a enfermedades y plagas' },
+          { title: 'Calidad Superior', description: 'Excelente contenido de aceite' },
+        ]}
+        columns={2}
+      />
+
+      <CTASection
+        title="Descubre nuestras variedades de colza"
+        buttonText="Ver productos"
+        buttonLink="/es/#productos?tipo=colza"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .solution-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .solution-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .solution-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .solution-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+</style>
+

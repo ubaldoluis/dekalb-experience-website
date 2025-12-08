@@ -1,0 +1,55 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  buttonText: string;
+  buttonLink: string;
+  variant?: 'primary' | 'secondary';
+  lang?: 'es' | 'pt';
+}
+
+const { title, description, buttonText, buttonLink, variant = 'primary', lang = 'es' } = Astro.props;
+---
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2 class="cta-title">{title}</h2>
+      {description && <p class="cta-description">{description}</p>}
+      <a href={buttonLink} class={`btn btn-${variant}`}>
+        {buttonText}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    padding: var(--spacing-12) 0;
+    background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-white) 100%);
+  }
+
+  .cta-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    align-items: center;
+  }
+
+  .cta-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .cta-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+</style>
+

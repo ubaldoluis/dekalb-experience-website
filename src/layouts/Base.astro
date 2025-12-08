@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import '../styles/components.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'DEKALB Experience',
+  description = 'Expertos a tu lado',
+  lang = 'es',
+  ogImage,
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE_URL || 'https://dekalb-experience.com';
+const fullTitle = title === 'DEKALB Experience' ? title : `${title} | DEKALB Experience`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={siteUrl} />
+    <meta property="twitter:title" content={fullTitle} />
+    <meta property="twitter:description" content={description} />
+    {ogImage && <meta property="twitter:image" content={ogImage} />}
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "DEKALB Experience",
+      "url": siteUrl,
+      "logo": `${siteUrl}/logo-dekalb.svg`,
+      "description": description,
+      "sameAs": [
+        "https://www.bayer.com",
+        "https://www.dekalb.com"
+      ]
+    })} />
+    
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <slot />
+  </body>
+</html>
+

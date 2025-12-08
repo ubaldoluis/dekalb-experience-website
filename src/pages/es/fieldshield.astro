@@ -1,0 +1,67 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="FieldShield" description="Protección integral del cultivo" lang={lang}>
+  <SolutionsHero 
+    title="FieldShield"
+    subtitle="Protección integral para tus cultivos"
+  />
+
+  <section class="solution-content">
+    <div class="container">
+      <div class="solution-intro">
+        <h2>Protección Integral con FieldShield</h2>
+        <p>
+          FieldShield ofrece una protección completa contra plagas, enfermedades y malezas, garantizando cultivos más sanos y productivos.
+        </p>
+      </div>
+
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Protección Completa', description: 'Cobertura contra múltiples amenazas' },
+          { title: 'Eficacia Comprobada', description: 'Resultados consistentes en campo' },
+          { title: 'Fácil Aplicación', description: 'Solución práctica y eficiente' },
+          { title: 'Rentabilidad', description: 'Mayor retorno de inversión' },
+        ]}
+        columns={2}
+      />
+
+      <CTASection
+        title="Protege tus cultivos con FieldShield"
+        buttonText="Más información"
+        buttonLink="#contacto"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .solution-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .solution-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .solution-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .solution-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+</style>
+

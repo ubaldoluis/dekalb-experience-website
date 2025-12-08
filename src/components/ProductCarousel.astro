@@ -1,0 +1,253 @@
+---
+import { Splide, SplideSlide } from '@splidejs/astro-splide';
+import '@splidejs/splide/css';
+import type { Producto } from '../types';
+
+interface Props {
+  products: Producto[];
+  lang?: 'es' | 'pt';
+}
+
+const { products = [], lang = 'es' } = Astro.props;
+---
+
+<div class="product-carousel-wrapper">
+  {products.length > 0 ? (
+    <Splide
+      options={{
+        type: 'loop',
+        perPage: 4,
+        perMove: 1,
+        gap: '1.5rem',
+        pagination: true,
+        arrows: true,
+        breakpoints: {
+          1024: {
+            perPage: 3,
+          },
+          768: {
+            perPage: 2,
+          },
+          640: {
+            perPage: 1,
+          },
+        },
+      }}
+      aria-label="Carrusel de productos DEKALB"
+      class="product-carousel"
+      id="product-carousel"
+    >
+      {products.map((product) => (
+        <SplideSlide>
+          <div class="product-card" data-product-id={product.id}>
+            {product.imagen_saco?.url && (
+              <div class="product-image-wrapper">
+                <img
+                  src={product.imagen_saco.url}
+                  alt={product.imagen_saco.alt || product.nombre}
+                  class="product-image"
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <div class="product-info">
+              <h3 class="product-name">{product.nombre}</h3>
+              {product.claim && (
+                <p class="product-claim">{product.claim}</p>
+              )}
+              <button
+                class="btn btn-primary product-view-btn"
+                data-product-id={product.id}
+                aria-label={`Ver detalles de ${product.nombre}`}
+              >
+                {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
+              </button>
+            </div>
+          </div>
+        </SplideSlide>
+      ))}
+    </Splide>
+  ) : (
+    <div class="product-carousel-empty">
+      <p>{lang === 'es' ? 'No se encontraron productos con los filtros seleccionados.' : 'Nenhum produto encontrado com os filtros selecionados.'}</p>
+    </div>
+  )}
+</div>
+
+<script>
+  import { filterProducts } from '../utils/filterLogic';
+  import type { Producto, FilterState } from '../types';
+
+  let allProducts: Producto[] = [];
+  let currentFilterState: FilterState = { proteccion: 'todos' };
+
+  // Get products from data attribute or fetch
+  const carouselWrapper = document.querySelector('.product-carousel-wrapper');
+  if (carouselWrapper) {
+    // Listen for filter changes
+    document.addEventListener('filterChange', ((e: CustomEvent<FilterState>) => {
+      currentFilterState = e.detail;
+      updateCarousel();
+    }) as EventListener);
+
+    // Listen for product card clicks
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const productCard = target.closest('.product-card') as HTMLElement;
+      const viewBtn = target.closest('.product-view-btn') as HTMLElement;
+      
+      if (productCard || viewBtn) {
+        const productId = (productCard?.getAttribute('data-product-id') || 
+                          viewBtn?.getAttribute('data-product-id')) || '';
+        if (productId) {
+          const event = new CustomEvent('productClick', {
+            detail: { productId },
+          });
+          document.dispatchEvent(event);
+        }
+      }
+    });
+  }
+
+  function updateCarousel() {
+    // Get filter state from window function if available
+    if ((window as any).getFilterState) {
+      currentFilterState = (window as any).getFilterState();
+    }
+
+    // Filter products
+    const filtered = filterProducts(allProducts, currentFilterState);
+
+    // Update carousel (this would require Splide API)
+    // For now, we'll trigger a page update or use Splide's refresh method
+    const splideElement = document.querySelector('.product-carousel');
+    if (splideElement && (splideElement as any).splide) {
+      // Note: In a real implementation, you'd need to rebuild the carousel
+      // or use Splide's API to update slides dynamically
+      console.log('Filtered products:', filtered.length);
+    }
+  }
+
+  // Initialize products from page data
+  function initializeProducts() {
+    const productCards = document.querySelectorAll('.product-card');
+    // Extract product data from cards (in real implementation, pass as JSON)
+    // For now, products are passed as props and rendered server-side
+  }
+
+  // Initialize on load
+  if (typeof window !== 'undefined') {
+    initializeProducts();
+  }
+</script>
+
+<style>
+  .product-carousel-wrapper {
+    margin: var(--spacing-8) 0;
+  }
+
+  .product-carousel {
+    padding: var(--spacing-4) 0;
+  }
+
+  .product-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .product-image-wrapper {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background-color: var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: var(--spacing-4);
+  }
+
+  .product-info {
+    padding: var(--spacing-4);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--spacing-2);
+  }
+
+  .product-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .product-claim {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+    flex: 1;
+  }
+
+  .product-view-btn {
+    margin-top: auto;
+    width: 100%;
+  }
+
+  .product-carousel-empty {
+    text-align: center;
+    padding: var(--spacing-12);
+    color: var(--color-gray-600);
+  }
+
+  /* Splide customizations */
+  :global(.product-carousel .splide__arrow) {
+    background-color: var(--color-dekalb-primary);
+    opacity: 1;
+  }
+
+  :global(.product-carousel .splide__arrow:hover) {
+    background-color: var(--color-dekalb-primary-dark);
+  }
+
+  :global(.product-carousel .splide__arrow--prev) {
+    left: -1rem;
+  }
+
+  :global(.product-carousel .splide__arrow--next) {
+    right: -1rem;
+  }
+
+  :global(.product-carousel .splide__pagination__page) {
+    background-color: var(--color-gray-400);
+    opacity: 1;
+  }
+
+  :global(.product-carousel .splide__pagination__page.is-active) {
+    background-color: var(--color-dekalb-primary);
+  }
+
+  @media (max-width: 767px) {
+    :global(.product-carousel .splide__arrow) {
+      display: none;
+    }
+  }
+</style>
+

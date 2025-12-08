@@ -1,0 +1,106 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="Preceon - Smart Corn System" description="Sistema inteligente de gestión para maíz" lang={lang}>
+  <SolutionsHero 
+    title="Smart Corn System PRECEON"
+    subtitle="Tecnología de vanguardia para el maíz"
+    backgroundImage="/preceon-bg.jpg"
+  />
+
+  <section class="preceon-content">
+    <div class="container">
+      <div class="preceon-intro">
+        <h2>PRECEON: El Futuro del Maíz</h2>
+        <p>
+          PRECEON es un sistema inteligente que combina genética avanzada, tecnología digital y soluciones integradas para maximizar el potencial de tus cultivos de maíz.
+        </p>
+      </div>
+
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Genética Avanzada', description: 'Híbridos de última generación' },
+          { title: 'Tecnología Digital', description: 'Monitoreo y análisis en tiempo real' },
+          { title: 'Soluciones Integradas', description: 'Enfoque completo del cultivo' },
+          { title: 'Máximo Rendimiento', description: 'Optimización del potencial productivo' },
+        ]}
+        columns={2}
+      />
+
+      <div class="preceon-features">
+        <h3>Características Principales</h3>
+        <ul>
+          <li>Híbridos especializados DKC6836SC y DKC6648SC</li>
+          <li>Protección integrada contra plagas</li>
+          <li>Gestión inteligente de recursos</li>
+          <li>Soporte técnico especializado</li>
+        </ul>
+      </div>
+
+      <CTASection
+        title="Descubre el poder de PRECEON"
+        buttonText="Ver productos Preceon"
+        buttonLink="/es/#productos?tipo=maiz&uso=preceon"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .preceon-content {
+    padding: var(--spacing-16) 0;
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+    color: var(--color-white);
+  }
+
+  .preceon-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .preceon-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-white);
+  }
+
+  .preceon-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-white);
+    opacity: 0.95;
+  }
+
+  .preceon-features {
+    max-width: 800px;
+    margin: var(--spacing-12) auto;
+    padding: var(--spacing-6);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+  }
+
+  .preceon-features h3 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-white);
+  }
+
+  .preceon-features ul {
+    list-style: disc;
+    padding-left: var(--spacing-6);
+    color: var(--color-white);
+  }
+
+  .preceon-features li {
+    margin-bottom: var(--spacing-2);
+  }
+</style>
+

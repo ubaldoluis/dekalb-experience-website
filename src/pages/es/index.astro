@@ -1,0 +1,360 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProductFilter from '../../components/ProductFilter.astro';
+import ProductCarousel from '../../components/ProductCarousel.astro';
+import ProductModal from '../../components/ProductModal.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+import { getAllProducts, getAllArticles } from '../../utils/prismic';
+import { filterProducts, getDefaultFilterState, searchParamsToFilterState } from '../../utils/filterLogic';
+import type { Producto, FilterState } from '../../types';
+
+const lang = 'es';
+const translations = {
+  hero: {
+    title: 'DEKALB EXPERIENCE',
+    claim: 'Expertos a tu lado',
+  },
+  solutions: {
+    integralMaiz: 'Soluciones Integrales para Maíz',
+    fieldview: 'FieldView',
+    protection: 'Protección de Cultivo',
+    preceon: 'Smart Corn System PRECEON',
+    avoidProblems: 'Evita problemas con tu maíz',
+  },
+};
+
+// Fetch products and articles
+let allProducts: Producto[] = [];
+let articles: any[] = [];
+
+try {
+  allProducts = await getAllProducts(lang);
+  articles = await getAllArticles(lang);
+} catch (error) {
+  console.error('Error fetching data:', error);
+}
+
+// Get filter state from URL params
+const url = Astro.url;
+const filterState: FilterState = searchParamsToFilterState(url.searchParams);
+
+// Filter products based on current filter state
+const filteredProducts = filterProducts(allProducts, filterState);
+
+// Get latest 3 articles for blog preview
+const latestArticles = articles.slice(0, 3);
+---
+
+<PageLayout title={translations.hero.title} description={translations.hero.claim} lang={lang}>
+  <!-- Hero Section -->
+  <SolutionsHero 
+    title={translations.hero.title}
+    subtitle={translations.hero.claim}
+  />
+
+  <!-- Products Section -->
+  <section id="productos" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Productos</h2>
+      <ProductFilter filterState={filterState} lang={lang} />
+      <ProductCarousel products={filteredProducts} lang={lang} />
+    </div>
+  </section>
+
+  <!-- Solutions Integrales para Maíz -->
+  <section id="soluciones" class="solutions-section">
+    <div class="container">
+      <h2 class="section-title">{translations.solutions.integralMaiz}</h2>
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Yieldguard', description: 'Protección avanzada contra plagas' },
+          { title: 'Acceleron', description: 'Mejora del rendimiento' },
+          { title: 'FieldShield', description: 'Protección integral del cultivo' },
+          { title: 'Silo Extra', description: 'Optimización para silo' },
+        ]}
+        columns={4}
+      />
+    </div>
+  </section>
+
+  <!-- FieldView Section -->
+  <section class="fieldview-section">
+    <div class="container">
+      <CTASection
+        title={translations.solutions.fieldview}
+        description="Plataforma digital para gestión agrícola avanzada"
+        buttonText="Conocer más"
+        buttonLink="/es/fieldview"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+
+  <!-- Protección de Cultivo Section -->
+  <section class="protection-section">
+    <div class="container">
+      <CTASection
+        title={translations.solutions.protection}
+        description="Soluciones innovadoras para la protección de tus cultivos"
+        buttonText="Ver soluciones"
+        buttonLink="/es/#soluciones"
+        variant="secondary"
+        lang={lang}
+      />
+    </div>
+  </section>
+
+  <!-- Preceon Section -->
+  <section class="preceon-section">
+    <div class="container">
+      <div class="preceon-content">
+        <h2 class="preceon-title">{translations.solutions.preceon}</h2>
+        <p class="preceon-description">
+          Sistema inteligente de gestión para maíz con tecnología de vanguardia.
+        </p>
+        <a href="/es/preceon" class="btn btn-primary">Descubrir Preceon</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evita Problemas Section -->
+  <section class="avoid-problems-section">
+    <div class="container">
+      <CTASection
+        title={translations.solutions.avoidProblems}
+        buttonText="Ver guías"
+        buttonLink="/es/evita-problemas"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+
+  <!-- Catálogos Section -->
+  <section class="catalogs-section">
+    <div class="container">
+      <h2 class="section-title">Descarga de Catálogos</h2>
+      <div class="catalogs-grid">
+        <a href="/es/catalogo" class="catalog-card">
+          <span class="catalog-flag">🇪🇸</span>
+          <span class="catalog-name">España</span>
+        </a>
+        <a href="/pt/catalogo" class="catalog-card">
+          <span class="catalog-flag">🇵🇹</span>
+          <span class="catalog-name">Portugal</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Preview Section -->
+  {latestArticles.length > 0 && (
+    <section class="blog-preview-section">
+      <div class="container">
+        <h2 class="section-title">Últimas Noticias</h2>
+        <div class="blog-preview-grid">
+          {latestArticles.map((article) => (
+            <article class="blog-preview-card">
+              {article.imagen_destacada?.url && (
+                <img 
+                  src={article.imagen_destacada.url} 
+                  alt={article.imagen_destacada.alt || article.titulo}
+                  class="blog-preview-image"
+                  loading="lazy"
+                />
+              )}
+              <div class="blog-preview-content">
+                <span class="badge badge-primary">{article.categoria}</span>
+                <h3 class="blog-preview-title">{article.titulo}</h3>
+                <p class="blog-preview-date">
+                  {new Date(article.fecha).toLocaleDateString('es-ES')}
+                </p>
+                <p class="blog-preview-excerpt">{article.extracto}</p>
+                <a href={`/es/blog/${article.slug}`} class="btn btn-outline">
+                  Leer más
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div class="blog-preview-footer">
+          <a href="/es/blog" class="btn btn-primary">Ver todos los artículos</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <ProductModal lang={lang} />
+</PageLayout>
+
+<style>
+  .products-section {
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-white);
+  }
+
+  .section-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    margin-bottom: var(--spacing-8);
+    color: var(--color-gray-900);
+  }
+
+  .solutions-section {
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-gray-50);
+  }
+
+  .fieldview-section,
+  .protection-section {
+    padding: var(--spacing-12) 0;
+  }
+
+  .preceon-section {
+    padding: var(--spacing-16) 0;
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+    color: var(--color-white);
+  }
+
+  .preceon-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .preceon-title {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .preceon-description {
+    font-size: var(--font-size-xl);
+    color: var(--color-white);
+    opacity: 0.95;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .avoid-problems-section {
+    padding: var(--spacing-12) 0;
+    background-color: var(--color-gray-50);
+  }
+
+  .catalogs-section {
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-white);
+  }
+
+  .catalogs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-6);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .catalog-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-6);
+    background: var(--color-white);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .catalog-card:hover {
+    border-color: var(--color-dekalb-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+  }
+
+  .catalog-flag {
+    font-size: 3rem;
+  }
+
+  .catalog-name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+  }
+
+  .blog-preview-section {
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-gray-50);
+  }
+
+  .blog-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+  }
+
+  .blog-preview-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+  }
+
+  .blog-preview-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .blog-preview-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .blog-preview-content {
+    padding: var(--spacing-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .blog-preview-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .blog-preview-date {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin: 0;
+  }
+
+  .blog-preview-excerpt {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  .blog-preview-footer {
+    text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .blog-preview-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .catalogs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

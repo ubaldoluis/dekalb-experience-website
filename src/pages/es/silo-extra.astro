@@ -1,0 +1,67 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="Silo Extra" description="Optimización para producción de silo" lang={lang}>
+  <SolutionsHero 
+    title="Silo Extra"
+    subtitle="Optimización para producción de silo"
+  />
+
+  <section class="solution-content">
+    <div class="container">
+      <div class="solution-intro">
+        <h2>Silo Extra: Máximo Rendimiento para Silo</h2>
+        <p>
+          Soluciones especializadas diseñadas específicamente para maximizar la producción de silo, con híbridos optimizados y tecnologías avanzadas.
+        </p>
+      </div>
+
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Alto Rendimiento', description: 'Máxima producción de materia seca' },
+          { title: 'Calidad Superior', description: 'Mejor valor nutritivo del silo' },
+          { title: 'Híbridos Especializados', description: 'Variedades optimizadas para silo' },
+          { title: 'Tecnología Avanzada', description: 'Soluciones innovadoras probadas' },
+        ]}
+        columns={2}
+      />
+
+      <CTASection
+        title="Maximiza tu producción de silo"
+        buttonText="Ver productos"
+        buttonLink="/es/#productos"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .solution-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .solution-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .solution-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .solution-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+</style>
+

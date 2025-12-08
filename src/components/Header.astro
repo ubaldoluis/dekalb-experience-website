@@ -1,0 +1,281 @@
+---
+import { getLocalizedPath } from '../utils/i18n';
+import type { Idioma } from '../types';
+
+interface Props {
+  lang?: Idioma;
+}
+
+const { lang = 'es' } = Astro.props;
+
+const navItems = [
+  { label: lang === 'es' ? 'Inicio' : 'Início', path: '/' },
+  { label: lang === 'es' ? 'Productos' : 'Produtos', path: '/#productos' },
+  { label: lang === 'es' ? 'Soluciones' : 'Soluções', path: '/#soluciones' },
+  { label: 'FieldView', path: '/fieldview' },
+  { label: lang === 'es' ? 'Maíz' : 'Milho', path: '/maiz' },
+  { label: lang === 'es' ? 'Colza' : 'Colza', path: '/colza' },
+  { label: 'Blog', path: '/blog' },
+];
+
+const currentPath = Astro.url.pathname;
+const otherLang = lang === 'es' ? 'pt' : 'es';
+const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/^\/$/, `/${otherLang}`);
+---
+
+<header class="header" role="banner">
+  <div class="container header-container">
+    <a href={getLocalizedPath('/', lang)} class="logo-link" aria-label="DEKALB Experience - Inicio">
+      <img src="/logo-dekalb.svg" alt="DEKALB" class="logo-dekalb" width="120" height="40" />
+    </a>
+
+    <nav class="nav" aria-label="Navegación principal">
+      <button class="mobile-menu-toggle" aria-label="Abrir menú" aria-expanded="false" id="mobile-menu-toggle">
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+      </button>
+
+      <ul class="nav-list" id="nav-list">
+        {navItems.map((item) => {
+          const itemPath = getLocalizedPath(item.path, lang);
+          const isActive = currentPath === itemPath || (item.path !== '/' && currentPath.startsWith(itemPath));
+          return (
+            <li>
+              <a
+                href={itemPath}
+                class:list={['nav-link', { 'nav-link-active': isActive }]}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <div class="language-selector">
+        <a
+          href={otherLangPath}
+          class="lang-link"
+          aria-label={lang === 'es' ? 'Cambiar a Portugués' : 'Cambiar a Español'}
+        >
+          {lang === 'es' ? 'PT' : 'ES'}
+        </a>
+      </div>
+      <a href="https://www.bayer.com" class="logo-link" aria-label="Bayer" target="_blank" rel="noopener noreferrer">
+        <img src="/logo-bayer.svg" alt="Bayer" class="logo-bayer" width="80" height="40" />
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const navList = document.getElementById('nav-list');
+
+  if (menuToggle && navList) {
+    menuToggle.addEventListener('click', () => {
+      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+      navList.classList.toggle('nav-list-open');
+      menuToggle.classList.toggle('mobile-menu-toggle-open');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!menuToggle.contains(e.target as Node) && !navList.contains(e.target as Node)) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        navList.classList.remove('nav-list-open');
+        menuToggle.classList.remove('mobile-menu-toggle-open');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navList.classList.contains('nav-list-open')) {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        navList.classList.remove('nav-list-open');
+        menuToggle.classList.remove('mobile-menu-toggle-open');
+      }
+    });
+  }
+</script>
+
+<style>
+  .header {
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-index-sticky);
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
+    gap: var(--spacing-4);
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .logo-dekalb,
+  .logo-bayer {
+    height: auto;
+    max-height: 40px;
+    width: auto;
+  }
+
+  .nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: var(--spacing-2);
+    cursor: pointer;
+  }
+
+  .hamburger {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-gray-900);
+    transition: all var(--transition-base);
+  }
+
+  .mobile-menu-toggle-open .hamburger:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .mobile-menu-toggle-open .hamburger:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle-open .hamburger:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    color: var(--color-gray-700);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-2) 0;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+
+  .nav-link:hover {
+    color: var(--color-dekalb-primary);
+  }
+
+  .nav-link-active {
+    color: var(--color-dekalb-primary);
+  }
+
+  .nav-link-active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-dekalb-primary);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .language-selector {
+    display: flex;
+    align-items: center;
+  }
+
+  .lang-link {
+    color: var(--color-gray-700);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-2) var(--spacing-3);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .lang-link:hover {
+    background-color: var(--color-dekalb-primary);
+    color: var(--color-white);
+    border-color: var(--color-dekalb-primary);
+  }
+
+  @media (max-width: 767px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+
+    .nav-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background-color: var(--color-white);
+      box-shadow: var(--shadow-lg);
+      padding: var(--spacing-4);
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-base);
+    }
+
+    .nav-list-open {
+      max-height: 500px;
+    }
+
+    .nav-list li {
+      width: 100%;
+    }
+
+    .nav-link {
+      display: block;
+      padding: var(--spacing-3) 0;
+      width: 100%;
+    }
+
+    .header-right {
+      gap: var(--spacing-2);
+    }
+
+    .logo-bayer {
+      max-height: 30px;
+    }
+  }
+</style>
+

@@ -1,0 +1,136 @@
+---
+interface Treatment {
+  categoria: string;
+  tipoAccion: string;
+  producto: string;
+  dosis: string;
+  estadios: string;
+  link?: string;
+}
+
+interface Props {
+  treatments: Treatment[];
+  lang?: 'es' | 'pt';
+}
+
+const { treatments = [], lang = 'es' } = Astro.props;
+---
+
+<div class="treatment-table-wrapper">
+  <div class="table-container">
+    <table class="treatment-table" role="table">
+      <thead>
+        <tr>
+          <th>{lang === 'es' ? 'Categoría' : 'Categoria'}</th>
+          <th>{lang === 'es' ? 'Tipo de Acción' : 'Tipo de Ação'}</th>
+          <th>{lang === 'es' ? 'Producto' : 'Produto'}</th>
+          <th>{lang === 'es' ? 'Dosis' : 'Dose'}</th>
+          <th>{lang === 'es' ? 'Estadios del Maíz' : 'Estádios do Milho'}</th>
+          <th>{lang === 'es' ? 'Acción' : 'Ação'}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {treatments.map((treatment, index) => (
+          <tr>
+            <td>{treatment.categoria}</td>
+            <td>{treatment.tipoAccion}</td>
+            <td>{treatment.producto}</td>
+            <td>{treatment.dosis}</td>
+            <td>{treatment.estadios}</td>
+            <td>
+              {treatment.link ? (
+                <a href={treatment.link} target="_blank" rel="noopener noreferrer" class="table-link">
+                  {lang === 'es' ? 'Ver en Agrobayer' : 'Ver em Agrobayer'}
+                </a>
+              ) : (
+                <span class="table-link-disabled">-</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .treatment-table-wrapper {
+    margin: var(--spacing-8) 0;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-300);
+  }
+
+  .treatment-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+
+  .treatment-table thead {
+    background-color: var(--color-dekalb-primary);
+    color: var(--color-white);
+  }
+
+  .treatment-table th {
+    padding: var(--spacing-4);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .treatment-table tbody tr {
+    border-bottom: 1px solid var(--color-gray-200);
+    transition: background-color var(--transition-fast);
+  }
+
+  .treatment-table tbody tr:hover {
+    background-color: var(--color-gray-50);
+  }
+
+  .treatment-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .treatment-table td {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+  }
+
+  .table-link {
+    color: var(--color-dekalb-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    transition: color var(--transition-fast);
+  }
+
+  .table-link:hover {
+    color: var(--color-dekalb-primary-dark);
+    text-decoration: underline;
+  }
+
+  .table-link-disabled {
+    color: var(--color-gray-400);
+  }
+
+  @media (max-width: 767px) {
+    .table-container {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+
+    .treatment-table th,
+    .treatment-table td {
+      padding: var(--spacing-2);
+      font-size: var(--font-size-xs);
+    }
+  }
+</style>
+

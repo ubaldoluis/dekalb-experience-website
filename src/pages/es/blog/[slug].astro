@@ -1,0 +1,228 @@
+---
+import BlogPost from '../../../layouts/BlogPost.astro';
+import { getArticleBySlug, getAllArticles } from '../../../utils/prismic';
+import { getLocalizedPath } from '../../../utils/i18n';
+
+export async function getStaticPaths() {
+  const articles = await getAllArticles('es');
+  
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const lang = 'es';
+
+const categoryLabels: Record<string, string> = {
+  'noticia': 'Noticia',
+  'evento': 'Evento',
+  'articulo': 'Artículo',
+  'lanzamiento': 'Lanzamiento',
+};
+
+// Get related articles (excluding current)
+let relatedArticles: any[] = [];
+try {
+  const allArticles = await getAllArticles(lang);
+  relatedArticles = allArticles
+    .filter((a) => a.id !== article.id && a.categoria === article.categoria)
+    .slice(0, 3);
+} catch (error) {
+  console.error('Error fetching related articles:', error);
+}
+---
+
+<BlogPost 
+  title={article.titulo}
+  description={article.extracto}
+  lang={lang}
+  fecha={article.fecha}
+  categoria={categoryLabels[article.categoria] || article.categoria}
+  ogImage={article.imagen_destacada?.url}
+>
+  <div class="container">
+    {article.imagen_destacada?.url && (
+      <img 
+        src={article.imagen_destacada.url} 
+        alt={article.imagen_destacada.alt || article.titulo}
+        class="article-featured-image"
+        loading="eager"
+      />
+    )}
+
+    <div class="article-content">
+      {article.contenido && (
+        <div class="rich-text-content">
+          <!-- Rich text content from Prismic -->
+          <!-- Note: In production, use @prismicio/astro or render rich text properly -->
+          {typeof article.contenido === 'string' ? (
+            <div set:html={article.contenido} />
+          ) : (
+            <p>Contenido del artículo disponible en Prismic.</p>
+          )}
+        </div>
+      )}
+
+      {article.autor && (
+        <div class="article-author">
+          <p><strong>Autor:</strong> {article.autor}</p>
+        </div>
+      )}
+    </div>
+
+    {relatedArticles.length > 0 && (
+      <section class="related-articles">
+        <h2>Artículos relacionados</h2>
+        <div class="related-grid">
+          {relatedArticles.map((related) => (
+            <article class="related-card">
+              {related.imagen_destacada?.url && (
+                <img 
+                  src={related.imagen_destacada.url} 
+                  alt={related.imagen_destacada.alt || related.titulo}
+                  class="related-image"
+                  loading="lazy"
+                />
+              )}
+              <div class="related-content">
+                <h3>
+                  <a href={getLocalizedPath(`/blog/${related.slug}`, lang)}>
+                    {related.titulo}
+                  </a>
+                </h3>
+                <time datetime={related.fecha}>
+                  {new Date(related.fecha).toLocaleDateString('es-ES')}
+                </time>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BlogPost>
+
+<style>
+  .article-featured-image {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-8);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .article-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .rich-text-content {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-gray-800);
+  }
+
+  .rich-text-content :global(h2) {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-top: var(--spacing-8);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-gray-900);
+  }
+
+  .rich-text-content :global(h3) {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-top: var(--spacing-6);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-gray-900);
+  }
+
+  .rich-text-content :global(p) {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .rich-text-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: var(--spacing-6) 0;
+  }
+
+  .rich-text-content :global(blockquote) {
+    border-left: 4px solid var(--color-dekalb-primary);
+    padding-left: var(--spacing-4);
+    margin: var(--spacing-6) 0;
+    font-style: italic;
+    color: var(--color-gray-700);
+  }
+
+  .article-author {
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-6);
+    border-top: 1px solid var(--color-gray-200);
+    color: var(--color-gray-600);
+  }
+
+  .related-articles {
+    margin-top: var(--spacing-16);
+    padding-top: var(--spacing-12);
+    border-top: 2px solid var(--color-gray-200);
+  }
+
+  .related-articles h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  .related-card {
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+  }
+
+  .related-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .related-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .related-content {
+    padding: var(--spacing-3);
+  }
+
+  .related-content h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .related-content a {
+    color: var(--color-gray-900);
+    text-decoration: none;
+  }
+
+  .related-content a:hover {
+    color: var(--color-dekalb-primary);
+  }
+
+  .related-content time {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+  }
+</style>
+

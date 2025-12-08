@@ -1,0 +1,67 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const lang = 'es';
+---
+
+<PageLayout title="Acceleron" description="Mejora del rendimiento con Acceleron" lang={lang}>
+  <SolutionsHero 
+    title="Acceleron"
+    subtitle="Mejora del rendimiento y protección avanzada"
+  />
+
+  <section class="solution-content">
+    <div class="container">
+      <div class="solution-intro">
+        <h2>¿Qué es Acceleron?</h2>
+        <p>
+          Acceleron es una solución integral que combina semillas de alta calidad con tratamientos avanzados para maximizar el rendimiento de tus cultivos.
+        </p>
+      </div>
+
+      <BenefitsGrid 
+        benefits={[
+          { title: 'Mayor Rendimiento', description: 'Incrementa significativamente la producción por hectárea' },
+          { title: 'Protección Avanzada', description: 'Protección contra plagas y enfermedades desde el inicio' },
+          { title: 'Mejor Establecimiento', description: 'Germinación más rápida y uniforme' },
+          { title: 'Tecnología Probada', description: 'Resultados consistentes en diferentes condiciones' },
+        ]}
+        columns={2}
+      />
+
+      <CTASection
+        title="Descubre cómo Acceleron puede mejorar tus cultivos"
+        buttonText="Contactar"
+        buttonLink="#contacto"
+        variant="primary"
+        lang={lang}
+      />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .solution-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .solution-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .solution-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .solution-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+</style>
+

@@ -1,0 +1,93 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import TreatmentTable from '../../components/TreatmentTable.astro';
+
+const lang = 'es';
+
+// Sample treatment data - In production, this would come from Prismic
+const treatments = [
+  {
+    categoria: 'Herbicida',
+    tipoAccion: 'Pre-emergencia',
+    producto: 'Producto A',
+    dosis: '2-3 L/Ha',
+    estadios: 'BBCH 00-09',
+    link: 'https://www.agrobayer.com',
+  },
+  {
+    categoria: 'Insecticida',
+    tipoAccion: 'Preventivo',
+    producto: 'Producto B',
+    dosis: '1-2 L/Ha',
+    estadios: 'BBCH 10-19',
+    link: 'https://www.agrobayer.com',
+  },
+  // Add more treatments as needed
+];
+---
+
+<PageLayout title="Programa de Tratamientos Bayer - Maíz" description="Programa completo de tratamientos para maíz" lang={lang}>
+  <SolutionsHero 
+    title="Programa de Tratamientos Bayer"
+    subtitle="Soluciones integrales para el cultivo de maíz"
+  />
+
+  <section class="maiz-content">
+    <div class="container">
+      <div class="maiz-intro">
+        <h2>Programa de Tratamientos para Maíz</h2>
+        <p>
+          Descubre el programa completo de tratamientos Bayer diseñado para maximizar el rendimiento y proteger tus cultivos de maíz en todas las etapas de crecimiento.
+        </p>
+      </div>
+
+      <TreatmentTable treatments={treatments} lang={lang} />
+
+      <div class="maiz-cta">
+        <p>
+          Para más información sobre productos y dosis específicas, visita la plataforma Agrobayer.
+        </p>
+        <a href="https://www.agrobayer.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          Ir a Agrobayer
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .maiz-content {
+    padding: var(--spacing-16) 0;
+  }
+
+  .maiz-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-8);
+  }
+
+  .maiz-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .maiz-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+
+  .maiz-cta {
+    text-align: center;
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-6);
+    background-color: var(--color-gray-50);
+    border-radius: var(--radius-lg);
+  }
+
+  .maiz-cta p {
+    margin-bottom: var(--spacing-4);
+    color: var(--color-gray-700);
+  }
+</style>
+

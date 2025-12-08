@@ -1,0 +1,158 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SolutionsHero from '../../components/SolutionsHero.astro';
+import { Splide, SplideSlide } from '@splidejs/astro-splide';
+import '@splidejs/splide/css';
+
+const lang = 'es';
+
+const guides = [
+  {
+    title: 'Guía Técnica y de Buenas Prácticas para Maíz Bt',
+    description: 'Manual completo sobre el cultivo de maíz Bt',
+    pdfUrl: '/guides/guia-maiz-bt.pdf',
+  },
+  {
+    title: 'Prevención y Control de Teosinte',
+    description: 'Guía para identificar y controlar el teosinte',
+    pdfUrl: '/guides/guia-teosinte.pdf',
+  },
+  {
+    title: 'La virosis del maíz',
+    description: 'Información sobre enfermedades virales del maíz',
+    pdfUrl: '/guides/guia-virosis.pdf',
+  },
+];
+---
+
+<PageLayout title="Guías Técnicas" description="Guías descargables para el cultivo de maíz" lang={lang}>
+  <SolutionsHero 
+    title="Evita problemas con tu maíz"
+    subtitle="Guías técnicas y de buenas prácticas"
+  />
+
+  <section class="guides-section">
+    <div class="container">
+      <div class="guides-intro">
+        <h2>Guías Técnicas Descargables</h2>
+        <p>
+          Descarga nuestras guías técnicas especializadas para ayudarte a prevenir y resolver problemas comunes en el cultivo de maíz.
+        </p>
+      </div>
+
+      <div class="guides-carousel-wrapper">
+        <Splide
+          options={{
+            type: 'loop',
+            perPage: 3,
+            perMove: 1,
+            gap: '2rem',
+            pagination: true,
+            arrows: true,
+            breakpoints: {
+              1024: {
+                perPage: 2,
+              },
+              768: {
+                perPage: 1,
+              },
+            },
+          }}
+          aria-label="Guías técnicas"
+          class="guides-carousel"
+        >
+          {guides.map((guide) => (
+            <SplideSlide>
+              <div class="guide-card">
+                <div class="guide-icon">📄</div>
+                <h3 class="guide-title">{guide.title}</h3>
+                <p class="guide-description">{guide.description}</p>
+                <a 
+                  href={guide.pdfUrl} 
+                  class="btn btn-primary"
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Descargar PDF
+                </a>
+              </div>
+            </SplideSlide>
+          ))}
+        </Splide>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .guides-section {
+    padding: var(--spacing-16) 0;
+  }
+
+  .guides-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .guides-intro h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .guides-intro p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+  }
+
+  .guides-carousel-wrapper {
+    margin: var(--spacing-8) 0;
+  }
+
+  .guide-card {
+    background: var(--color-white);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    height: 100%;
+    transition: all var(--transition-base);
+  }
+
+  .guide-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .guide-icon {
+    font-size: 4rem;
+    line-height: 1;
+  }
+
+  .guide-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .guide-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+    flex: 1;
+  }
+
+  :global(.guides-carousel .splide__arrow) {
+    background-color: var(--color-dekalb-primary);
+  }
+
+  :global(.guides-carousel .splide__pagination__page.is-active) {
+    background-color: var(--color-dekalb-primary);
+  }
+</style>
+

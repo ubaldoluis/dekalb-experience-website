@@ -1,0 +1,432 @@
+---
+import type { FilterState, TipoSemilla, UsoMaiz, ZonaGeografica, ProteccionCultivo } from '../types';
+import { getDefaultFilterState } from '../utils/filterLogic';
+
+interface Props {
+  filterState?: FilterState;
+  lang?: 'es' | 'pt';
+}
+
+const { filterState = getDefaultFilterState(), lang = 'es' } = Astro.props;
+
+const translations = {
+  es: {
+    seedType: 'Tipo de Semilla',
+    maiz: 'Maíz',
+    colza: 'Colza',
+    use: 'Uso',
+    grano: 'Grano',
+    silo: 'Silo',
+    preceon: 'Preceon',
+    zone: 'Zona Geográfica',
+    ebro: 'Ebro',
+    centroSur: 'Centro Sur, Extremadura, Andalucía',
+    noroeste: 'Noroeste',
+    portugal: 'Portugal',
+    protection: 'Protección de Cultivo',
+    herbicida: 'Herbicida',
+    insecticida: 'Insecticida',
+    bioestimulante: 'Bioestimulante',
+    todos: 'Todos',
+  },
+  pt: {
+    seedType: 'Tipo de Semente',
+    maiz: 'Milho',
+    colza: 'Colza',
+    use: 'Uso',
+    grano: 'Grão',
+    silo: 'Silagem',
+    preceon: 'Preceon',
+    zone: 'Zona Geográfica',
+    ebro: 'Ebro',
+    centroSur: 'Centro Sul, Extremadura, Andaluzia',
+    noroeste: 'Noroeste',
+    portugal: 'Portugal',
+    protection: 'Proteção de Cultivo',
+    herbicida: 'Herbicida',
+    insecticida: 'Inseticida',
+    bioestimulante: 'Bioestimulante',
+    todos: 'Todos',
+  },
+};
+
+const t = translations[lang];
+---
+
+<div class="product-filter" id="product-filter">
+  <form class="filter-form" id="filter-form">
+    <!-- Nivel 1: Tipo Semilla - Siempre visible -->
+    <div class="filter-group">
+      <label class="filter-label">{t.seedType}</label>
+      <div class="filter-buttons">
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.tipoSemilla === 'maiz' }]}
+          data-filter="tipoSemilla"
+          data-value="maiz"
+          aria-pressed={filterState.tipoSemilla === 'maiz'}
+        >
+          {t.maiz}
+        </button>
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.tipoSemilla === 'colza' }]}
+          data-filter="tipoSemilla"
+          data-value="colza"
+          aria-pressed={filterState.tipoSemilla === 'colza'}
+        >
+          {t.colza}
+        </button>
+      </div>
+    </div>
+
+    <!-- Nivel 2: Uso - Solo si Maíz -->
+    {filterState.tipoSemilla === 'maiz' && (
+      <div class="filter-group filter-group-conditional" data-level="uso">
+        <label class="filter-label">{t.use}</label>
+        <div class="filter-buttons">
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.uso === 'grano' }]}
+            data-filter="uso"
+            data-value="grano"
+            aria-pressed={filterState.uso === 'grano'}
+          >
+            {t.grano}
+          </button>
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.uso === 'silo' }]}
+            data-filter="uso"
+            data-value="silo"
+            aria-pressed={filterState.uso === 'silo'}
+          >
+            {t.silo}
+          </button>
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.uso === 'preceon' }]}
+            data-filter="uso"
+            data-value="preceon"
+            aria-pressed={filterState.uso === 'preceon'}
+          >
+            {t.preceon}
+          </button>
+        </div>
+      </div>
+    )}
+
+    <!-- Nivel 3: Zona - Solo si Maíz -->
+    {filterState.tipoSemilla === 'maiz' && (
+      <div class="filter-group filter-group-conditional" data-level="zona">
+        <label class="filter-label">{t.zone}</label>
+        <div class="filter-buttons">
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.zona === 'ebro' }]}
+            data-filter="zona"
+            data-value="ebro"
+            aria-pressed={filterState.zona === 'ebro'}
+          >
+            {t.ebro}
+          </button>
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.zona === 'centro-sur-extremadura-andalucia' }]}
+            data-filter="zona"
+            data-value="centro-sur-extremadura-andalucia"
+            aria-pressed={filterState.zona === 'centro-sur-extremadura-andalucia'}
+          >
+            {t.centroSur}
+          </button>
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.zona === 'noroeste' }]}
+            data-filter="zona"
+            data-value="noroeste"
+            aria-pressed={filterState.zona === 'noroeste'}
+          >
+            {t.noroeste}
+          </button>
+          <button
+            type="button"
+            class:list={['filter-button', { 'filter-button-active': filterState.zona === 'portugal' }]}
+            data-filter="zona"
+            data-value="portugal"
+            aria-pressed={filterState.zona === 'portugal'}
+          >
+            {t.portugal}
+          </button>
+        </div>
+      </div>
+    )}
+
+    <!-- Nivel 4: Protección - Siempre visible -->
+    <div class="filter-group">
+      <label class="filter-label">{t.protection}</label>
+      <div class="filter-buttons">
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.proteccion === 'todos' }]}
+          data-filter="proteccion"
+          data-value="todos"
+          aria-pressed={filterState.proteccion === 'todos'}
+        >
+          {t.todos}
+        </button>
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.proteccion === 'herbicida' }]}
+          data-filter="proteccion"
+          data-value="herbicida"
+          aria-pressed={filterState.proteccion === 'herbicida'}
+        >
+          {t.herbicida}
+        </button>
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.proteccion === 'insecticida' }]}
+          data-filter="proteccion"
+          data-value="insecticida"
+          aria-pressed={filterState.proteccion === 'insecticida'}
+        >
+          {t.insecticida}
+        </button>
+        <button
+          type="button"
+          class:list={['filter-button', { 'filter-button-active': filterState.proteccion === 'bioestimulante' }]}
+          data-filter="proteccion"
+          data-value="bioestimulante"
+          aria-pressed={filterState.proteccion === 'bioestimulante'}
+        >
+          {t.bioestimulante}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  interface FilterState {
+    tipoSemilla?: 'maiz' | 'colza';
+    uso?: 'grano' | 'silo' | 'preceon';
+    zona?: string;
+    proteccion: 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos';
+  }
+
+  const filterForm = document.getElementById('filter-form') as HTMLFormElement;
+  let currentFilterState: FilterState = {
+    proteccion: 'todos',
+  };
+
+  // Initialize from URL params if available
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tipo')) {
+      currentFilterState.tipoSemilla = urlParams.get('tipo') as 'maiz' | 'colza';
+    }
+    if (urlParams.get('uso')) {
+      currentFilterState.uso = urlParams.get('uso') as 'grano' | 'silo' | 'preceon';
+    }
+    if (urlParams.get('zona')) {
+      currentFilterState.zona = urlParams.get('zona') || undefined;
+    }
+    if (urlParams.get('proteccion')) {
+      currentFilterState.proteccion = urlParams.get('proteccion') as any || 'todos';
+    }
+  }
+
+  function updateFilterState(filter: string, value: string) {
+    if (filter === 'tipoSemilla') {
+      currentFilterState.tipoSemilla = value as 'maiz' | 'colza';
+      // If switching to Colza, clear uso and zona
+      if (value === 'colza') {
+        currentFilterState.uso = undefined;
+        currentFilterState.zona = undefined;
+      }
+    } else if (filter === 'uso') {
+      currentFilterState.uso = value as 'grano' | 'silo' | 'preceon';
+    } else if (filter === 'zona') {
+      currentFilterState.zona = value;
+    } else if (filter === 'proteccion') {
+      currentFilterState.proteccion = value as any;
+    }
+
+    // Emit custom event for carousel update
+    const event = new CustomEvent('filterChange', {
+      detail: { ...currentFilterState },
+    });
+    document.dispatchEvent(event);
+
+    // Update URL without reload
+    updateURL();
+  }
+
+  function updateURL() {
+    const params = new URLSearchParams();
+    if (currentFilterState.tipoSemilla) {
+      params.set('tipo', currentFilterState.tipoSemilla);
+    }
+    if (currentFilterState.uso) {
+      params.set('uso', currentFilterState.uso);
+    }
+    if (currentFilterState.zona) {
+      params.set('zona', currentFilterState.zona);
+    }
+    if (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos') {
+      params.set('proteccion', currentFilterState.proteccion);
+    }
+
+    const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.pushState({}, '', newURL);
+  }
+
+  if (filterForm) {
+    filterForm.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('filter-button')) {
+        e.preventDefault();
+        const filter = target.getAttribute('data-filter');
+        const value = target.getAttribute('data-value');
+        
+        if (filter && value) {
+          // Toggle active state
+          const buttons = filterForm.querySelectorAll(`[data-filter="${filter}"]`);
+          buttons.forEach((btn) => {
+            btn.classList.remove('filter-button-active');
+            btn.setAttribute('aria-pressed', 'false');
+          });
+          target.classList.add('filter-button-active');
+          target.setAttribute('aria-pressed', 'true');
+
+          updateFilterState(filter, value);
+
+          // Re-render conditional groups
+          renderConditionalGroups();
+        }
+      }
+    });
+  }
+
+  function renderConditionalGroups() {
+    const usoGroup = document.querySelector('[data-level="uso"]') as HTMLElement;
+    const zonaGroup = document.querySelector('[data-level="zona"]') as HTMLElement;
+
+    if (currentFilterState.tipoSemilla === 'maiz') {
+      if (usoGroup) {
+        usoGroup.style.display = 'block';
+        setTimeout(() => {
+          usoGroup.style.opacity = '1';
+        }, 10);
+      }
+      if (zonaGroup) {
+        zonaGroup.style.display = 'block';
+        setTimeout(() => {
+          zonaGroup.style.opacity = '1';
+        }, 10);
+      }
+    } else {
+      if (usoGroup) {
+        usoGroup.style.opacity = '0';
+        setTimeout(() => {
+          usoGroup.style.display = 'none';
+        }, 250);
+      }
+      if (zonaGroup) {
+        zonaGroup.style.opacity = '0';
+        setTimeout(() => {
+          zonaGroup.style.display = 'none';
+        }, 250);
+      }
+    }
+  }
+
+  // Initial render
+  renderConditionalGroups();
+
+  // Export filter state getter for other components
+  (window as any).getFilterState = () => ({ ...currentFilterState });
+</script>
+
+<style>
+  .product-filter {
+    background-color: var(--color-gray-50);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-8);
+  }
+
+  .filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .filter-group-conditional {
+    transition: opacity var(--transition-base), display var(--transition-base);
+  }
+
+  .filter-label {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+
+  .filter-button {
+    padding: var(--spacing-2) var(--spacing-4);
+    background-color: var(--color-white);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    color: var(--color-gray-700);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-button:hover {
+    border-color: var(--color-dekalb-primary);
+    color: var(--color-dekalb-primary);
+  }
+
+  .filter-button-active {
+    background-color: var(--color-dekalb-primary);
+    border-color: var(--color-dekalb-primary);
+    color: var(--color-white);
+  }
+
+  .filter-button-active:hover {
+    background-color: var(--color-dekalb-primary-dark);
+    border-color: var(--color-dekalb-primary-dark);
+  }
+
+  @media (max-width: 767px) {
+    .product-filter {
+      padding: var(--spacing-4);
+    }
+
+    .filter-buttons {
+      flex-direction: column;
+    }
+
+    .filter-button {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+

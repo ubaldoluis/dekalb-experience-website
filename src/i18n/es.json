@@ -1,0 +1,87 @@
+{
+  "site": {
+    "title": "DEKALB Experience",
+    "description": "Expertos a tu lado",
+    "claim": "Expertos a tu lado"
+  },
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "solutions": "Soluciones",
+    "fieldview": "FieldView",
+    "corn": "Maíz",
+    "rapeseed": "Colza",
+    "blog": "Blog",
+    "catalog": "Catálogos"
+  },
+  "filter": {
+    "seedType": "Tipo de Semilla",
+    "maiz": "Maíz",
+    "colza": "Colza",
+    "use": "Uso",
+    "grano": "Grano",
+    "silo": "Silo",
+    "preceon": "Preceon",
+    "zone": "Zona Geográfica",
+    "ebro": "Ebro",
+    "centroSur": "Centro Sur, Extremadura, Andalucía",
+    "noroeste": "Noroeste",
+    "portugal": "Portugal",
+    "protection": "Protección de Cultivo",
+    "herbicida": "Herbicida",
+    "insecticida": "Insecticida",
+    "bioestimulante": "Bioestimulante",
+    "todos": "Todos"
+  },
+  "product": {
+    "viewDetails": "Ver detalles",
+    "close": "Cerrar",
+    "benefits": "Beneficios",
+    "recommendations": "Recomendaciones de uso",
+    "category": "Categoría"
+  },
+  "solutions": {
+    "integralMaiz": "Soluciones Integrales para Maíz",
+    "fieldview": "FieldView",
+    "protection": "Protección de Cultivo",
+    "preceon": "Smart Corn System PRECEON",
+    "avoidProblems": "Evita problemas con tu maíz"
+  },
+  "catalog": {
+    "download": "Descargar catálogo",
+    "maiz": "DEKALB Maíz",
+    "colza": "DEKALB Colza",
+    "genetics": "Genética y Agronomía"
+  },
+  "blog": {
+    "readMore": "Leer más",
+    "relatedArticles": "Artículos relacionados",
+    "categories": {
+      "noticia": "Noticia",
+      "evento": "Evento",
+      "articulo": "Artículo",
+      "lanzamiento": "Lanzamiento"
+    }
+  },
+  "calculator": {
+    "title": "Calculador de Densidades",
+    "use": "Uso del maíz",
+    "zone": "Zona geográfica",
+    "potential": "Potencial de producción (Tn/Ha)",
+    "hybrid": "Híbrido DEKALB",
+    "surface": "Superficie a sembrar",
+    "calculate": "CALCULAR",
+    "result": {
+      "density": "Densidad Recomendada",
+      "bags": "Nº de bolsas DEKALB",
+      "plantsPerHa": "miles plantas/Ha"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error al cargar",
+    "back": "Volver",
+    "download": "Descargar"
+  }
+}
+
