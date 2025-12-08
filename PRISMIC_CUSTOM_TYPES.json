@@ -1,0 +1,398 @@
+{
+  "producto": {
+    "id": "producto",
+    "label": "Producto",
+    "repeatable": true,
+    "status": true,
+    "json": {
+      "Main": {
+        "nombre": {
+          "type": "Text",
+          "config": {
+            "label": "Nombre del Producto",
+            "placeholder": "Ej: DKC3045"
+          }
+        },
+        "codigo": {
+          "type": "Text",
+          "config": {
+            "label": "Código del Producto",
+            "placeholder": "Ej: DKC3045"
+          }
+        },
+        "imagen_saco": {
+          "type": "Image",
+          "config": {
+            "label": "Imagen del Saco",
+            "constraint": {
+              "width": 800,
+              "height": 800
+            },
+            "thumbnails": []
+          }
+        },
+        "claim": {
+          "type": "Text",
+          "config": {
+            "label": "Claim Marketing",
+            "placeholder": "Ej: Alto rendimiento y resistencia"
+          }
+        },
+        "tipo_semilla": {
+          "type": "Select",
+          "config": {
+            "label": "Tipo de Semilla",
+            "options": [
+              {
+                "id": "maiz",
+                "label": "Maíz"
+              },
+              {
+                "id": "colza",
+                "label": "Colza"
+              }
+            ],
+            "default_value": "maiz"
+          }
+        },
+        "uso": {
+          "type": "Select",
+          "config": {
+            "label": "Uso (solo si Maíz)",
+            "options": [
+              {
+                "id": "grano",
+                "label": "Grano"
+              },
+              {
+                "id": "silo",
+                "label": "Silo"
+              },
+              {
+                "id": "preceon",
+                "label": "Preceon"
+              }
+            ]
+          }
+        },
+        "zona": {
+          "type": "Select",
+          "config": {
+            "label": "Zona Geográfica (solo si Maíz)",
+            "options": [
+              {
+                "id": "ebro",
+                "label": "Ebro"
+              },
+              {
+                "id": "centro-sur-extremadura-andalucia",
+                "label": "Centro Sur, Extremadura, Andalucía"
+              },
+              {
+                "id": "noroeste",
+                "label": "Noroeste"
+              },
+              {
+                "id": "portugal",
+                "label": "Portugal"
+              }
+            ]
+          }
+        },
+        "categoria": {
+          "type": "Select",
+          "config": {
+            "label": "Categoría",
+            "options": [
+              {
+                "id": "maiz-grano",
+                "label": "Maíz Grano"
+              },
+              {
+                "id": "silo",
+                "label": "Silo"
+              },
+              {
+                "id": "preceon",
+                "label": "Preceon"
+              },
+              {
+                "id": "colza",
+                "label": "Colza"
+              },
+              {
+                "id": "fitosanitario",
+                "label": "Fitosanitario"
+              }
+            ],
+            "default_value": "maiz-grano"
+          }
+        },
+        "proteccion": {
+          "type": "Select",
+          "config": {
+            "label": "Protección de Cultivo",
+            "options": [
+              {
+                "id": "herbicida",
+                "label": "Herbicida"
+              },
+              {
+                "id": "insecticida",
+                "label": "Insecticida"
+              },
+              {
+                "id": "bioestimulante",
+                "label": "Bioestimulante"
+              }
+            ]
+          }
+        },
+        "beneficios": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Beneficios",
+            "placeholder": "Lista de beneficios del producto",
+            "allowTargetBlank": true,
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "recomendaciones_uso": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Recomendaciones de Uso",
+            "placeholder": "Recomendaciones para el uso del producto",
+            "allowTargetBlank": true,
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "orden": {
+          "type": "Number",
+          "config": {
+            "label": "Orden en Carrusel",
+            "placeholder": "Ej: 1"
+          }
+        }
+      }
+    }
+  },
+  "articulo": {
+    "id": "articulo",
+    "label": "Artículo",
+    "repeatable": true,
+    "status": true,
+    "json": {
+      "Main": {
+        "titulo": {
+          "type": "Title",
+          "config": {
+            "label": "Título del Artículo",
+            "placeholder": "Título del artículo"
+          }
+        },
+        "slug": {
+          "type": "UID",
+          "config": {
+            "label": "Slug (URL)",
+            "placeholder": "slug-del-articulo"
+          }
+        },
+        "categoria": {
+          "type": "Select",
+          "config": {
+            "label": "Categoría",
+            "options": [
+              {
+                "id": "noticia",
+                "label": "Noticia"
+              },
+              {
+                "id": "evento",
+                "label": "Evento"
+              },
+              {
+                "id": "articulo",
+                "label": "Artículo"
+              },
+              {
+                "id": "lanzamiento",
+                "label": "Lanzamiento"
+              }
+            ],
+            "default_value": "articulo"
+          }
+        },
+        "fecha": {
+          "type": "Date",
+          "config": {
+            "label": "Fecha de Publicación"
+          }
+        },
+        "extracto": {
+          "type": "Text",
+          "config": {
+            "label": "Extracto (200 caracteres máximo)",
+            "placeholder": "Breve descripción del artículo"
+          }
+        },
+        "imagen_destacada": {
+          "type": "Image",
+          "config": {
+            "label": "Imagen Destacada",
+            "constraint": {
+              "width": 1200,
+              "height": 630
+            },
+            "thumbnails": []
+          }
+        },
+        "contenido": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Contenido del Artículo",
+            "placeholder": "Contenido completo del artículo",
+            "allowTargetBlank": true,
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "autor": {
+          "type": "Text",
+          "config": {
+            "label": "Autor",
+            "placeholder": "Nombre del autor"
+          }
+        },
+        "tags": {
+          "type": "Select",
+          "config": {
+            "label": "Etiquetas",
+            "options": []
+          }
+        },
+        "publicado": {
+          "type": "Boolean",
+          "config": {
+            "label": "Publicado",
+            "default_value": false
+          }
+        }
+      }
+    }
+  },
+  "catalogo_pdf": {
+    "id": "catalogo_pdf",
+    "label": "Catálogo PDF",
+    "repeatable": true,
+    "status": true,
+    "json": {
+      "Main": {
+        "nombre": {
+          "type": "Title",
+          "config": {
+            "label": "Nombre del Catálogo",
+            "placeholder": "Ej: Catálogo Ebro"
+          }
+        },
+        "tipo": {
+          "type": "Select",
+          "config": {
+            "label": "Tipo",
+            "options": [
+              {
+                "id": "maiz",
+                "label": "Maíz"
+              },
+              {
+                "id": "colza",
+                "label": "Colza"
+              }
+            ],
+            "default_value": "maiz"
+          }
+        },
+        "subcategoria": {
+          "type": "Select",
+          "config": {
+            "label": "Subcategoría",
+            "options": [
+              {
+                "id": "genetica-agronomia",
+                "label": "Genética y Agronomía"
+              },
+              {
+                "id": "proteccion-cultivo",
+                "label": "Protección de Cultivo"
+              },
+              {
+                "id": "otros",
+                "label": "Otros"
+              }
+            ],
+            "default_value": "genetica-agronomia"
+          }
+        },
+        "pais": {
+          "type": "Select",
+          "config": {
+            "label": "País",
+            "options": [
+              {
+                "id": "espana",
+                "label": "España"
+              },
+              {
+                "id": "portugal",
+                "label": "Portugal"
+              }
+            ],
+            "default_value": "espana"
+          }
+        },
+        "zona": {
+          "type": "Select",
+          "config": {
+            "label": "Zona (solo si Maíz)",
+            "options": [
+              {
+                "id": "ebro",
+                "label": "Ebro"
+              },
+              {
+                "id": "centro-sur",
+                "label": "Centro Sur"
+              },
+              {
+                "id": "noroeste",
+                "label": "Noroeste"
+              },
+              {
+                "id": "portugal",
+                "label": "Portugal"
+              },
+              {
+                "id": "centro-sur-extremadura-andalucia",
+                "label": "Centro Sur, Extremadura, Andalucía"
+              }
+            ]
+          }
+        },
+        "url_pdf": {
+          "type": "Link",
+          "config": {
+            "label": "URL del PDF",
+            "select": "media",
+            "allowTargetBlank": true
+          }
+        },
+        "orden": {
+          "type": "Number",
+          "config": {
+            "label": "Orden",
+            "placeholder": "Ej: 1"
+          }
+        }
+      }
+    }
+  }
+}
+
