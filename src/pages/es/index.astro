@@ -40,6 +40,12 @@ try {
 const url = Astro.url;
 const filterState: FilterState = searchParamsToFilterState(url.searchParams);
 
+// Debug: Log URL params and filter state (server-side)
+console.log('🔗 URL:', url.href);
+console.log('🔗 URL Search:', url.search);
+console.log('🔗 Search Params:', Array.from(url.searchParams.entries()));
+console.log('📋 Parsed Filter State:', JSON.stringify(filterState, null, 2));
+
 // Filter products based on current filter state
 const filteredProducts = filterProducts(allProducts, filterState);
 
