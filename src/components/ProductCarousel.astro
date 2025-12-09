@@ -65,19 +65,25 @@ const { products = [], lang = 'es' } = Astro.props;
   document.addEventListener('DOMContentLoaded', () => {
     const carouselElement = document.getElementById('product-carousel');
     if (carouselElement) {
+      // Get products count from data attribute
+      const productsData = carouselElement.dataset.products;
+      const products = productsData ? JSON.parse(productsData) : [];
+      const productsCount = products.length;
+      
+      // Use 'slide' instead of 'loop' to avoid duplicates, or 'loop' only if we have enough products
       const splide = new Splide(carouselElement, {
-        type: 'loop',
-        perPage: 4,
+        type: productsCount > 4 ? 'loop' : 'slide',
+        perPage: Math.min(4, productsCount),
         perMove: 1,
         gap: '1.5rem',
-        pagination: true,
-        arrows: true,
+        pagination: productsCount > 4,
+        arrows: productsCount > 4,
         breakpoints: {
           1024: {
-            perPage: 3,
+            perPage: Math.min(3, productsCount),
           },
           768: {
-            perPage: 2,
+            perPage: Math.min(2, productsCount),
           },
           640: {
             perPage: 1,

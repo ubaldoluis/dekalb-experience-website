@@ -206,7 +206,7 @@ const t = translations[lang];
   </form>
 </div>
 
-<script>
+<script define:vars={{ filterState }}>
   interface FilterState {
     tipoSemilla?: 'maiz' | 'colza';
     uso?: 'grano' | 'silo' | 'preceon';
@@ -215,26 +215,15 @@ const t = translations[lang];
   }
 
   const filterForm = document.getElementById('filter-form') as HTMLFormElement;
+  
+  // Initialize from server-side filterState prop (passed from Astro via define:vars)
+  // The buttons are already marked correctly in the HTML, so we just need to track state
   let currentFilterState: FilterState = {
-    proteccion: 'todos',
+    tipoSemilla: filterState?.tipoSemilla,
+    uso: filterState?.uso,
+    zona: filterState?.zona,
+    proteccion: filterState?.proteccion || 'todos',
   };
-
-  // Initialize from URL params if available
-  if (typeof window !== 'undefined') {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('tipo')) {
-      currentFilterState.tipoSemilla = urlParams.get('tipo') as 'maiz' | 'colza';
-    }
-    if (urlParams.get('uso')) {
-      currentFilterState.uso = urlParams.get('uso') as 'grano' | 'silo' | 'preceon';
-    }
-    if (urlParams.get('zona')) {
-      currentFilterState.zona = urlParams.get('zona') || undefined;
-    }
-    if (urlParams.get('proteccion')) {
-      currentFilterState.proteccion = urlParams.get('proteccion') as any || 'todos';
-    }
-  }
 
   function updateFilterState(filter: string, value: string) {
     if (filter === 'tipoSemilla') {
@@ -341,7 +330,7 @@ const t = translations[lang];
     }
   }
 
-  // Initial render
+  // Initial render - buttons are already marked correctly in HTML
   renderConditionalGroups();
 
   // Export filter state getter for other components
