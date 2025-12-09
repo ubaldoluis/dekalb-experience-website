@@ -2,8 +2,8 @@
 ## Tabla Resumen para Cliente
 
 **Fecha de inicio**: 27 de noviembre de 2025  
-**Fecha objetivo de entrega**: 20 de diciembre de 2025  
-**Duración total**: 18 días hábiles
+**Fecha objetivo de entrega**: 24 de diciembre de 2025  
+**Duración total**: 20 días hábiles (4 semanas)
 
 ---
 
@@ -14,7 +14,7 @@
 | **Semana 1** | 27 Nov - 3 Dic | Estructura y Desarrollo Core | ✅ Estructura completa<br>✅ Componentes base<br>✅ Páginas principales | ✅ **Completado** |
 | **Semana 2** | 4 Dic - 10 Dic | Integración y Validación | 🔧 Corrección filtrado<br>🎨 Diseño visual<br>📝 Contenido completo<br>✅ Testing técnico | ⏳ **En desarrollo** |
 | **Semana 3** | 11 Dic - 17 Dic | Componentes Cliente y Ajustes | 📄 Footer (pendiente cliente)<br>🧮 Calculadora (pendiente cliente)<br>🔧 Ajustes feedback | ⏳ **Planificado** |
-| **Semana 4** | 18 Dic - 20 Dic | Finalización y Despliegue | 🔧 Ajustes finales<br>🚀 Despliegue producción<br>📚 Documentación | ⏳ **Planificado** |
+| **Semana 4** | 18 Dic - 24 Dic | Finalización y Despliegue | 🔧 Ajustes finales<br>✅ Testing integrado<br>🚀 Despliegue producción<br>📚 Documentación | ⏳ **Planificado** |
 
 ---
 
@@ -33,9 +33,12 @@
 | **13 Dic** | **Calculadora implementada** | ⏳ Planificado | 🔴 **Especificaciones** | 🔴 Crítica |
 | **14 Dic** | Testing completo integrado | ⏳ Planificado | - | 🔴 Alta |
 | **15 Dic** | Validación final con cliente | ⏳ Planificado | 👥 Reunión validación | 🔴 Alta |
-| **18 Dic** | Ajustes finales | ⏳ Planificado | ⚠️ Feedback (24h) | 🔴 Alta |
-| **19 Dic** | Despliegue en producción | ⏳ Planificado | ✅ Aprobación | 🔴 Crítica |
-| **20 Dic** | Entrega final y documentación | ⏳ Planificado | - | 🔴 Alta |
+| **18 Dic** | Ajustes según feedback | ⏳ Planificado | ⚠️ Feedback (48h) | 🔴 Alta |
+| **19 Dic** | Testing completo integrado | ⏳ Planificado | - | 🔴 Alta |
+| **20 Dic** | Validación final con cliente | ⏳ Planificado | 👥 Reunión validación final | 🔴 Alta |
+| **21 Dic** | Ajustes finales | ⏳ Planificado | ⚠️ Feedback (24h) | 🔴 Alta |
+| **22 Dic** | Despliegue en producción | ⏳ Planificado | ✅ Aprobación | 🔴 Crítica |
+| **24 Dic** | Entrega final y documentación | ⏳ Planificado | - | 🔴 Alta |
 
 ---
 
@@ -45,8 +48,8 @@
 
 | Material | Fecha Límite | Descripción | Impacto Retraso |
 |----------|--------------|-------------|-----------------|
-| **Especificaciones Calculadora** | **10 Dic 2025** | Fórmulas, campos, validaciones, diseño | Retraso en implementación calculadora |
-| **Contenido Footer** | **10 Dic 2025** | Textos, enlaces, información contacto | Retraso en implementación footer |
+| **Especificaciones Calculadora** | **13 Dic 2025** | Fórmulas, campos, validaciones, diseño | Retraso en implementación calculadora |
+| **Contenido Footer** | **13 Dic 2025** | Textos, enlaces, información contacto | Retraso en implementación footer |
 
 ### 🟡 Importante (Afecta calidad)
 
@@ -55,7 +58,7 @@
 | **Contenido Prismic** | **6 Dic 2025** | Productos, artículos, catálogos PDF | Uso de contenido de prueba |
 | **Acceso Figma** | **5 Dic 2025** | Acceso al diseño completo | Retraso en integración diseño |
 | **Feedback Validación** | **10 Dic 2025** | Comentarios sobre diseño (48h plazo) | Retraso en ajustes |
-| **Feedback Final** | **18 Dic 2025** | Aprobación final (24h plazo) | Retraso en despliegue |
+| **Feedback Final** | **21 Dic 2025** | Aprobación final (24h plazo) | Retraso en despliegue |
 
 ---
 
@@ -75,23 +78,26 @@
    - Integración diseño visual
    - Carga de contenido
 
-2. **Próxima semana (11-15 Dic)**:
+2. **Próxima semana (11-17 Dic)**:
    - Implementación Footer y Calculadora (con material cliente)
    - Ajustes según feedback
    - Testing completo
 
-3. **Semana final (18-20 Dic)**:
+3. **Semana final (18-24 Dic)**:
+   - Ajustes según feedback adicional
+   - Testing completo integrado
+   - Validación final con cliente
    - Ajustes finales
    - Despliegue en producción
    - Entrega final
 
 ---
 
-## 🎯 OBJETIVO: Entrega 20 de Diciembre 2025
+## 🎯 OBJETIVO: Entrega 24 de Diciembre 2025
 
-**Timeline realista**: 18 días hábiles desde inicio  
-**Estado actual**: 7 días completados, 11 días restantes  
-**Dependencias críticas**: Material del cliente (Footer y Calculadora) antes del 10 de diciembre
+**Timeline realista**: 20 días hábiles desde inicio (4 semanas)  
+**Estado actual**: 7 días completados, 13 días restantes  
+**Dependencias críticas**: Material del cliente (Footer y Calculadora) antes del 13 de diciembre
 
 ---
 

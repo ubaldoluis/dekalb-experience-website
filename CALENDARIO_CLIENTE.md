@@ -2,8 +2,8 @@
 ## Planificación para Entrega Pre-Navideña
 
 **Fecha de inicio**: 27 de noviembre de 2025  
-**Fecha objetivo de entrega**: 20 de diciembre de 2025  
-**Duración total**: 18 días hábiles (3.5 semanas)
+**Fecha objetivo de entrega**: 24 de diciembre de 2025  
+**Duración total**: 20 días hábiles (4 semanas)
 
 ---
 
@@ -32,9 +32,13 @@
 | **15 Dic** | Vie | **Validación final con cliente** | ⏳ Planificado | 👥 Reunión validación final | - |
 | **16 Dic** | Sáb | - | - | - | - |
 | **17 Dic** | Dom | - | - | - | - |
-| **18 Dic** | Lun | **Ajustes finales y preparación despliegue** | ⏳ Planificado | ⚠️ Feedback final (24h) | 2-3h |
-| **19 Dic** | Mar | **Despliegue en producción** | ⏳ Planificado | ✅ Aprobación cliente | 2-3h |
-| **20 Dic** | Mié | **Entrega final y documentación** | ⏳ Planificado | - | 1-2h |
+| **18 Dic** | Lun | **Ajustes según feedback cliente** | ⏳ Planificado | ⚠️ Feedback cliente (48h) | 2-4h |
+| **19 Dic** | Mar | **Testing completo integrado** | ⏳ Planificado | - | 2-3h |
+| **20 Dic** | Mié | **Validación final con cliente** | ⏳ Planificado | 👥 Reunión validación final | - |
+| **21 Dic** | Jue | **Ajustes finales y preparación despliegue** | ⏳ Planificado | ⚠️ Feedback final (24h) | 2-3h |
+| **22 Dic** | Vie | **Despliegue en producción** | ⏳ Planificado | ✅ Aprobación cliente | 2-3h |
+| **23 Dic** | Sáb | - | - | - | - |
+| **24 Dic** | Dom | **Entrega final y documentación** | ⏳ Planificado | - | 1-2h |
 
 ---
 
@@ -45,9 +49,9 @@
 | **Hito 1** | 4 Dic 2025 | Sistema de filtrado funcional | ⏳ En desarrollo |
 | **Hito 2** | 5 Dic 2025 | Diseño visual integrado | ⏳ Planificado |
 | **Hito 3** | 7 Dic 2025 | Sitio funcional listo para validación | ⏳ Planificado |
-| **Hito 4** | 12 Dic 2025 | Footer y Calculadora implementados | ⏳ Planificado |
-| **Hito 5** | 19 Dic 2025 | Sitio en producción | ⏳ Planificado |
-| **Hito 6** | 20 Dic 2025 | Entrega final completada | ⏳ Planificado |
+| **Hito 4** | 13 Dic 2025 | Footer y Calculadora implementados | ⏳ Planificado |
+| **Hito 5** | 22 Dic 2025 | Sitio en producción | ⏳ Planificado |
+| **Hito 6** | 24 Dic 2025 | Entrega final completada | ⏳ Planificado |
 
 ---
 
@@ -58,7 +62,7 @@
 | Item | Fecha Requerida | Descripción | Impacto si se retrasa |
 |------|-----------------|-------------|----------------------|
 | 🔴 **Especificaciones Calculadora** | **Antes del 13 Dic** | Detalles técnicos, fórmulas, campos requeridos | Retraso en implementación calculadora |
-| 🔴 **Contenido Footer** | **Antes del 12 Dic** | Textos, enlaces, información de contacto | Retraso en implementación footer final |
+| 🔴 **Contenido Footer** | **Antes del 13 Dic** | Textos, enlaces, información de contacto | Retraso en implementación footer final |
 
 ### Importantes (Afectan calidad)
 
@@ -78,7 +82,7 @@
 | **Semana 1** | 27 Nov - 3 Dic | Estructura y Desarrollo Core | Estructura completa, componentes, páginas | ✅ Completado |
 | **Semana 2** | 4 Dic - 10 Dic | Integración y Validación | Filtrado corregido, diseño visual, contenido, testing | ⏳ En desarrollo |
 | **Semana 3** | 11 Dic - 17 Dic | Componentes Cliente y Ajustes | Footer, Calculadora, ajustes según feedback | ⏳ Planificado |
-| **Semana 4** | 18 Dic - 20 Dic | Finalización y Despliegue | Ajustes finales, despliegue, entrega | ⏳ Planificado |
+| **Semana 4** | 18 Dic - 24 Dic | Finalización y Despliegue | Ajustes finales, despliegue, entrega | ⏳ Planificado |
 
 ---
 
@@ -98,7 +102,10 @@
 - [ ] Testing completo integrado
 - [ ] Validación final con cliente
 
-### Semana 4 (18-20 Dic)
+### Semana 4 (18-24 Dic)
+- [ ] Ajustes según feedback implementados
+- [ ] Testing completo integrado realizado
+- [ ] Validación final con cliente
 - [ ] Ajustes finales implementados
 - [ ] Aprobación final recibida
 - [ ] Sitio desplegado en producción
@@ -141,10 +148,11 @@
    - Contenido completo del footer (textos, enlaces, información de contacto)
 
 2. **Fechas Críticas**:
-   - **10 Dic**: Última fecha para recibir material del cliente (Footer y Calculadora)
+   - **13 Dic**: Última fecha para recibir material del cliente (Footer y Calculadora)
    - **8 Dic**: Validación visual con cliente (feedback requerido en 48h)
-   - **15 Dic**: Validación final (feedback requerido en 24h)
-   - **19 Dic**: Despliegue en producción
+   - **20 Dic**: Validación final (feedback requerido en 24h)
+   - **22 Dic**: Despliegue en producción
+   - **24 Dic**: Entrega final
 
 3. **Buffer Incluido**:
    - El calendario incluye días de fin de semana como buffer
@@ -159,8 +167,8 @@
 
 - **Reunión de seguimiento**: Cada viernes a las 10:00 AM
 - **Reunión de validación visual**: 8 de diciembre de 2025
-- **Reunión de validación final**: 15 de diciembre de 2025
-- **Reunión de entrega**: 20 de diciembre de 2025
+- **Reunión de validación final**: 20 de diciembre de 2025
+- **Reunión de entrega**: 24 de diciembre de 2025
 
 ### Canales de Comunicación
 
