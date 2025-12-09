@@ -12,19 +12,22 @@ if (!repositoryName) {
   console.warn('PRISMIC_REPOSITORY_NAME is not set');
 }
 
-export const client = prismic.createClient(repositoryName, {
-  accessToken,
-  fetchOptions: {
-    cache: 'force-cache',
-    next: { revalidate: 60 },
-  },
-});
+// Create client only if repository name is available
+export const client = repositoryName 
+  ? prismic.createClient(repositoryName, {
+      accessToken: accessToken || undefined,
+    })
+  : null as any;
 
 /**
  * Fetch all products from Prismic
  */
 export async function getAllProducts(locale: string = 'es'): Promise<Producto[]> {
   try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return [];
+    }
     // Convert locale code: 'es' -> 'es-es', 'pt' -> 'pt-pt'
     const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('producto', {
@@ -79,6 +82,10 @@ export async function getAllProducts(locale: string = 'es'): Promise<Producto[]>
  */
 export async function getProductById(id: string, locale: string = 'es'): Promise<Producto | null> {
   try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return null;
+    }
     const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const doc = await client.getByID(id, { lang: prismicLocale });
     
@@ -126,6 +133,10 @@ export async function getProductById(id: string, locale: string = 'es'): Promise
  */
 export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]> {
   try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return [];
+    }
     const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('articulo', {
       lang: prismicLocale,
@@ -165,6 +176,10 @@ export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]>
  */
 export async function getArticleBySlug(slug: string, locale: string = 'es'): Promise<Articulo | null> {
   try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return null;
+    }
     const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const doc = await client.getByUID('articulo', slug, { lang: prismicLocale });
     
@@ -197,6 +212,10 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
  */
 export async function getAllCatalogs(locale: string = 'es'): Promise<CatalogoPDF[]> {
   try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return [];
+    }
     const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
     const documents = await client.getAllByType('catalogo_pdf', {
       lang: prismicLocale,

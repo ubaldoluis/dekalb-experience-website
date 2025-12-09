@@ -258,8 +258,9 @@ const t = translations[lang];
     });
     document.dispatchEvent(event);
 
-    // Update URL without reload
+    // Update URL and reload page to apply filter server-side
     updateURL();
+    window.location.href = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
   }
 
   function updateURL() {
@@ -277,8 +278,7 @@ const t = translations[lang];
       params.set('proteccion', currentFilterState.proteccion);
     }
 
-    const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
-    window.history.pushState({}, '', newURL);
+    return params;
   }
 
   if (filterForm) {
