@@ -207,45 +207,32 @@ const t = translations[lang];
 </div>
 
 <script define:vars={{ filterState }}>
-  interface FilterState {
-    tipoSemilla?: 'maiz' | 'colza';
-    uso?: 'grano' | 'silo' | 'preceon';
-    zona?: string;
-    proteccion: 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos';
-  }
-
-  const filterForm = document.getElementById('filter-form') as HTMLFormElement;
+  const filterForm = document.getElementById('filter-form');
   
   // Initialize from server-side filterState prop (passed from Astro via define:vars)
   // The buttons are already marked correctly in the HTML, so we just need to track state
-  let currentFilterState: FilterState = {
+  let currentFilterState = {
     tipoSemilla: filterState?.tipoSemilla,
     uso: filterState?.uso,
     zona: filterState?.zona,
     proteccion: filterState?.proteccion || 'todos',
   };
 
-  function updateFilterState(filter: string, value: string) {
+  function updateFilterState(filter, value) {
     if (filter === 'tipoSemilla') {
-      currentFilterState.tipoSemilla = value as 'maiz' | 'colza';
+      currentFilterState.tipoSemilla = value;
       // If switching to Colza, clear uso and zona
       if (value === 'colza') {
         currentFilterState.uso = undefined;
         currentFilterState.zona = undefined;
       }
     } else if (filter === 'uso') {
-      currentFilterState.uso = value as 'grano' | 'silo' | 'preceon';
+      currentFilterState.uso = value;
     } else if (filter === 'zona') {
       currentFilterState.zona = value;
     } else if (filter === 'proteccion') {
-      currentFilterState.proteccion = value as any;
+      currentFilterState.proteccion = value;
     }
-
-    // Emit custom event for carousel update
-    const event = new CustomEvent('filterChange', {
-      detail: { ...currentFilterState },
-    });
-    document.dispatchEvent(event);
 
     // Update URL and reload page to apply filter server-side
     const params = updateURL();
@@ -272,34 +259,22 @@ const t = translations[lang];
 
   if (filterForm) {
     filterForm.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.classList.contains('filter-button')) {
+      const target = e.target;
+      if (target && target.classList && target.classList.contains('filter-button')) {
         e.preventDefault();
         const filter = target.getAttribute('data-filter');
         const value = target.getAttribute('data-value');
         
         if (filter && value) {
-          // Toggle active state
-          const buttons = filterForm.querySelectorAll(`[data-filter="${filter}"]`);
-          buttons.forEach((btn) => {
-            btn.classList.remove('filter-button-active');
-            btn.setAttribute('aria-pressed', 'false');
-          });
-          target.classList.add('filter-button-active');
-          target.setAttribute('aria-pressed', 'true');
-
           updateFilterState(filter, value);
-
-          // Re-render conditional groups
-          renderConditionalGroups();
         }
       }
     });
   }
 
   function renderConditionalGroups() {
-    const usoGroup = document.querySelector('[data-level="uso"]') as HTMLElement;
-    const zonaGroup = document.querySelector('[data-level="zona"]') as HTMLElement;
+    const usoGroup = document.querySelector('[data-level="uso"]');
+    const zonaGroup = document.querySelector('[data-level="zona"]');
 
     if (currentFilterState.tipoSemilla === 'maiz') {
       if (usoGroup) {
@@ -334,7 +309,7 @@ const t = translations[lang];
   renderConditionalGroups();
 
   // Export filter state getter for other components
-  (window as any).getFilterState = () => ({ ...currentFilterState });
+  window.getFilterState = () => ({ ...currentFilterState });
 </script>
 
 <style>

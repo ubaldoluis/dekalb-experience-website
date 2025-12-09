@@ -40,20 +40,8 @@ try {
 const url = Astro.url;
 const filterState: FilterState = searchParamsToFilterState(url.searchParams);
 
-// Debug: Log filter state and products
-console.log('Filter State:', JSON.stringify(filterState, null, 2));
-console.log('All Products:', allProducts.length);
-console.log('Product samples:', allProducts.slice(0, 2).map(p => ({
-  nombre: p.nombre,
-  tipo_semilla: p.tipo_semilla,
-  proteccion: p.proteccion,
-  uso: p.uso,
-  zona: p.zona,
-})));
-
 // Filter products based on current filter state
 const filteredProducts = filterProducts(allProducts, filterState);
-console.log('Filtered Products:', filteredProducts.length);
 
 // Get latest 3 articles for blog preview
 const latestArticles = articles.slice(0, 3);
@@ -72,6 +60,22 @@ const latestArticles = articles.slice(0, 3);
       <h2 class="section-title">Productos</h2>
       <ProductFilter filterState={filterState} lang={lang} />
       <ProductCarousel products={filteredProducts} lang={lang} />
+      
+      <script define:vars={{ filterState, allProducts, filteredProducts }}>
+        // Debug logs in browser console
+        console.log('🔍 Filter State:', filterState);
+        console.log('📦 All Products:', allProducts.length);
+        console.log('✅ Filtered Products:', filteredProducts.length);
+        if (allProducts.length > 0) {
+          console.log('📋 Product samples:', allProducts.slice(0, 3).map(p => ({
+            nombre: p.nombre,
+            tipo_semilla: p.tipo_semilla,
+            proteccion: p.proteccion,
+            uso: p.uso,
+            zona: p.zona,
+          })));
+        }
+      </script>
     </div>
   </section>
 
