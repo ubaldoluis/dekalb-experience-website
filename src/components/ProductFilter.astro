@@ -206,8 +206,11 @@ const t = translations[lang];
   </form>
 </div>
 
-<script define:vars={{ filterState }}>
+<script define:vars={{ filterStateJson: JSON.stringify(filterState) }}>
   const filterForm = document.getElementById('filter-form');
+  
+  // Parse filterState from JSON string (Astro serialization issue)
+  const filterState = JSON.parse(filterStateJson);
   
   // Initialize from server-side filterState prop (passed from Astro via define:vars)
   // The buttons are already marked correctly in the HTML, so we just need to track state
@@ -217,8 +220,12 @@ const t = translations[lang];
     zona: filterState?.zona,
     proteccion: filterState?.proteccion || 'todos',
   };
+  
+  console.log('🔍 ProductFilter - Filter State:', filterState);
+  console.log('🔍 ProductFilter - Current Filter State:', currentFilterState);
 
   function updateFilterState(filter, value) {
+    // Update current state
     if (filter === 'tipoSemilla') {
       currentFilterState.tipoSemilla = value;
       // If switching to Colza, clear uso and zona
@@ -234,12 +241,7 @@ const t = translations[lang];
       currentFilterState.proteccion = value;
     }
 
-    // Update URL and reload page to apply filter server-side
-    const params = updateURL();
-    window.location.href = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-  }
-
-  function updateURL() {
+    // Build URL params from current state (preserving all active filters)
     const params = new URLSearchParams();
     if (currentFilterState.tipoSemilla) {
       params.set('tipo', currentFilterState.tipoSemilla);
@@ -254,8 +256,11 @@ const t = translations[lang];
       params.set('proteccion', currentFilterState.proteccion);
     }
 
-    return params;
+    // Reload page with new URL to apply filter server-side
+    const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.location.href = newURL;
   }
+
 
   if (filterForm) {
     filterForm.addEventListener('click', (e) => {

@@ -69,11 +69,18 @@ const latestArticles = articles.slice(0, 3);
       
       <script define:vars={{ filterState, allProducts, filteredProducts }}>
         // Debug logs in browser console
-        console.log('🔍 Filter State:', filterState);
+        console.log('🔍 Filter State (client):', JSON.stringify(filterState, null, 2));
         console.log('📦 All Products:', allProducts.length);
         console.log('✅ Filtered Products:', filteredProducts.length);
         if (allProducts.length > 0) {
-          console.log('📋 Product samples:', allProducts.slice(0, 3).map(p => ({
+          console.log('📋 All Products Details:', allProducts.map(p => ({
+            nombre: p.nombre,
+            tipo_semilla: p.tipo_semilla,
+            proteccion: p.proteccion,
+            uso: p.uso,
+            zona: p.zona,
+          })));
+          console.log('✅ Filtered Products Details:', filteredProducts.map(p => ({
             nombre: p.nombre,
             tipo_semilla: p.tipo_semilla,
             proteccion: p.proteccion,
