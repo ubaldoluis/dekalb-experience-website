@@ -11,11 +11,21 @@ import type { Producto, FilterState, TipoSemilla, UsoMaiz, ZonaGeografica, Prote
 export function filterProducts(products: Producto[], filterState: FilterState): Producto[] {
   let filtered = [...products];
 
+  // Debug: Log filter state
+  console.log('🔍 filterProducts - Filter State:', JSON.stringify(filterState, null, 2));
+  console.log('🔍 filterProducts - Products count:', products.length);
+
   // Always filter by tipoSemilla if selected
   if (filterState.tipoSemilla) {
+    console.log('🔍 Filtering by tipoSemilla:', filterState.tipoSemilla);
     filtered = filtered.filter(
-      (product) => product.tipo_semilla === filterState.tipoSemilla
+      (product) => {
+        const matches = product.tipo_semilla === filterState.tipoSemilla;
+        console.log(`  Product ${product.nombre}: tipo_semilla=${product.tipo_semilla}, matches=${matches}`);
+        return matches;
+      }
     );
+    console.log('🔍 After tipoSemilla filter:', filtered.length);
   }
 
   // If Maíz is selected, apply uso and zona filters
