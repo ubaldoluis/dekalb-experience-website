@@ -49,6 +49,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
 **Entregables Planificados**:
 
 #### Entregable 2.1: Corrección Sistema de Filtrado 🔧
+
 - **Fecha objetivo**: 5 de diciembre de 2025
 - **Descripción**: Corrección técnica del sistema de filtrado para que funcione correctamente
 - **Tiempo estimado**: 2-4 horas
@@ -68,6 +69,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
 **Entregables Planificados**:
 
 #### Entregable 2.2: Integración de Diseño Visual 🎨
+
 - **Fecha objetivo**: 6 de diciembre de 2025
 - **Descripción**: Aplicación del diseño visual completo desde Figma
 - **Tiempo estimado**: 1-2 horas (según planning original)
@@ -78,6 +80,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
   - Responsive en todos los dispositivos
 
 #### Entregable 2.3: Contenido Completo 📝
+
 - **Fecha objetivo**: 7 de diciembre de 2025
 - **Descripción**: Contenido completo cargado en el sistema
 - **Tiempo estimado**: 2-3 horas (según planning original)
@@ -88,6 +91,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
   - Contenido en español y portugués
 
 #### Entregable 2.4: Testing y Ajustes Finales ✅
+
 - **Fecha objetivo**: 8 de diciembre de 2025
 - **Descripción**: Testing completo del sitio web
 - **Tiempo estimado**: 2-3 horas (según planning original)
@@ -107,6 +111,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
 **Entregables Planificados**:
 
 #### Entregable 2.5: Validación con Cliente 👥
+
 - **Fecha objetivo**: 9 de diciembre de 2025
 - **Descripción**: Sesión de revisión y validación con el equipo de DEKALB
 - **Criterios de aceptación**:
@@ -115,6 +120,7 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
   - Ajustes según comentarios del cliente
 
 #### Entregable 2.6: Ajustes Finales y Despliegue 🔧
+
 - **Fecha objetivo**: 10 de diciembre de 2025
 - **Descripción**: Implementación de ajustes y despliegue en producción
 - **Criterios de aceptación**:
@@ -127,42 +133,45 @@ El desarrollo del sitio web DEKALB Experience se encuentra en una fase avanzada 
 
 ---
 
-
 ---
 
 ## 📊 CALENDARIO DE ENTREGABLES
 
-| Fecha              | Entregable                    | Estado           | Prioridad  | Tiempo Estimado |
-| ------------------ | ----------------------------- | ---------------- | ---------- | --------------- |
-| **27 Nov - 3 Dic** | Estructura y Componentes Base | ✅ Completado    | -          | 7 días          |
-| **5 Dic 2025**     | Corrección Sistema Filtrado   | ⏳ Planificado   | 🔴 Crítica | 2-4h            |
-| **6 Dic 2025**     | Integración Diseño Visual     | ⏳ Planificado   | 🔴 Alta    | 1-2h            |
-| **7 Dic 2025**     | Contenido Completo            | ⏳ Planificado   | 🟡 Media   | 2-3h            |
-| **8 Dic 2025**     | Testing y Validación          | ⏳ Planificado   | 🔴 Alta    | 2-3h            |
-| **9 Dic 2025**     | Validación con Cliente        | ⏳ Planificado   | 🔴 Alta    | -               |
-| **10 Dic 2025**    | Ajustes Finales y Despliegue  | ⏳ Planificado   | 🔴 Crítica | 2-3h            |
+| Fecha              | Entregable                    | Estado         | Prioridad  | Tiempo Estimado |
+| ------------------ | ----------------------------- | -------------- | ---------- | --------------- |
+| **27 Nov - 3 Dic** | Estructura y Componentes Base | ✅ Completado  | -          | 7 días          |
+| **5 Dic 2025**     | Corrección Sistema Filtrado   | ⏳ Planificado | 🔴 Crítica | 2-4h            |
+| **6 Dic 2025**     | Integración Diseño Visual     | ⏳ Planificado | 🔴 Alta    | 1-2h            |
+| **7 Dic 2025**     | Contenido Completo            | ⏳ Planificado | 🟡 Media   | 2-3h            |
+| **8 Dic 2025**     | Testing y Validación          | ⏳ Planificado | 🔴 Alta    | 2-3h            |
+| **9 Dic 2025**     | Validación con Cliente        | ⏳ Planificado | 🔴 Alta    | -               |
+| **10 Dic 2025**    | Ajustes Finales y Despliegue  | ⏳ Planificado | 🔴 Crítica | 2-3h            |
 
 ---
 
 ## 🎯 HITOS PRINCIPALES
 
 ### Hito 1: Corrección Técnica del Filtrado
+
 **Fecha objetivo**: 5 de diciembre de 2025  
 **Descripción**: Sistema de filtrado completamente funcional después de corrección técnica  
 **Estado**: ⏳ En desarrollo  
 **Nota**: Problema técnico detectado durante desarrollo que requiere corrección (2-4h adicionales)
 
 ### Hito 2: Diseño Visual Integrado
+
 **Fecha objetivo**: 6 de diciembre de 2025  
 **Descripción**: Diseño visual completo aplicado según especificaciones de Figma  
 **Estado**: ⏳ Planificado
 
 ### Hito 3: Sitio Listo para Validación
+
 **Fecha objetivo**: 8 de diciembre de 2025  
 **Descripción**: Sitio completamente funcional y testeado, listo para revisión del cliente  
 **Estado**: ⏳ Planificado
 
 ### Hito 4: Sitio en Producción
+
 **Fecha objetivo**: 10 de diciembre de 2025  
 **Descripción**: Sitio web publicado y accesible públicamente  
 **Estado**: ⏳ Planificado
@@ -335,11 +344,11 @@ Para cumplir con el timeline planificado, necesitamos:
 
 ## 📊 RESUMEN DE TIMELINE
 
-| Período      | Fechas          | Fase Principal          | Entregables Clave                    | Tiempo Total |
-| ------------ | --------------- | ----------------------- | ------------------------------------ | ------------ |
-| **Semana 1** | 27 Nov - 3 Dic  | Setup y Estructura      | ✅ Estructura completa               | 7 días       |
-| **Semana 2** | 4 Dic - 10 Dic  | Integración Final       | Filtrado + Diseño + Contenido + QA   | 3-4 días     |
-| **TOTAL**    | **27 Nov - 10 Dic** | **Proyecto Completo** | **Sitio en Producción**              | **10-11 días** |
+| Período      | Fechas              | Fase Principal        | Entregables Clave                  | Tiempo Total   |
+| ------------ | ------------------- | --------------------- | ---------------------------------- | -------------- |
+| **Semana 1** | 27 Nov - 3 Dic      | Setup y Estructura    | ✅ Estructura completa             | 7 días         |
+| **Semana 2** | 4 Dic - 10 Dic      | Integración Final     | Filtrado + Diseño + Contenido + QA | 3-4 días       |
+| **TOTAL**    | **27 Nov - 10 Dic** | **Proyecto Completo** | **Sitio en Producción**            | **10-11 días** |
 
 ---
 

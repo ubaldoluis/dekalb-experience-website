@@ -1,6 +1,5 @@
 ---
 import type { Producto } from '../types';
-import '@splidejs/splide/dist/css/splide.min.css';
 
 interface Props {
   products: Producto[];
@@ -12,45 +11,50 @@ const { products = [], lang = 'es' } = Astro.props;
 
 <div class="product-carousel-wrapper">
   {products.length > 0 ? (
-    <div class="splide product-carousel" id="product-carousel" data-products={JSON.stringify(products)}>
-      <div class="splide__track">
-        <ul class="splide__list">
-          {products.map((product) => (
-            <li class="splide__slide">
-              <div class="product-card" data-product-id={product.id}>
-                {product.imagen_saco?.url && (
-                  <div class="product-image-wrapper">
-                    <img
-                      src={product.imagen_saco.url}
-                      alt={product.imagen_saco.alt || product.nombre}
-                      class="product-image"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div class="product-info">
-                  <h3 class="product-name">{product.nombre}</h3>
-                  {product.claim && (
-                    <p class="product-claim">{product.claim}</p>
-                  )}
-                  <button
-                    class="btn btn-primary product-view-btn"
-                    data-product-id={product.id}
-                    aria-label={`Ver detalles de ${product.nombre}`}
-                  >
-                    {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
-                  </button>
-                </div>
+    <div class="product-carousel-container" id="product-carousel" data-products={JSON.stringify(products)}>
+      <div class="product-carousel-track" id="product-carousel-track">
+        {products.map((product) => (
+          <div class="product-card" data-product-id={product.id}>
+            {product.imagen_saco?.url && (
+              <div class="product-image-wrapper">
+                <img
+                  src={product.imagen_saco.url}
+                  alt={product.imagen_saco.alt || product.nombre}
+                  class="product-image"
+                  loading="lazy"
+                />
               </div>
-            </li>
-          ))}
-        </ul>
+            )}
+            <div class="product-info">
+              <h3 class="product-name">{product.nombre}</h3>
+              {product.claim && (
+                <p class="product-claim">{product.claim}</p>
+              )}
+              <button
+                class="btn btn-primary product-view-btn"
+                data-product-id={product.id}
+                aria-label={`Ver detalles de ${product.nombre}`}
+              >
+                {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-      <div class="splide__arrows">
-        <button class="splide__arrow splide__arrow--prev" aria-label="Anterior"></button>
-        <button class="splide__arrow splide__arrow--next" aria-label="Siguiente"></button>
-      </div>
-      <ul class="splide__pagination"></ul>
+      {products.length > 4 && (
+        <div class="carousel-controls">
+          <button class="carousel-button carousel-button-prev" aria-label="Anterior" id="carousel-prev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <button class="carousel-button carousel-button-next" aria-label="Siguiente" id="carousel-next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   ) : (
     <div class="product-carousel-empty">
@@ -59,67 +63,206 @@ const { products = [], lang = 'es' } = Astro.props;
   )}
 </div>
 
-<script>
-  import Splide from '@splidejs/splide';
+<script define:vars={{ productsJson: JSON.stringify(products) }}>
+  let currentProducts = JSON.parse(productsJson);
+  let carouselTrack = null;
+  let scrollPosition = 0;
+
+  function updateCarousel(newProducts) {
+    console.log('🔄 [Carousel] Updating with products:', newProducts.length);
+    currentProducts = newProducts;
+    
+    const carouselElement = document.getElementById('product-carousel');
+    const trackElement = document.getElementById('product-carousel-track');
+    
+    if (!carouselElement || !trackElement) {
+      console.error('❌ [Carousel] Carousel elements not found');
+      return;
+    }
+    
+    // Update data attribute
+    carouselElement.dataset.products = JSON.stringify(newProducts);
+    
+    // Clear and rebuild HTML
+    trackElement.innerHTML = newProducts.map((product) => `
+      <div class="product-card" data-product-id="${product.id}">
+        ${product.imagen_saco?.url ? `
+          <div class="product-image-wrapper">
+            <img
+              src="${product.imagen_saco.url}"
+              alt="${product.imagen_saco.alt || product.nombre}"
+              class="product-image"
+              loading="lazy"
+            />
+          </div>
+        ` : ''}
+        <div class="product-info">
+          <h3 class="product-name">${product.nombre}</h3>
+          ${product.claim ? `<p class="product-claim">${product.claim}</p>` : ''}
+          <button
+            class="btn btn-primary product-view-btn"
+            data-product-id="${product.id}"
+            aria-label="Ver detalles de ${product.nombre}"
+          >
+            Ver detalles
+          </button>
+        </div>
+      </div>
+    `).join('');
+    
+    // Reset scroll position
+    scrollPosition = 0;
+    trackElement.scrollLeft = 0;
+    
+    // Update controls visibility
+    const controls = carouselElement.querySelector('.carousel-controls');
+    if (controls) {
+      controls.style.display = newProducts.length > 4 ? 'flex' : 'none';
+    }
+    
+    console.log('✅ [Carousel] Updated with', newProducts.length, 'products');
+  }
+
+  function scrollCarousel(direction) {
+    if (!carouselTrack) return;
+    
+    const cardWidth = carouselTrack.querySelector('.product-card')?.offsetWidth || 0;
+    const gap = 24; // 1.5rem = 24px
+    const scrollAmount = cardWidth + gap;
+    
+    scrollPosition += direction === 'next' ? scrollAmount : -scrollAmount;
+    
+    // Clamp scroll position
+    const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+    scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+    
+    carouselTrack.scrollTo({
+      left: scrollPosition,
+      behavior: 'smooth'
+    });
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎠 [Carousel] DOMContentLoaded, initializing...');
+    carouselTrack = document.getElementById('product-carousel-track');
+    
+    if (!carouselTrack) {
+      console.error('❌ [Carousel] Track element not found');
+      return;
+    }
+    
+    // Setup navigation buttons
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => scrollCarousel('prev'));
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => scrollCarousel('next'));
+    }
+    
+    // Update controls visibility
     const carouselElement = document.getElementById('product-carousel');
     if (carouselElement) {
-      // Get products count from data attribute
-      const productsData = carouselElement.dataset.products;
-      const products = productsData ? JSON.parse(productsData) : [];
-      const productsCount = products.length;
-      
-      // Use 'slide' instead of 'loop' to avoid duplicates, or 'loop' only if we have enough products
-      const splide = new Splide(carouselElement, {
-        type: productsCount > 4 ? 'loop' : 'slide',
-        perPage: Math.min(4, productsCount),
-        perMove: 1,
-        gap: '1.5rem',
-        pagination: productsCount > 4,
-        arrows: productsCount > 4,
-        breakpoints: {
-          1024: {
-            perPage: Math.min(3, productsCount),
-          },
-          768: {
-            perPage: Math.min(2, productsCount),
-          },
-          640: {
-            perPage: 1,
-          },
-        },
-      });
-      splide.mount();
-    }
-
-    // Listen for product card clicks
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const productCard = target.closest('.product-card') as HTMLElement;
-      const viewBtn = target.closest('.product-view-btn') as HTMLElement;
-      
-      if (productCard || viewBtn) {
-        const productId = (productCard?.getAttribute('data-product-id') || 
-                          viewBtn?.getAttribute('data-product-id')) || '';
-        if (productId) {
-          const event = new CustomEvent('productClick', {
-            detail: { productId },
-          });
-          document.dispatchEvent(event);
-        }
+      const controls = carouselElement.querySelector('.carousel-controls');
+      if (controls) {
+        controls.style.display = currentProducts.length > 4 ? 'flex' : 'none';
       }
-    });
+    }
+    
+    console.log('✅ [Carousel] Initialized');
+  });
+
+  // Listen for product updates
+  document.addEventListener('updateProducts', (e) => {
+    console.log('🔄 [Carousel] Received updateProducts event:', e.detail);
+    if (e.detail && e.detail.products) {
+      updateCarousel(e.detail.products);
+    }
+  });
+
+  // Listen for product card clicks
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    const productCard = target.closest('.product-card');
+    const viewBtn = target.closest('.product-view-btn');
+    
+    if (productCard || viewBtn) {
+      const productId = (productCard?.getAttribute('data-product-id') || 
+                        viewBtn?.getAttribute('data-product-id')) || '';
+      if (productId) {
+        const event = new CustomEvent('productClick', {
+          detail: { productId },
+        });
+        document.dispatchEvent(event);
+      }
+    }
   });
 </script>
 
 <style>
   .product-carousel-wrapper {
     margin: var(--spacing-8) 0;
+    position: relative;
   }
 
-  .product-carousel {
+  .product-carousel-container {
+    position: relative;
     padding: var(--spacing-4) 0;
+  }
+
+  .product-carousel-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-6);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-400) var(--color-gray-100);
+    -webkit-overflow-scrolling: touch;
+    padding: var(--spacing-2) 0;
+  }
+
+  .product-carousel-track::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .product-carousel-track::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+  }
+
+  .product-carousel-track::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: var(--radius-md);
+  }
+
+  .product-carousel-track::-webkit-scrollbar-thumb:hover {
+    background: var(--color-dekalb-primary);
+  }
+
+  /* Mobile: single column scroll */
+  @media (max-width: 767px) {
+    .product-carousel-track {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-4);
+    }
+  }
+
+  /* Tablet: 2 columns */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .product-carousel-track {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop: 3-4 columns with horizontal scroll */
+  @media (min-width: 1024px) {
+    .product-carousel-track {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      max-width: 100%;
+    }
   }
 
   .product-card {
@@ -132,6 +275,7 @@ const { products = [], lang = 'es' } = Astro.props;
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-width: 280px;
   }
 
   .product-card:hover {
@@ -189,37 +333,53 @@ const { products = [], lang = 'es' } = Astro.props;
     color: var(--color-gray-600);
   }
 
-  /* Splide customizations */
-  :global(.product-carousel .splide__arrow) {
-    background-color: var(--color-dekalb-primary);
-    opacity: 1;
+  .carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-6);
   }
 
-  :global(.product-carousel .splide__arrow:hover) {
+  .carousel-button {
+    background-color: var(--color-dekalb-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-full);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
+  }
+
+  .carousel-button:hover {
     background-color: var(--color-dekalb-primary-dark);
+    transform: scale(1.05);
   }
 
-  :global(.product-carousel .splide__arrow--prev) {
-    left: -1rem;
+  .carousel-button:active {
+    transform: scale(0.95);
   }
 
-  :global(.product-carousel .splide__arrow--next) {
-    right: -1rem;
-  }
-
-  :global(.product-carousel .splide__pagination__page) {
-    background-color: var(--color-gray-400);
-    opacity: 1;
-  }
-
-  :global(.product-carousel .splide__pagination__page.is-active) {
-    background-color: var(--color-dekalb-primary);
+  .carousel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   @media (max-width: 767px) {
-    :global(.product-carousel .splide__arrow) {
+    .carousel-controls {
       display: none;
+    }
+    
+    .product-carousel-track {
+      scroll-snap-type: x mandatory;
+    }
+    
+    .product-card {
+      scroll-snap-align: start;
     }
   }
 </style>
-

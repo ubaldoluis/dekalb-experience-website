@@ -112,21 +112,24 @@ export function searchParamsToFilterState(params: URLSearchParams): FilterState 
     proteccion: (params.get('proteccion') as ProteccionCultivo) || 'todos',
   };
 
-  const tipoSemilla = params.get('tipo') as TipoSemilla | null;
-  if (tipoSemilla && (tipoSemilla === 'maiz' || tipoSemilla === 'colza')) {
-    state.tipoSemilla = tipoSemilla;
+  const tipoParam = params.get('tipo');
+  console.log('🔍 searchParamsToFilterState - tipo param:', tipoParam);
+  if (tipoParam === 'maiz' || tipoParam === 'colza') {
+    state.tipoSemilla = tipoParam as TipoSemilla;
+    console.log('🔍 searchParamsToFilterState - tipoSemilla set to:', state.tipoSemilla);
   }
 
-  const uso = params.get('uso') as UsoMaiz | null;
-  if (uso && (uso === 'grano' || uso === 'silo' || uso === 'preceon')) {
-    state.uso = uso;
+  const usoParam = params.get('uso');
+  if (usoParam && (usoParam === 'grano' || usoParam === 'silo' || usoParam === 'preceon')) {
+    state.uso = usoParam as UsoMaiz;
   }
 
-  const zona = params.get('zona') as ZonaGeografica | null;
-  if (zona) {
-    state.zona = zona;
+  const zonaParam = params.get('zona');
+  if (zonaParam) {
+    state.zona = zonaParam as ZonaGeografica;
   }
 
+  console.log('🔍 searchParamsToFilterState - Final state:', JSON.stringify(state, null, 2));
   return state;
 }
 

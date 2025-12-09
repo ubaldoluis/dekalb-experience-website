@@ -209,37 +209,125 @@ const t = translations[lang];
 <script define:vars={{ filterStateJson: JSON.stringify(filterState) }}>
   const filterForm = document.getElementById('filter-form');
   
-  // Parse filterState from JSON string (Astro serialization issue)
-  const filterState = JSON.parse(filterStateJson);
+  // Parse filterState from JSON string (Astro serialization)
+  const serverFilterState = JSON.parse(filterStateJson);
   
-  // Initialize from server-side filterState prop (passed from Astro via define:vars)
-  // The buttons are already marked correctly in the HTML, so we just need to track state
-  let currentFilterState = {
-    tipoSemilla: filterState?.tipoSemilla,
-    uso: filterState?.uso,
-    zona: filterState?.zona,
-    proteccion: filterState?.proteccion || 'todos',
+  // ALSO parse from current URL to ensure we have the latest state
+  // This is critical because the server-side state might not match the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlFilterState = {
+    tipoSemilla: urlParams.get('tipo') === 'maiz' || urlParams.get('tipo') === 'colza' ? urlParams.get('tipo') : undefined,
+    uso: urlParams.get('uso') || undefined,
+    zona: urlParams.get('zona') || undefined,
+    proteccion: urlParams.get('proteccion') || 'todos',
   };
   
-  console.log('🔍 ProductFilter - Filter State:', filterState);
-  console.log('🔍 ProductFilter - Current Filter State:', currentFilterState);
+  // Use URL state as source of truth, fallback to server state
+  let currentFilterState = {
+    tipoSemilla: urlFilterState.tipoSemilla || serverFilterState.tipoSemilla || undefined,
+    uso: urlFilterState.uso || serverFilterState.uso || undefined,
+    zona: urlFilterState.zona || serverFilterState.zona || undefined,
+    proteccion: urlFilterState.proteccion || serverFilterState.proteccion || 'todos',
+  };
+  
+  console.log('🔍 [ProductFilter] Server Filter State:', serverFilterState);
+  console.log('🔍 [ProductFilter] URL Filter State:', urlFilterState);
+  console.log('🔍 [ProductFilter] Current Filter State:', currentFilterState);
+  console.log('🔍 [ProductFilter] URL:', window.location.href);
+  console.log('🔍 [ProductFilter] URL Search:', window.location.search);
+  console.log('🔍 [ProductFilter] tipoSemilla:', currentFilterState.tipoSemilla);
+  console.log('🔍 [ProductFilter] proteccion:', currentFilterState.proteccion);
+  
+  // Update button states based on current filter state
+  function updateButtonStates() {
+    // Update tipoSemilla buttons
+    document.querySelectorAll('[data-filter="tipoSemilla"]').forEach(btn => {
+      const value = btn.getAttribute('data-value');
+      if (value === currentFilterState.tipoSemilla) {
+        btn.classList.add('filter-button-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.classList.remove('filter-button-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+    
+    // Update uso buttons
+    document.querySelectorAll('[data-filter="uso"]').forEach(btn => {
+      const value = btn.getAttribute('data-value');
+      if (value === currentFilterState.uso) {
+        btn.classList.add('filter-button-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.classList.remove('filter-button-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+    
+    // Update zona buttons
+    document.querySelectorAll('[data-filter="zona"]').forEach(btn => {
+      const value = btn.getAttribute('data-value');
+      if (value === currentFilterState.zona) {
+        btn.classList.add('filter-button-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.classList.remove('filter-button-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+    
+    // Update proteccion buttons
+    document.querySelectorAll('[data-filter="proteccion"]').forEach(btn => {
+      const value = btn.getAttribute('data-value');
+      if (value === currentFilterState.proteccion) {
+        btn.classList.add('filter-button-active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.classList.remove('filter-button-active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+  
+  // Initial button state update
+  updateButtonStates();
 
   function updateFilterState(filter, value) {
+    console.log('🔍 [updateFilterState] Called with:', filter, value);
+    console.log('🔍 [updateFilterState] Current state before update:', JSON.stringify(currentFilterState));
+    
     // Update current state
     if (filter === 'tipoSemilla') {
-      currentFilterState.tipoSemilla = value;
+      // Toggle: if clicking the same value, clear it
+      if (currentFilterState.tipoSemilla === value) {
+        currentFilterState.tipoSemilla = undefined;
+      } else {
+        currentFilterState.tipoSemilla = value;
+      }
       // If switching to Colza, clear uso and zona
-      if (value === 'colza') {
+      if (currentFilterState.tipoSemilla === 'colza') {
         currentFilterState.uso = undefined;
         currentFilterState.zona = undefined;
       }
     } else if (filter === 'uso') {
-      currentFilterState.uso = value;
+      // Toggle: if clicking the same value, clear it
+      if (currentFilterState.uso === value) {
+        currentFilterState.uso = undefined;
+      } else {
+        currentFilterState.uso = value;
+      }
     } else if (filter === 'zona') {
-      currentFilterState.zona = value;
+      // Toggle: if clicking the same value, clear it
+      if (currentFilterState.zona === value) {
+        currentFilterState.zona = undefined;
+      } else {
+        currentFilterState.zona = value;
+      }
     } else if (filter === 'proteccion') {
       currentFilterState.proteccion = value;
     }
+
+    console.log('🔍 [updateFilterState] Current state after update:', JSON.stringify(currentFilterState));
 
     // Build URL params from current state (preserving all active filters)
     const params = new URLSearchParams();
@@ -256,8 +344,11 @@ const t = translations[lang];
       params.set('proteccion', currentFilterState.proteccion);
     }
 
+    console.log('🔍 [updateFilterState] New URL params:', params.toString());
+
     // Reload page with new URL to apply filter server-side
     const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    console.log('🔍 [updateFilterState] Navigating to:', newURL);
     window.location.href = newURL;
   }
 
@@ -312,6 +403,11 @@ const t = translations[lang];
 
   // Initial render - buttons are already marked correctly in HTML
   renderConditionalGroups();
+  
+  // Update button states after initial render
+  setTimeout(() => {
+    updateButtonStates();
+  }, 100);
 
   // Export filter state getter for other components
   window.getFilterState = () => ({ ...currentFilterState });

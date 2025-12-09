@@ -9,9 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.4",
     "@prismicio/client": "^7.0.0",
-    "@splidejs/splide": "^4.1.4"
+    "astro": "^5.16.4"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

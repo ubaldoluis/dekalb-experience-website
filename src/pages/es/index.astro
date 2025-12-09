@@ -41,13 +41,27 @@ const url = Astro.url;
 const filterState: FilterState = searchParamsToFilterState(url.searchParams);
 
 // Debug: Log URL params and filter state (server-side)
-console.log('🔗 URL:', url.href);
-console.log('🔗 URL Search:', url.search);
-console.log('🔗 Search Params:', Array.from(url.searchParams.entries()));
-console.log('📋 Parsed Filter State:', JSON.stringify(filterState, null, 2));
+console.log('🔗 [SERVER] URL:', url.href);
+console.log('🔗 [SERVER] URL Search:', url.search);
+console.log('🔗 [SERVER] Search Params:', Array.from(url.searchParams.entries()));
+console.log('📋 [SERVER] Parsed Filter State:', JSON.stringify(filterState, null, 2));
+console.log('📋 [SERVER] FilterState tipoSemilla:', filterState.tipoSemilla);
+console.log('📋 [SERVER] FilterState proteccion:', filterState.proteccion);
+console.log('📋 [SERVER] All Products count:', allProducts.length);
+console.log('📋 [SERVER] All Products sample:', allProducts.slice(0, 2).map(p => ({
+  nombre: p.nombre,
+  tipo_semilla: p.tipo_semilla,
+  proteccion: p.proteccion,
+})));
 
 // Filter products based on current filter state
 const filteredProducts = filterProducts(allProducts, filterState);
+console.log('📋 [SERVER] Filtered Products count:', filteredProducts.length);
+console.log('📋 [SERVER] Filtered Products:', filteredProducts.map(p => ({
+  nombre: p.nombre,
+  tipo_semilla: p.tipo_semilla,
+  proteccion: p.proteccion,
+})));
 
 // Get latest 3 articles for blog preview
 const latestArticles = articles.slice(0, 3);
@@ -67,11 +81,29 @@ const latestArticles = articles.slice(0, 3);
       <ProductFilter filterState={filterState} lang={lang} />
       <ProductCarousel products={filteredProducts} lang={lang} />
       
-      <script define:vars={{ filterState, allProducts, filteredProducts }}>
+      <script define:vars={{ filterStateJson: JSON.stringify(filterState), allProductsJson: JSON.stringify(allProducts), filteredProductsJson: JSON.stringify(filteredProducts) }}>
+        // Parse filterState from JSON (Astro serialization)
+        const filterState = JSON.parse(filterStateJson);
+        const allProducts = JSON.parse(allProductsJson);
+        const filteredProducts = JSON.parse(filteredProductsJson);
+        
+        // ALSO parse from current URL to ensure we have the latest state
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlFilterState = {
+          tipoSemilla: urlParams.get('tipo') === 'maiz' || urlParams.get('tipo') === 'colza' ? urlParams.get('tipo') : undefined,
+          uso: urlParams.get('uso') || undefined,
+          zona: urlParams.get('zona') || undefined,
+          proteccion: urlParams.get('proteccion') || 'todos',
+        };
+        
         // Debug logs in browser console
-        console.log('🔍 Filter State (client):', JSON.stringify(filterState, null, 2));
+        console.log('🔍 [CLIENT] Server Filter State:', JSON.stringify(filterState, null, 2));
+        console.log('🔍 [CLIENT] URL Filter State:', JSON.stringify(urlFilterState, null, 2));
+        console.log('🔍 [CLIENT] FilterState tipoSemilla:', filterState.tipoSemilla);
+        console.log('🔍 [CLIENT] FilterState proteccion:', filterState.proteccion);
         console.log('📦 All Products:', allProducts.length);
-        console.log('✅ Filtered Products:', filteredProducts.length);
+        console.log('✅ Filtered Products (from server):', filteredProducts.length);
+        
         if (allProducts.length > 0) {
           console.log('📋 All Products Details:', allProducts.map(p => ({
             nombre: p.nombre,
@@ -80,13 +112,47 @@ const latestArticles = articles.slice(0, 3);
             uso: p.uso,
             zona: p.zona,
           })));
-          console.log('✅ Filtered Products Details:', filteredProducts.map(p => ({
+          console.log('✅ Filtered Products Details (from server):', filteredProducts.map(p => ({
             nombre: p.nombre,
             tipo_semilla: p.tipo_semilla,
             proteccion: p.proteccion,
             uso: p.uso,
             zona: p.zona,
           })));
+          
+          // Client-side filtering as fallback if server filtering didn't work
+          if (urlFilterState.tipoSemilla || (urlFilterState.proteccion && urlFilterState.proteccion !== 'todos')) {
+            console.log('⚠️ [CLIENT] Server filtering may have failed, applying client-side filter...');
+            let clientFiltered = [...allProducts];
+            
+            if (urlFilterState.tipoSemilla) {
+              const before = clientFiltered.length;
+              clientFiltered = clientFiltered.filter(p => p.tipo_semilla === urlFilterState.tipoSemilla);
+              console.log(`🔍 Client filter tipoSemilla: ${before} -> ${clientFiltered.length}`);
+            }
+            
+            if (urlFilterState.proteccion && urlFilterState.proteccion !== 'todos') {
+              const before = clientFiltered.length;
+              clientFiltered = clientFiltered.filter(p => p.proteccion === urlFilterState.proteccion);
+              console.log(`🔍 Client filter proteccion: ${before} -> ${clientFiltered.length}`);
+            }
+            
+            console.log('✅ Client-side Filtered Products:', clientFiltered.map(p => ({
+              nombre: p.nombre,
+              tipo_semilla: p.tipo_semilla,
+              proteccion: p.proteccion,
+            })));
+            
+            // Update carousel with client-filtered products
+            if (clientFiltered.length !== filteredProducts.length) {
+              console.log('⚠️ [CLIENT] Updating carousel with client-filtered products');
+              // Wait a bit for carousel to be ready
+              setTimeout(() => {
+                const event = new CustomEvent('updateProducts', { detail: { products: clientFiltered } });
+                document.dispatchEvent(event);
+              }, 100);
+            }
+          }
         }
       </script>
     </div>
