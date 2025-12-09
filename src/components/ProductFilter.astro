@@ -259,7 +259,7 @@ const t = translations[lang];
     document.dispatchEvent(event);
 
     // Update URL and reload page to apply filter server-side
-    updateURL();
+    const params = updateURL();
     window.location.href = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
   }
 
