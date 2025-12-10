@@ -217,12 +217,24 @@ const latestArticles = articles.slice(0, 3);
   <!-- Preceon Section -->
   <section class="preceon-section">
     <div class="container">
-      <div class="preceon-content">
-        <h2 class="preceon-title">{homeContent.solutions.preceon}</h2>
-        <p class="preceon-description">
-          Sistema inteligente de gestão para milho com tecnologia de ponta.
-        </p>
-        <a href="/pt/preceon" class="btn btn-primary">Descobrir Preceon</a>
+      <div class="preceon-wrapper">
+        <div class="preceon-content">
+          <div class="preceon-logo">
+            <img src="/Logo_Preceon.svg" alt="Preceon" />
+          </div>
+          <h2 class="preceon-title">O futuro do milho está aqui, acesse para descobrir.</h2>
+          <a
+            href="/pt/preceon"
+            class="btn btn-primary"
+            >Descobrir</a
+          >
+        </div>
+        <div class="preceon-image">
+          <img
+            src="/card_background-preceon.png"
+            alt="Preceon Pack"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -444,28 +456,93 @@ const latestArticles = articles.slice(0, 3);
 
   .preceon-section {
     padding: var(--spacing-16) 0;
-    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
-    color: var(--color-white);
+    background: transparent;
+    color: var(--color-text-primary);
+  }
+
+  .preceon-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: stretch;
+    background: var(--color-white);
+    border-radius: 12px 12px 12px 12px;
+    overflow: hidden;
+    min-height: 500px;
+    position: relative;
   }
 
   .preceon-content {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
+    text-align: left;
+    padding: var(--spacing-12) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(to bottom, #e9e7e4 0%, #d4d1cc 50%, #e9e7e4 100%);
+    position: relative;
+    z-index: 2;
+  }
+
+  .preceon-logo {
+    margin-bottom: var(--spacing-8);
+    display: block;
+  }
+
+  .preceon-logo img {
+    height: 85px;
+    width: auto;
+    object-fit: contain;
+    display: block;
   }
 
   .preceon-title {
-    font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-white);
-    margin-bottom: var(--spacing-4);
+    font-size: 34px;
+    font-weight: 300;
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-8);
+    line-height: 44.2px;
+    max-width: 423px;
+    display: block;
   }
 
-  .preceon-description {
-    font-size: var(--font-size-xl);
-    color: var(--color-white);
-    opacity: 0.95;
-    margin-bottom: var(--spacing-6);
+  .preceon-content .btn {
+    width: auto;
+    max-width: 212px;
+    display: inline-block;
+  }
+
+  .preceon-image {
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preceon-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Desktop: Two columns layout - 30% contenido / 70% imagen */
+  @media (min-width: 1024px) {
+    .preceon-wrapper {
+      grid-template-columns: 30% 70%;
+      gap: 0;
+      min-height: 500px;
+      border-radius: 60px 12px 60px 12px; /* Superior izquierda e inferior derecha con radio mayor */
+    }
+
+    .preceon-content {
+      padding: var(--spacing-12) var(--spacing-12);
+      border-radius: 60px 0 0 60px; /* Solo esquina superior izquierda redondeada */
+    }
+
+    .preceon-image {
+      display: block;
+      border-radius: 0 12px 60px 0; /* Solo esquina inferior derecha redondeada */
+    }
   }
 
   .avoid-problems-section {
