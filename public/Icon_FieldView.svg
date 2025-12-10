@@ -1,11 +1,26 @@
 <svg width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="52" cy="52" r="52" fill="#009ddb"/>
-  <rect x="32" y="28" width="40" height="56" rx="4" fill="white"/>
-  <circle cx="52" cy="80" r="3" fill="white"/>
-  <rect x="36" y="34" width="32" height="24" fill="#009ddb" opacity="0.3"/>
-  <rect x="68" y="38" width="4" height="4" fill="white"/>
-  <rect x="74" y="38" width="4" height="4" fill="white"/>
-  <rect x="68" y="46" width="4" height="4" fill="white"/>
-  <rect x="74" y="46" width="4" height="4" fill="white"/>
+<circle cx="52" cy="52" r="52" fill="#009DDB"/>
+<mask id="mask0_14_1157" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="104" height="104">
+<circle cx="52" cy="52" r="52" fill="#009DDB"/>
+</mask>
+<g mask="url(#mask0_14_1157)">
+<path d="M4 123H72.6974L162 -33H93.3026L4 123Z" fill="url(#paint0_linear_14_1157)"/>
+</g>
+<path d="M70.9602 48.6227V74.9541C70.9602 75.0937 70.8529 75.2011 70.7133 75.2011H34.2015C34.0618 75.2011 33.9544 75.0937 33.9544 74.9541V29.1103C33.9544 28.9707 34.0618 28.8634 34.2015 28.8634H60.0926V23H34.9317C33.3101 23 32 24.3101 32 25.9317V77.8213C32 79.5717 33.4175 81 35.1787 81H69.736C71.4864 81 72.9147 79.5825 72.9147 77.8213V48.6227H70.9602ZM52.5003 79.5181C51.6305 79.5181 51.0398 78.7878 51.0398 78.0576C51.0398 77.1877 51.7701 76.5971 52.5003 76.5971C53.2305 76.5971 53.9608 77.177 53.9608 78.0576C53.9608 78.9382 53.2305 79.5181 52.5003 79.5181Z" fill="white"/>
+<path d="M67.9205 23.8376H63.625V28.1331H67.9205V23.8376Z" fill="white"/>
+<path d="M68.7479 30.238H62.0898V36.896H68.7479V30.238Z" fill="white"/>
+<path d="M60.103 32.3212H55.3887V37.0355H60.103V32.3212Z" fill="white"/>
+<path d="M59.7068 45.4547H55.7871V49.3744H59.7068V45.4547Z" fill="white"/>
+<path d="M55.572 39.9889H51.6523V43.9085H55.572V39.9889Z" fill="white"/>
+<path d="M53.2626 49.2456H49.998V52.5102H53.2626V49.2456Z" fill="white"/>
+<path d="M64.4526 38.2812H59.7383V42.9955H64.4526V38.2812Z" fill="white"/>
+<path d="M68.7475 43.9084H64.0332V48.6227H68.7475V43.9084Z" fill="white"/>
+<path d="M79.1966 37.0356H70.9492V45.2829H79.1966V37.0356Z" fill="white"/>
+<path d="M81.2047 23H70.9492V33.2555H81.2047V23Z" fill="white"/>
+<defs>
+<linearGradient id="paint0_linear_14_1157" x1="83" y1="-0.5" x2="83" y2="123" gradientUnits="userSpaceOnUse">
+<stop stop-color="#009DDB"/>
+<stop offset="1" stop-color="#00527F"/>
+</linearGradient>
+</defs>
 </svg>
-

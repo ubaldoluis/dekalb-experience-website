@@ -112,8 +112,13 @@ const {
   let carouselTrack = null;
   let scrollPosition = 0;
 
-  function updateCarousel(newProducts) {
-    console.log("🔄 [Carousel] Updating with products:", newProducts.length);
+  function updateCarousel(newProducts, isFiltered = false) {
+    console.log(
+      "🔄 [Carousel] Updating with products:",
+      newProducts.length,
+      "isFiltered:",
+      isFiltered
+    );
     currentProducts = newProducts;
 
     const carouselElement = document.getElementById(CAROUSEL_ID);
@@ -162,9 +167,23 @@ const {
       )
       .join("");
 
-    // Reset scroll position
-    scrollPosition = 0;
-    trackElement.scrollLeft = 0;
+    // Center filtered results only if filters are active
+    if (isFiltered) {
+      // Wait for DOM to update before calculating scroll position
+      setTimeout(() => {
+        centerFilteredResults(trackElement, newProducts.length);
+      }, 50);
+    } else {
+      // Reset styles when showing all products
+      setTimeout(() => {
+        trackElement.style.paddingLeft = "";
+        trackElement.style.paddingRight = "";
+        trackElement.style.display = "";
+        trackElement.style.justifyContent = "";
+        trackElement.scrollLeft = 0;
+        scrollPosition = 0;
+      }, 50);
+    }
 
     // Update controls visibility
     const controls = carouselElement.querySelector(".carousel-controls");
@@ -172,9 +191,96 @@ const {
       controls.style.display = newProducts.length > 4 ? "flex" : "none";
     }
 
-    // Center card detection disabled for 3-column layout
-
     console.log("✅ [Carousel] Updated with", newProducts.length, "products");
+  }
+
+  // Center filtered results in the carousel
+  function centerFilteredResults(trackElement, productCount) {
+    if (!trackElement || productCount === 0) {
+      // Reset padding and display if no products
+      trackElement.style.paddingLeft = "";
+      trackElement.style.paddingRight = "";
+      trackElement.style.display = "";
+      trackElement.style.justifyContent = "";
+      return;
+    }
+
+    const trackWidth = trackElement.clientWidth;
+    const isDesktop = window.innerWidth >= 1024;
+
+    // Wait a bit more for grid to layout properly
+    setTimeout(() => {
+      const firstCard = trackElement.querySelector(".product-card");
+      if (!firstCard) {
+        trackElement.style.paddingLeft = "";
+        trackElement.style.paddingRight = "";
+        trackElement.style.display = "";
+        trackElement.style.justifyContent = "";
+        return;
+      }
+
+      const cardWidth = firstCard.offsetWidth;
+      let targetScrollPosition = 0;
+
+      if (isDesktop) {
+        // Desktop: 3 columns visible in grid
+        // Each column takes up (trackWidth / 3) space
+        const columnWidth = trackWidth / 3;
+
+        if (productCount === 1) {
+          // Center the single product in the middle column (position 2 of 3)
+          // Switch to flexbox temporarily to center properly
+          trackElement.style.display = "flex";
+          trackElement.style.justifyContent = "center";
+          trackElement.style.paddingLeft = `${columnWidth}px`;
+          trackElement.style.paddingRight = `${columnWidth}px`;
+          targetScrollPosition = 0;
+        } else {
+          // Multiple products: start from center position (position 2) and extend right
+          // Position the first product in the center column using padding
+          trackElement.style.display = "grid";
+          trackElement.style.justifyContent = "";
+          const paddingNeeded = columnWidth;
+          trackElement.style.paddingLeft = `${Math.max(0, paddingNeeded)}px`;
+          trackElement.style.paddingRight = "";
+          targetScrollPosition = 0;
+        }
+      } else {
+        // Mobile/Tablet: center single product, or start from center for multiple
+        if (productCount === 1) {
+          // Center the single product using flexbox
+          trackElement.style.display = "flex";
+          trackElement.style.justifyContent = "center";
+          trackElement.style.paddingLeft = "";
+          trackElement.style.paddingRight = "";
+          targetScrollPosition = 0;
+        } else {
+          // For multiple products on mobile, start from a centered position
+          trackElement.style.display = "grid";
+          trackElement.style.justifyContent = "";
+          const paddingNeeded = trackWidth / 2 - cardWidth / 2;
+          trackElement.style.paddingLeft = `${Math.max(0, paddingNeeded)}px`;
+          trackElement.style.paddingRight = "";
+          targetScrollPosition = 0;
+        }
+      }
+
+      // Reset scroll position
+      scrollPosition = targetScrollPosition;
+      trackElement.scrollTo({
+        left: targetScrollPosition,
+        behavior: "smooth",
+      });
+
+      console.log("🎯 [Carousel] Centered results:", {
+        productCount,
+        targetScrollPosition,
+        isDesktop,
+        trackWidth,
+        cardWidth,
+        paddingLeft: trackElement.style.paddingLeft,
+      });
+    }, 100);
   }
 
   // Function to update which card is in the center (desktop only) - disabled for 3-column layout
@@ -257,7 +363,8 @@ const {
 
     if (isVisible && e.detail && e.detail.products) {
       console.log("🔄 [Carousel] Updating visible carousel:", CAROUSEL_ID);
-      updateCarousel(e.detail.products);
+      const isFiltered = e.detail.isFiltered || false;
+      updateCarousel(e.detail.products, isFiltered);
     } else {
       console.log(
         "⚠️ [Carousel] Carousel not visible, skipping update:",

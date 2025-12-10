@@ -10,144 +10,213 @@ interface Solution {
 
 interface Props {
   solutions: Solution[];
-  lang?: 'es' | 'pt';
+  lang?: "es" | "pt";
 }
 
-const { solutions = [], lang = 'es' } = Astro.props;
+const { solutions = [], lang = "es" } = Astro.props;
 ---
 
 <div class="solutions-carousel-wrapper">
-  {solutions.length > 0 ? (
-    <div class="solutions-carousel-container" id="solutions-carousel">
-      <div class="solutions-carousel-track" id="solutions-carousel-track">
-        {solutions.map((solution) => (
-          <div class="solution-card" data-solution-id={solution.id}>
-            {solution.icon && (
-              <div class="solution-icon">
-                <img src={solution.icon} alt="" aria-hidden="true" />
-              </div>
-            )}
-            {solution.logo && (
-              <div class="solution-logo">
-                <img src={solution.logo} alt={solution.name} />
-              </div>
-            )}
-            {solution.description && (
-              <p class="solution-description">{solution.description}</p>
-            )}
-          </div>
-        ))}
-      </div>
-      {solutions.length > 1 && (
-        <div class="carousel-controls">
-          <button class="carousel-button carousel-button-prev" aria-label="Anterior" id="solutions-carousel-prev">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M15 18l-6-6 6-6"/>
+  {
+    solutions.length > 0 ? (
+      <div
+        class="solutions-carousel-container"
+        id="solutions-carousel"
+      >
+        {solutions.length > 1 && (
+          <button
+            class="carousel-button carousel-button-prev"
+            aria-label="Anterior"
+            id="solutions-carousel-prev"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
-          <button class="carousel-button carousel-button-next" aria-label="Siguiente" id="solutions-carousel-next">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
+        )}
+        <div
+          class="solutions-carousel-track"
+          id="solutions-carousel-track"
+        >
+          {solutions.map((solution) => (
+            <div
+              class="solution-card"
+              data-solution-id={solution.id}
+            >
+              {solution.icon && (
+                <div class="solution-icon">
+                  <img
+                    src={solution.icon}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </div>
+              )}
+              {solution.logo && (
+                <div class="solution-logo">
+                  <img
+                    src={solution.logo}
+                    alt={solution.name}
+                  />
+                </div>
+              )}
+              {solution.description && (
+                <p class="solution-description">{solution.description}</p>
+              )}
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  ) : null}
+        {solutions.length > 1 && (
+          <button
+            class="carousel-button carousel-button-next"
+            aria-label="Siguiente"
+            id="solutions-carousel-next"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        )}
+      </div>
+    ) : null
+  }
 </div>
 
 <script>
-  let carouselTrack = null;
+  let carouselTrack: HTMLElement | null = null;
   let scrollPosition = 0;
 
   function initSolutionsCarousel() {
-    carouselTrack = document.getElementById('solutions-carousel-track');
+    carouselTrack = document.getElementById(
+      "solutions-carousel-track"
+    ) as HTMLElement;
     if (!carouselTrack) return;
 
-    const prevButton = document.getElementById('solutions-carousel-prev');
-    const nextButton = document.getElementById('solutions-carousel-next');
+    const prevButton = document.getElementById(
+      "solutions-carousel-prev"
+    ) as HTMLButtonElement | null;
+    const nextButton = document.getElementById(
+      "solutions-carousel-next"
+    ) as HTMLButtonElement | null;
 
     if (prevButton) {
-      prevButton.addEventListener('click', () => {
-        scrollCarousel('prev');
+      prevButton.addEventListener("click", () => {
+        scrollCarousel("prev");
       });
     }
 
     if (nextButton) {
-      nextButton.addEventListener('click', () => {
-        scrollCarousel('next');
+      nextButton.addEventListener("click", () => {
+        scrollCarousel("next");
       });
     }
 
-    // Auto-hide controls if all cards fit
+    // Listen to scroll events to update button states
+    carouselTrack.addEventListener("scroll", handleScroll);
+
+    // Initial state
     updateControlsVisibility();
   }
 
-  function scrollCarousel(direction) {
+  function scrollCarousel(direction: "prev" | "next") {
     if (!carouselTrack) return;
 
-    const cardWidth = carouselTrack.querySelector('.solution-card')?.offsetWidth || 0;
+    const cardWidth =
+      carouselTrack.querySelector(".solution-card")?.getBoundingClientRect()
+        .width || 0;
     const gap = 24; // 1.5rem = 24px
     const scrollAmount = cardWidth + gap;
-    
-    scrollPosition += direction === 'next' ? scrollAmount : -scrollAmount;
-    
+
+    scrollPosition += direction === "next" ? scrollAmount : -scrollAmount;
+
     // Clamp scroll position
     const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
     scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
-    
+
     carouselTrack.scrollTo({
       left: scrollPosition,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   }
 
   function updateControlsVisibility() {
     if (!carouselTrack) return;
-    
-    const prevButton = document.getElementById('solutions-carousel-prev');
-    const nextButton = document.getElementById('solutions-carousel-next');
-    const controls = document.querySelector('.solutions-carousel-container .carousel-controls');
-    
-    // Show controls only if content overflows
-    if (carouselTrack.scrollWidth > carouselTrack.clientWidth) {
-      if (controls) controls.style.display = 'flex';
-    } else {
-      if (controls) controls.style.display = 'none';
+
+    const prevButton = document.getElementById(
+      "solutions-carousel-prev"
+    ) as HTMLButtonElement | null;
+    const nextButton = document.getElementById(
+      "solutions-carousel-next"
+    ) as HTMLButtonElement | null;
+
+    // Update button states based on scroll position
+    if (prevButton) {
+      prevButton.disabled = scrollPosition <= 0;
+    }
+
+    if (nextButton) {
+      const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+      nextButton.disabled = scrollPosition >= maxScroll - 1; // -1 for rounding errors
     }
   }
 
+  function handleScroll() {
+    if (!carouselTrack) return;
+    scrollPosition = carouselTrack.scrollLeft;
+    updateControlsVisibility();
+  }
+
   // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSolutionsCarousel);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSolutionsCarousel);
   } else {
     initSolutionsCarousel();
   }
 
   // Update controls visibility on resize
-  window.addEventListener('resize', updateControlsVisibility);
+  window.addEventListener("resize", updateControlsVisibility);
 </script>
 
 <style>
   .solutions-carousel-wrapper {
     width: 100%;
     margin-top: var(--spacing-8);
+    position: relative;
   }
 
   .solutions-carousel-container {
     position: relative;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
   }
 
   .solutions-carousel-track {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
     gap: var(--spacing-6);
     overflow-x: auto;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    padding: var(--spacing-2) 0;
+    flex: 1;
+    width: 100%;
   }
 
   .solutions-carousel-track::-webkit-scrollbar {
@@ -179,7 +248,9 @@ const { solutions = [], lang = 'es' } = Astro.props;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-4);
-    min-width: 280px;
+    flex: 0 0 auto;
+    width: calc(100% - var(--spacing-6));
+    max-width: 344px;
     scroll-snap-align: start;
   }
 
@@ -189,21 +260,19 @@ const { solutions = [], lang = 'es' } = Astro.props;
   }
 
   .solution-icon {
-    width: 80px;
-    height: 80px;
+    width: 104px;
+    height: 104px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-bayer-secondary);
-    border-radius: 50%;
+    background: transparent;
     flex-shrink: 0;
   }
 
   .solution-icon img {
-    width: 48px;
-    height: 48px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: brightness(0) invert(1);
   }
 
   .solution-logo {
@@ -228,31 +297,36 @@ const { solutions = [], lang = 'es' } = Astro.props;
     text-align: center;
   }
 
-  .carousel-controls {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-4);
-    margin-top: var(--spacing-6);
-  }
-
   .carousel-button {
-    background: var(--gradient-button-primary);
-    color: var(--color-white);
-    border: none;
+    background: var(--color-white);
+    color: var(--color-bayer-secondary);
+    border: 2px solid var(--color-bayer-secondary);
     border-radius: var(--radius-full);
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all var(--transition-fast);
     box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+  }
+
+  .carousel-button svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--color-bayer-secondary);
   }
 
   .carousel-button:hover {
-    opacity: 0.9;
+    background: var(--color-bayer-secondary);
+    color: var(--color-white);
     transform: scale(1.05);
+  }
+
+  .carousel-button:hover svg {
+    stroke: var(--color-white);
   }
 
   .carousel-button:active {
@@ -262,35 +336,65 @@ const { solutions = [], lang = 'es' } = Astro.props;
   .carousel-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   @media (max-width: 767px) {
-    .carousel-controls {
+    .carousel-button {
       display: none;
-    }
-    
-    .solutions-carousel-track {
-      scroll-snap-type: x mandatory;
     }
 
     .solution-card {
-      scroll-snap-align: start;
+      width: calc(100vw - var(--spacing-8));
+      max-width: 344px;
     }
   }
 
-  /* Tablet: 2 columns */
+  /* Tablet: 2 columns visible */
   @media (min-width: 768px) and (max-width: 1023px) {
-    .solutions-carousel-track {
-      grid-template-columns: repeat(2, minmax(280px, 1fr));
+    .solution-card {
+      width: calc((100% - var(--spacing-6)) / 2);
+      max-width: 344px;
     }
   }
 
-  /* Desktop: 3-4 columns with horizontal scroll */
+  /* Desktop: 4 columns visible with scroll */
   @media (min-width: 1024px) {
+    .solutions-carousel-wrapper {
+      max-width: 1600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 var(--spacing-8);
+    }
+
+    .solutions-carousel-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+
+    .carousel-button {
+      display: flex;
+      flex-shrink: 0;
+    }
+
     .solutions-carousel-track {
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      max-width: 100%;
+      flex: 1;
+      width: auto;
+    }
+
+    .solution-card {
+      width: calc((100% - (3 * var(--spacing-6))) / 4);
+      max-width: 344px;
+      min-width: 280px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .solutions-carousel-wrapper {
+      padding: 0 var(--spacing-12);
     }
   }
 </style>
-

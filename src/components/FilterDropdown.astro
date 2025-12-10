@@ -331,14 +331,56 @@ const isSeedActive = selectedSeed !== null;
       filtered = filtered.filter(p => p.proteccion?.toLowerCase() === currentFilterState.proteccion);
     }
     
+    // Check if filters are active
+    const hasActiveFilters = !!(currentFilterState.tipoSemilla || 
+                                 currentFilterState.uso || 
+                                 currentFilterState.zona || 
+                                 (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos'));
+    
     // Dispatch updateProducts event to update carousel
     setTimeout(() => {
-      const event = new CustomEvent('updateProducts', { detail: { products: filtered } });
+      const event = new CustomEvent('updateProducts', { 
+        detail: { 
+          products: filtered,
+          isFiltered: hasActiveFilters,
+          totalProducts: allProducts.length
+        } 
+      });
       document.dispatchEvent(event);
     }, 50);
     
     // Update visual state of filter tags
     updateFilterTagStates();
+    
+    // Update disabled states after filter change
+    const container = getVisibleFilterContainer();
+    const seedValue = currentFilterState.tipoSemilla;
+    const usoTags = container.querySelectorAll('[data-filter="uso"]');
+    const zonaTags = container.querySelectorAll('[data-filter="zona"]');
+    
+    if (seedValue === 'maiz') {
+      usoTags.forEach(tag => {
+        tag.removeAttribute('disabled');
+        tag.style.opacity = '1';
+        tag.style.cursor = 'pointer';
+      });
+      zonaTags.forEach(tag => {
+        tag.removeAttribute('disabled');
+        tag.style.opacity = '1';
+        tag.style.cursor = 'pointer';
+      });
+    } else {
+      usoTags.forEach(tag => {
+        tag.setAttribute('disabled', 'true');
+        tag.style.opacity = '0.5';
+        tag.style.cursor = 'not-allowed';
+      });
+      zonaTags.forEach(tag => {
+        tag.setAttribute('disabled', 'true');
+        tag.style.opacity = '0.5';
+        tag.style.cursor = 'not-allowed';
+      });
+    }
   }
   
   // Update visual state of filter tags based on currentFilterState

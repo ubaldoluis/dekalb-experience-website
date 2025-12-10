@@ -135,7 +135,7 @@
   
   /* Gradients - Extraídos de Figma */
   --gradient-button-primary: linear-gradient(to right, #009ddb 30%, #005475 100%);
-  --gradient-hero-solutions: linear-gradient(to bottom, #ffffff 0%, #005475 100%);
+  --gradient-hero-solutions: linear-gradient(to bottom, #005475 0%, #ffffff 100%);
   --gradient-card-solutions: linear-gradient(to bottom, #ffffff 0%, #e9e7e4 100%);
   
   /* Component Specific - Shared */
