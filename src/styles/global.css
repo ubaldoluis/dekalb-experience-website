@@ -23,8 +23,8 @@ html {
 body {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
-  line-height: var(--line-height-normal);
-  color: var(--color-gray-900);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
   background-color: var(--color-white);
   min-height: 100vh;
 }
@@ -34,7 +34,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
-  color: var(--color-gray-900);
+  color: var(--color-text-primary);
 }
 
 h1 {
@@ -66,17 +66,17 @@ p {
 }
 
 a {
-  color: var(--color-dekalb-primary);
+  color: var(--color-bayer-secondary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-dekalb-primary-dark);
+  color: var(--color-bayer-secondary-dark);
 }
 
 a:focus {
-  outline: 2px solid var(--color-dekalb-primary);
+  outline: 2px solid var(--color-bayer-secondary);
   outline-offset: 2px;
 }
 
@@ -102,7 +102,7 @@ button {
 }
 
 button:focus {
-  outline: 2px solid var(--color-dekalb-primary);
+  outline: 2px solid var(--color-bayer-secondary);
   outline-offset: 2px;
 }
 
@@ -118,7 +118,7 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid var(--color-dekalb-primary);
+  outline: 2px solid var(--color-bayer-secondary);
   outline-offset: 2px;
 }
 
@@ -140,7 +140,7 @@ select:focus {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--color-dekalb-primary);
+  background: var(--color-bayer-secondary);
   color: var(--color-white);
   padding: var(--spacing-2) var(--spacing-4);
   z-index: var(--z-index-tooltip);

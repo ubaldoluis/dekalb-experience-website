@@ -415,10 +415,18 @@ const t = translations[lang];
 
 <style>
   .product-filter {
-    background-color: var(--color-gray-50);
+    background-color: rgba(255, 255, 255, var(--filter-opacity-mobile));
     padding: var(--spacing-6);
-    border-radius: var(--radius-lg);
+    border-radius: var(--filter-border-radius-mobile);
     margin-bottom: var(--spacing-8);
+  }
+
+  @media (min-width: 768px) {
+    .product-filter {
+      background-color: rgba(255, 255, 255, var(--filter-opacity-desktop));
+      border-radius: var(--filter-border-radius-desktop);
+      border: 1px solid var(--filter-border-color-desktop);
+    }
   }
 
   .filter-form {
@@ -454,29 +462,52 @@ const t = translations[lang];
   .filter-button {
     padding: var(--spacing-2) var(--spacing-4);
     background-color: var(--color-white);
-    border: 2px solid var(--color-gray-300);
-    border-radius: var(--radius-md);
-    color: var(--color-gray-700);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-sm);
+    border: 1px solid var(--filter-border-color-desktop);
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-secondary);
     cursor: pointer;
     transition: all var(--transition-fast);
+    line-height: var(--line-height-normal);
+  }
+
+  @media (max-width: 767px) {
+    .filter-button {
+      border: none;
+    }
   }
 
   .filter-button:hover {
-    border-color: var(--color-dekalb-primary);
-    color: var(--color-dekalb-primary);
+    border-color: var(--color-bayer-secondary);
+    color: var(--color-bayer-secondary);
   }
 
   .filter-button-active {
-    background-color: var(--color-dekalb-primary);
-    border-color: var(--color-dekalb-primary);
+    background-color: var(--color-bayer-secondary);
+    border-color: var(--color-bayer-secondary);
     color: var(--color-white);
   }
 
+  @media (min-width: 768px) {
+    .filter-button-active {
+      background-color: var(--filter-active-bg-desktop);
+      border-color: var(--filter-border-color-desktop);
+      color: var(--color-text-primary);
+    }
+  }
+
   .filter-button-active:hover {
-    background-color: var(--color-dekalb-primary-dark);
-    border-color: var(--color-dekalb-primary-dark);
+    background-color: var(--color-bayer-secondary-dark);
+    border-color: var(--color-bayer-secondary-dark);
+  }
+
+  @media (min-width: 768px) {
+    .filter-button-active:hover {
+      background-color: var(--filter-active-bg-desktop);
+      border-color: var(--filter-border-color-desktop);
+    }
   }
 
   @media (max-width: 767px) {

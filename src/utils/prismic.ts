@@ -3,7 +3,7 @@
  */
 
 import * as prismic from '@prismicio/client';
-import type { Producto, Articulo, CatalogoPDF } from '../types';
+import type { Producto, Articulo, CatalogoPDF, HomeContent } from '../types';
 
 const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || '';
 const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || '';
@@ -49,11 +49,11 @@ export async function getAllProducts(locale: string = 'es'): Promise<Producto[]>
           }
         : undefined,
       claim: doc.data.claim || undefined,
-      tipo_semilla: (doc.data.tipo_semilla as 'maiz' | 'colza') || 'maiz',
-      uso: doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
-      zona: doc.data.zona as any,
+      tipo_semilla: (typeof doc.data.tipo_semilla === 'string' ? doc.data.tipo_semilla.toLowerCase() : doc.data.tipo_semilla) as 'maiz' | 'colza' || 'maiz',
+      uso: typeof doc.data.uso === 'string' ? doc.data.uso.toLowerCase() as 'grano' | 'silo' | 'preceon' : doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
+      zona: typeof doc.data.zona === 'string' ? doc.data.zona.toLowerCase() : doc.data.zona as any,
       categoria: (doc.data.categoria as any) || 'maiz-grano',
-      proteccion: (doc.data.proteccion as any) || 'todos',
+      proteccion: (typeof doc.data.proteccion === 'string' ? doc.data.proteccion.toLowerCase() : doc.data.proteccion) as 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos' || 'todos',
       beneficios: doc.data.beneficios 
         ? (Array.isArray(doc.data.beneficios) 
             ? doc.data.beneficios.map((b: any) => {
@@ -100,11 +100,11 @@ export async function getProductById(id: string, locale: string = 'es'): Promise
           }
         : undefined,
       claim: doc.data.claim || undefined,
-      tipo_semilla: (doc.data.tipo_semilla as 'maiz' | 'colza') || 'maiz',
-      uso: doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
-      zona: doc.data.zona as any,
+      tipo_semilla: (typeof doc.data.tipo_semilla === 'string' ? doc.data.tipo_semilla.toLowerCase() : doc.data.tipo_semilla) as 'maiz' | 'colza' || 'maiz',
+      uso: typeof doc.data.uso === 'string' ? doc.data.uso.toLowerCase() as 'grano' | 'silo' | 'preceon' : doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
+      zona: typeof doc.data.zona === 'string' ? doc.data.zona.toLowerCase() : doc.data.zona as any,
       categoria: (doc.data.categoria as any) || 'maiz-grano',
-      proteccion: (doc.data.proteccion as any) || 'todos',
+      proteccion: (typeof doc.data.proteccion === 'string' ? doc.data.proteccion.toLowerCase() : doc.data.proteccion) as 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos' || 'todos',
       beneficios: doc.data.beneficios 
         ? (Array.isArray(doc.data.beneficios) 
             ? doc.data.beneficios.map((b: any) => {
@@ -203,6 +203,37 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
     };
   } catch (error) {
     console.error('Error fetching article:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch home content from Prismic
+ */
+export async function getHomeContent(locale: string = 'es'): Promise<HomeContent | null> {
+  try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return null;
+    }
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    const doc = await client.getSingle('home', { lang: prismicLocale });
+    
+    return {
+      hero: {
+        title: doc.data.hero_title || 'DEKALB EXPERIENCE',
+        claim: doc.data.hero_claim || 'Siempre a tu lado',
+      },
+      solutions: {
+        integralMaiz: doc.data.solutions_integral_maiz || 'Soluciones Integrales para Maíz',
+        fieldview: doc.data.solutions_fieldview || 'FieldView',
+        protection: doc.data.solutions_protection || 'Protección de Cultivo',
+        preceon: doc.data.solutions_preceon || 'Smart Corn System PRECEON',
+        avoidProblems: doc.data.solutions_avoid_problems || 'Evita problemas con tu maíz',
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching home content:', error);
     return null;
   }
 }

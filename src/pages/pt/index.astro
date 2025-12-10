@@ -1,20 +1,35 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
-import ProductFilter from '../../components/ProductFilter.astro';
+import FilterDropdown from '../../components/FilterDropdown.astro';
 import ProductCarousel from '../../components/ProductCarousel.astro';
 import ProductModal from '../../components/ProductModal.astro';
 import SolutionsHero from '../../components/SolutionsHero.astro';
-import BenefitsGrid from '../../components/BenefitsGrid.astro';
+import SolutionsCarousel from '../../components/SolutionsCarousel.astro';
 import CTASection from '../../components/CTASection.astro';
 import { getAllProducts, getAllArticles } from '../../utils/prismic';
 import { filterProducts, getDefaultFilterState, searchParamsToFilterState } from '../../utils/filterLogic';
 import type { Producto, FilterState } from '../../types';
 
 const lang = 'pt';
-const translations = {
+
+// Fetch products and articles
+let allProducts: Producto[] = [];
+let articles: any[] = [];
+let prismicHomeContent = null;
+
+try {
+  allProducts = await getAllProducts(lang);
+  articles = await getAllArticles(lang);
+  prismicHomeContent = await getHomeContent(lang);
+} catch (error) {
+  console.error('Error fetching data:', error);
+}
+
+// Use Prismic content if available, otherwise use mockup
+const homeContent = prismicHomeContent || {
   hero: {
     title: 'DEKALB EXPERIENCE',
-    claim: 'Especialistas ao seu lado',
+    claim: 'Sempre ao seu lado',
   },
   solutions: {
     integralMaiz: 'Soluções Integrais para Milho',
@@ -24,17 +39,6 @@ const translations = {
     avoidProblems: 'Evite problemas com seu milho',
   },
 };
-
-// Fetch products and articles
-let allProducts: Producto[] = [];
-let articles: any[] = [];
-
-try {
-  allProducts = await getAllProducts(lang);
-  articles = await getAllArticles(lang);
-} catch (error) {
-  console.error('Error fetching data:', error);
-}
 
 // Get filter state from URL params
 const url = Astro.url;
@@ -47,34 +51,91 @@ const filteredProducts = filterProducts(allProducts, filterState);
 const latestArticles = articles.slice(0, 3);
 ---
 
-<PageLayout title={translations.hero.title} description={translations.hero.claim} lang={lang}>
-  <!-- Hero Section -->
-  <SolutionsHero 
-    title={translations.hero.title}
-    subtitle={translations.hero.claim}
-  />
-
-  <!-- Products Section -->
-  <section id="productos" class="products-section">
-    <div class="container">
-      <h2 class="section-title">Produtos</h2>
-      <ProductFilter filterState={filterState} lang={lang} />
-      <ProductCarousel products={filteredProducts} lang={lang} />
+<PageLayout title={homeContent.hero.title} description={homeContent.hero.claim} lang={lang}>
+  <!-- Hero + Products Section (Desktop) -->
+  <section class="hero-products-section">
+    <div class="hero-products-background"></div>
+    <div class="hero-products-overlay"></div>
+    <div class="hero-products-container">
+      <!-- Hero Content -->
+      <div class="hero-products-header">
+        <h1 class="hero-products-title">{homeContent.hero.title}</h1>
+        <p class="hero-products-subtitle">{homeContent.hero.claim}</p>
+      </div>
+      
+      <!-- Filters -->
+      <div class="hero-products-filters">
+        <FilterDropdown filterState={filterState} lang={lang} />
+      </div>
+      
+      <!-- Products Carousel -->
+      <div class="hero-products-carousel">
+        <ProductCarousel products={filteredProducts} lang={lang} carouselId="product-carousel-desktop" />
+      </div>
     </div>
   </section>
 
-  <!-- Solutions Integrales para Maíz -->
+  <!-- Mobile: Separate Hero Section -->
+  <section class="mobile-hero-section">
+    <SolutionsHero 
+      title={homeContent.hero.title}
+      subtitle={homeContent.hero.claim}
+    />
+  </section>
+
+  <!-- Mobile: Products Section -->
+  <section id="productos" class="mobile-products-section">
+    <div class="container">
+      <h2 class="section-title">Produtos</h2>
+      <FilterDropdown filterState={filterState} lang={lang} />
+      <ProductCarousel products={filteredProducts} lang={lang} carouselId="product-carousel-mobile" />
+    </div>
+  </section>
+
+  <!-- Solutions Section -->
   <section id="soluciones" class="solutions-section">
     <div class="container">
-      <h2 class="section-title">{translations.solutions.integralMaiz}</h2>
-      <BenefitsGrid 
-        benefits={[
-          { title: 'Yieldguard', description: 'Proteção avançada contra pragas' },
-          { title: 'Acceleron', description: 'Melhoria do rendimento' },
-          { title: 'FieldShield', description: 'Proteção integral da cultura' },
-          { title: 'Silo Extra', description: 'Otimização para silagem' },
+      <h2 class="section-title">Soluções</h2>
+      <p class="section-description">Descubra nossas soluções integrais para o cultivo de milho.</p>
+      <SolutionsCarousel 
+        solutions={[
+          { 
+            id: 'acceleron',
+            name: 'Acceleron',
+            description: 'Protege e nutre seu milho com Acceleron® para uma cultura saudável e produtiva.',
+            logo: '/Logo_Acceleron.svg',
+            icon: '/Icon_Acceleron.svg'
+          },
+          { 
+            id: 'fieldshield',
+            name: 'FieldShield',
+            description: 'Fortalece seu milho. FieldShield reduz o risco de doenças e melhora o rendimento.',
+            logo: '/Logo_Fieldshield.svg',
+            icon: '/Icon_FieldShield.svg'
+          },
+          { 
+            id: 'silo-extra',
+            name: 'Silo Extra',
+            description: 'Mais qualidade, mais quantidade. Descubra os híbridos SiloExtra e melhore sua colheita.',
+            logo: '/Logo_SiloExtra.svg',
+            icon: '/Icon_SiloExtra.svg'
+          },
+          { 
+            id: 'preceon',
+            name: 'Preceon',
+            description: 'Proteja seu milho desde o primeiro dia com as soluções Bayer mais eficazes.',
+            logo: '/Logo_Preceon.svg',
+            icon: '/Icon_Preceon.svg'
+          },
+          { 
+            id: 'fieldview',
+            name: 'FieldView',
+            description: 'Aproveite seus dados. Acesse FieldView e tome decisões mais inteligentes em cada campanha.',
+            logo: '/Logo_Fieldview.svg',
+            icon: '/Icon_FieldView.svg'
+          },
         ]}
-        columns={4}
+        lang={lang}
       />
     </div>
   </section>
@@ -83,7 +144,7 @@ const latestArticles = articles.slice(0, 3);
   <section class="fieldview-section">
     <div class="container">
       <CTASection
-        title={translations.solutions.fieldview}
+        title={homeContent.solutions.fieldview}
         description="Plataforma digital para gestão agrícola avançada"
         buttonText="Saber mais"
         buttonLink="/pt/fieldview"
@@ -97,7 +158,7 @@ const latestArticles = articles.slice(0, 3);
   <section class="protection-section">
     <div class="container">
       <CTASection
-        title={translations.solutions.protection}
+        title={homeContent.solutions.protection}
         description="Soluções inovadoras para a proteção das suas culturas"
         buttonText="Ver soluções"
         buttonLink="/pt/#soluciones"
@@ -111,7 +172,7 @@ const latestArticles = articles.slice(0, 3);
   <section class="preceon-section">
     <div class="container">
       <div class="preceon-content">
-        <h2 class="preceon-title">{translations.solutions.preceon}</h2>
+        <h2 class="preceon-title">{homeContent.solutions.preceon}</h2>
         <p class="preceon-description">
           Sistema inteligente de gestão para milho com tecnologia de ponta.
         </p>
@@ -124,7 +185,7 @@ const latestArticles = articles.slice(0, 3);
   <section class="avoid-problems-section">
     <div class="container">
       <CTASection
-        title={translations.solutions.avoidProblems}
+        title={homeContent.solutions.avoidProblems}
         buttonText="Ver guias"
         buttonLink="/pt/evita-problemas"
         variant="primary"
@@ -191,17 +252,133 @@ const latestArticles = articles.slice(0, 3);
 </PageLayout>
 
 <style>
+  /* Hero + Products Combined Section (Desktop) */
+  .hero-products-section {
+    position: relative;
+    min-height: 80vh;
+    display: none;
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-products-section {
+      display: block;
+    }
+  }
+
+  .hero-products-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/Frame_1410119213.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+
+  .hero-products-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.2) 100%);
+    z-index: 1;
+  }
+
+  .hero-products-container {
+    position: relative;
+    z-index: 2;
+    padding-top: calc(var(--header-height) + var(--spacing-8));
+    padding-bottom: var(--spacing-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+    min-height: calc(100vh - var(--header-height));
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Hide section title in desktop hero-products section */
+  .hero-products-section .section-title {
+    display: none;
+  }
+
+  .hero-products-header {
+    text-align: center;
+    color: var(--color-white);
+  }
+
+  .hero-products-title {
+    font-size: var(--hero-title-size);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-3);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+
+  .hero-products-subtitle {
+    font-size: var(--hero-subtitle-size);
+    color: var(--color-white);
+    margin: 0;
+    line-height: var(--line-height-normal);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .hero-products-filters {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-products-carousel {
+    width: 100%;
+  }
+
+  /* Mobile: Separate Sections */
+  .mobile-hero-section {
+    display: block;
+  }
+
+  .mobile-products-section {
+    display: block;
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-white);
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-hero-section,
+    .mobile-products-section {
+      display: none;
+    }
+  }
+
   .products-section {
     padding: var(--spacing-16) 0;
     background-color: var(--color-white);
   }
 
   .section-title {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-4xl);
     font-weight: var(--font-weight-bold);
     text-align: center;
+    margin-bottom: var(--spacing-4);
+    color: var(--color-white);
+    line-height: var(--line-height-tight);
+  }
+
+  .section-description {
+    font-size: var(--font-size-lg);
+    text-align: center;
     margin-bottom: var(--spacing-8);
-    color: var(--color-gray-900);
+    color: var(--color-white);
+    line-height: var(--line-height-relaxed);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .solutions-section {

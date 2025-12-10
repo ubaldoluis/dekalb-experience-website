@@ -1,0 +1,8 @@
+<svg width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="52" cy="52" r="52" fill="#009ddb"/>
+  <path d="M52 15L20 25V40C20 55 35 67 52 73C69 67 84 55 84 40V25L52 15Z" fill="white"/>
+  <path d="M52 20L25 28V40C25 53 38 63 52 68C66 63 79 53 79 40V28L52 20Z" fill="#009ddb" opacity="0.3"/>
+  <path d="M45 38L48 45L52 42L56 45L59 38L52 35L45 38Z" fill="white"/>
+  <path d="M52 48L45 55L52 62L59 55L52 48Z" fill="white"/>
+</svg>
+

@@ -1,0 +1,943 @@
+---
+import type { FilterState } from '../types/index';
+
+interface Props {
+  filterState?: FilterState;
+  lang?: 'es' | 'pt';
+}
+
+const { filterState, lang = 'es' } = Astro.props;
+
+const translations = {
+  es: {
+    seedType: 'Tipo de semilla',
+    use: 'Uso o categoría',
+    zone: 'Zona geográfica',
+    protection: 'Protección de Cultivo',
+    maiz: 'Maíz',
+    colza: 'Colza',
+    grano: 'Grano',
+    silo: 'Silo',
+    preceon: 'Preceon',
+    ebro: 'Ebro',
+    centroSur: 'Centro Sur, Extremadura, Andalucía',
+    noroeste: 'Noroeste',
+    portugal: 'Portugal',
+    todos: 'Todos',
+    herbicida: 'Herbicida',
+    insecticida: 'Insecticida',
+    bioestimulante: 'Bioestimulante',
+    clearFilters: 'Borrar filtros',
+    filter: 'Filtrar',
+  },
+  pt: {
+    seedType: 'Tipo de Semente',
+    use: 'Uso ou Categoria',
+    zone: 'Zona Geográfica',
+    protection: 'Proteção de Cultivo',
+    maiz: 'Milho',
+    colza: 'Colza',
+    grano: 'Grão',
+    silo: 'Silagem',
+    preceon: 'Preceon',
+    ebro: 'Ebro',
+    centroSur: 'Centro Sul, Extremadura, Andaluzia',
+    noroeste: 'Noroeste',
+    portugal: 'Portugal',
+    todos: 'Todos',
+    herbicida: 'Herbicida',
+    insecticida: 'Inseticida',
+    bioestimulante: 'Bioestimulante',
+    clearFilters: 'Limpar filtros',
+    filter: 'Filtrar',
+  },
+};
+
+const t = translations[lang];
+
+// Get current selected values
+const selectedSeed = filterState?.tipoSemilla || null;
+const selectedUse = filterState?.uso || null;
+const selectedZone = filterState?.zona || null;
+const selectedProtection = filterState?.proteccion || 'todos';
+
+// Seed options
+const seedOptions = [
+  { value: 'maiz', label: t.maiz },
+  { value: 'colza', label: t.colza },
+];
+
+// Use options
+const useOptions = [
+  { value: 'grano', label: t.grano },
+  { value: 'silo', label: t.silo },
+  { value: 'preceon', label: t.preceon },
+];
+
+// Zone options
+const zoneOptions = [
+  { value: 'ebro', label: t.ebro },
+  { value: 'centro-sur-extremadura-andalucia', label: t.centroSur },
+  { value: 'noroeste', label: t.noroeste },
+  { value: 'portugal', label: t.portugal },
+];
+
+// Protection options
+const protectionOptions = [
+  { value: 'todos', label: t.todos },
+  { value: 'herbicida', label: t.herbicida },
+  { value: 'insecticida', label: t.insecticida },
+  { value: 'bioestimulante', label: t.bioestimulante },
+];
+
+// Get display text for dropdowns
+const getSeedDisplayText = () => {
+  if (!selectedSeed) return t.seedType;
+  const option = seedOptions.find(opt => opt.value === selectedSeed);
+  return option ? option.label : t.seedType;
+};
+
+const getUseDisplayText = () => {
+  if (!selectedUse) return t.use;
+  const option = useOptions.find(opt => opt.value === selectedUse);
+  return option ? option.label : t.use;
+};
+
+const getZoneDisplayText = () => {
+  if (!selectedZone) return t.zone;
+  const option = zoneOptions.find(opt => opt.value === selectedZone);
+  return option ? option.label : t.zone;
+};
+
+const getProtectionDisplayText = () => {
+  const option = protectionOptions.find(opt => opt.value === selectedProtection);
+  return option ? option.label : t.protection;
+};
+---
+
+<div class="filter-dropdowns-container">
+  <div class="filter-dropdowns">
+    <!-- Tipo de Semilla Dropdown -->
+    <div class="filter-dropdown-wrapper">
+      <button 
+        type="button"
+        class="filter-dropdown-trigger"
+        id="seed-dropdown-trigger"
+        aria-expanded="false"
+        aria-haspopup="true"
+      >
+        <img src="/Icon_Planta.svg" alt="" class="filter-icon" />
+        <span class="filter-dropdown-text">{getSeedDisplayText()}</span>
+        <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="filter-dropdown-menu" id="seed-dropdown-menu" role="menu">
+        <button
+          type="button"
+          class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedSeed === null }]}
+          data-filter="tipoSemilla"
+          data-value=""
+          role="menuitem"
+        >
+          {t.seedType}
+        </button>
+        {seedOptions.map((option) => (
+          <button
+            type="button"
+            class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedSeed === option.value }]}
+            data-filter="tipoSemilla"
+            data-value={option.value}
+            role="menuitem"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Uso o Categoría Dropdown -->
+    <div class="filter-dropdown-wrapper">
+      <button 
+        type="button"
+        class="filter-dropdown-trigger"
+        id="use-dropdown-trigger"
+        aria-expanded="false"
+        aria-haspopup="true"
+        disabled={!selectedSeed || selectedSeed !== 'maiz'}
+      >
+        <img src="/Icon_Category.svg" alt="" class="filter-icon" />
+        <span class="filter-dropdown-text">{getUseDisplayText()}</span>
+        <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="filter-dropdown-menu" id="use-dropdown-menu" role="menu">
+        <button
+          type="button"
+          class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedUse === null }]}
+          data-filter="uso"
+          data-value=""
+          role="menuitem"
+        >
+          {t.use}
+        </button>
+        {useOptions.map((option) => (
+          <button
+            type="button"
+            class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedUse === option.value }]}
+            data-filter="uso"
+            data-value={option.value}
+            role="menuitem"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Zona Geográfica Dropdown -->
+    <div class="filter-dropdown-wrapper">
+      <button 
+        type="button"
+        class="filter-dropdown-trigger"
+        id="zone-dropdown-trigger"
+        aria-expanded="false"
+        aria-haspopup="true"
+        disabled={!selectedSeed || selectedSeed !== 'maiz'}
+      >
+        <img src="/Icon_Location.svg" alt="" class="filter-icon" />
+        <span class="filter-dropdown-text">{getZoneDisplayText()}</span>
+        <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="filter-dropdown-menu" id="zone-dropdown-menu" role="menu">
+        <button
+          type="button"
+          class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedZone === null }]}
+          data-filter="zona"
+          data-value=""
+          role="menuitem"
+        >
+          {t.zone}
+        </button>
+        {zoneOptions.map((option) => (
+          <button
+            type="button"
+            class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedZone === option.value }]}
+            data-filter="zona"
+            data-value={option.value}
+            role="menuitem"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Protección de Cultivo Dropdown -->
+    <div class="filter-dropdown-wrapper">
+      <button 
+        type="button"
+        class="filter-dropdown-trigger"
+        id="protection-dropdown-trigger"
+        aria-expanded="false"
+        aria-haspopup="true"
+      >
+        <img src="/Icon_Seguridad.svg" alt="" class="filter-icon" />
+        <span class="filter-dropdown-text">{getProtectionDisplayText()}</span>
+        <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="filter-dropdown-menu" id="protection-dropdown-menu" role="menu">
+        {protectionOptions.map((option) => (
+          <button
+            type="button"
+            class:list={['filter-dropdown-item', { 'filter-dropdown-item-active': selectedProtection === option.value }]}
+            data-filter="proteccion"
+            data-value={option.value}
+            role="menuitem"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="filter-actions">
+    <button type="button" class="filter-action-link" id="clear-filters">
+      {t.clearFilters}
+    </button>
+    <button type="button" class="filter-action-link" id="apply-filters">
+      {t.filter}
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ filterStateJson: JSON.stringify(filterState || {}) }}>
+  // Parse filterState from JSON string (Astro serialization)
+  const serverFilterState = JSON.parse(filterStateJson);
+  
+  // ALSO parse from current URL to ensure we have the latest state
+  // This is critical because the server-side state might not match the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlFilterState = {
+    tipoSemilla: urlParams.get('tipo') === 'maiz' || urlParams.get('tipo') === 'colza' ? urlParams.get('tipo') : undefined,
+    uso: urlParams.get('uso') || undefined,
+    zona: urlParams.get('zona') || undefined,
+    proteccion: urlParams.get('proteccion') || 'todos',
+  };
+  
+  // Use URL state as source of truth, fallback to server state
+  let currentFilterState = {
+    tipoSemilla: urlFilterState.tipoSemilla || serverFilterState.tipoSemilla || undefined,
+    uso: urlFilterState.uso || serverFilterState.uso || undefined,
+    zona: urlFilterState.zona || serverFilterState.zona || undefined,
+    proteccion: urlFilterState.proteccion || serverFilterState.proteccion || 'todos',
+  };
+  
+  console.log('🔍 [FilterDropdown] Server Filter State:', serverFilterState);
+  console.log('🔍 [FilterDropdown] URL Filter State:', urlFilterState);
+  console.log('🔍 [FilterDropdown] Current Filter State:', currentFilterState);
+  
+  // Update filter state and apply immediately
+  function updateFilterState(filter, value) {
+    console.log('🔍 [updateFilterState] Called with:', filter, value);
+    console.log('🔍 [updateFilterState] Current state before update:', JSON.stringify(currentFilterState));
+    console.trace('🔍 [updateFilterState] Call stack:');
+    
+    // Update current state
+    if (filter === 'tipoSemilla') {
+      // If value is empty string, clear it
+      if (value === '' || value === null || value === undefined) {
+        currentFilterState.tipoSemilla = undefined;
+      } else {
+        // Toggle: if clicking the same value, clear it
+        if (currentFilterState.tipoSemilla === value) {
+          currentFilterState.tipoSemilla = undefined;
+        } else {
+          currentFilterState.tipoSemilla = value;
+        }
+      }
+      // If switching to Colza or clearing tipoSemilla, clear uso and zona
+      if (currentFilterState.tipoSemilla === 'colza' || !currentFilterState.tipoSemilla) {
+        currentFilterState.uso = undefined;
+        currentFilterState.zona = undefined;
+      }
+    } else if (filter === 'uso') {
+      // If value is empty string, clear it
+      if (value === '' || value === null || value === undefined) {
+        currentFilterState.uso = undefined;
+      } else {
+        // Toggle: if clicking the same value, clear it
+        if (currentFilterState.uso === value) {
+          currentFilterState.uso = undefined;
+        } else {
+          currentFilterState.uso = value;
+        }
+      }
+    } else if (filter === 'zona') {
+      // If value is empty string, clear it
+      if (value === '' || value === null || value === undefined) {
+        currentFilterState.zona = undefined;
+      } else {
+        // Toggle: if clicking the same value, clear it
+        if (currentFilterState.zona === value) {
+          currentFilterState.zona = undefined;
+        } else {
+          currentFilterState.zona = value;
+        }
+      }
+    } else if (filter === 'proteccion') {
+      currentFilterState.proteccion = value || 'todos';
+    }
+
+    console.log('🔍 [updateFilterState] Current state after update:', JSON.stringify(currentFilterState));
+
+    // Build URL params from current state (preserving all active filters)
+    const params = new URLSearchParams();
+    if (currentFilterState.tipoSemilla) {
+      params.set('tipo', currentFilterState.tipoSemilla);
+    }
+    if (currentFilterState.uso) {
+      params.set('uso', currentFilterState.uso);
+    }
+    if (currentFilterState.zona) {
+      params.set('zona', currentFilterState.zona);
+    }
+    if (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos') {
+      params.set('proteccion', currentFilterState.proteccion);
+    }
+
+    console.log('🔍 [updateFilterState] New URL params:', params.toString());
+
+    // Reload page with new URL to apply filter server-side
+    const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    console.log('🔍 [updateFilterState] Navigating to:', newURL);
+    window.location.href = newURL;
+  }
+  
+  // Get translations based on lang attribute
+  function getTranslations() {
+    const htmlLang = document.documentElement.lang || 'es';
+    const isPt = htmlLang === 'pt' || htmlLang.startsWith('pt');
+    
+    return {
+      seedType: isPt ? 'Tipo de Semente' : 'Tipo de semilla',
+      use: isPt ? 'Uso ou Categoria' : 'Uso o categoría',
+      zone: isPt ? 'Zona Geográfica' : 'Zona geográfica',
+      protection: isPt ? 'Proteção de Cultivo' : 'Protección de Cultivo',
+      maiz: isPt ? 'Milho' : 'Maíz',
+      colza: 'Colza',
+      grano: isPt ? 'Grão' : 'Grano',
+      silo: isPt ? 'Silagem' : 'Silo',
+      preceon: 'Preceon',
+      ebro: 'Ebro',
+      centroSur: isPt ? 'Centro Sul, Extremadura, Andaluzia' : 'Centro Sur, Extremadura, Andalucía',
+      noroeste: 'Noroeste',
+      portugal: 'Portugal',
+      todos: 'Todos',
+      herbicida: 'Herbicida',
+      insecticida: isPt ? 'Inseticida' : 'Insecticida',
+      bioestimulante: isPt ? 'Bioestimulante' : 'Bioestimulante',
+    };
+  }
+  
+  // Update dropdown text based on current filter state
+  function updateDropdownTexts() {
+    const container = getVisibleFilterContainer();
+    const t = getTranslations();
+    
+    // Update seed dropdown text
+    const seedText = (container.querySelector('#seed-dropdown-trigger .filter-dropdown-text') || 
+                     document.querySelector('#seed-dropdown-trigger .filter-dropdown-text'));
+    if (seedText) {
+      if (currentFilterState.tipoSemilla) {
+        const seedOptions = [
+          { value: 'maiz', label: t.maiz },
+          { value: 'colza', label: t.colza },
+        ];
+        const option = seedOptions.find(opt => opt.value === currentFilterState.tipoSemilla);
+        seedText.textContent = option ? option.label : t.seedType;
+      } else {
+        seedText.textContent = t.seedType;
+      }
+    }
+    
+    // Update use dropdown text
+    const useText = (container.querySelector('#use-dropdown-trigger .filter-dropdown-text') || 
+                    document.querySelector('#use-dropdown-trigger .filter-dropdown-text'));
+    if (useText) {
+      if (currentFilterState.uso) {
+        const useOptions = [
+          { value: 'grano', label: t.grano },
+          { value: 'silo', label: t.silo },
+          { value: 'preceon', label: t.preceon },
+        ];
+        const option = useOptions.find(opt => opt.value === currentFilterState.uso);
+        useText.textContent = option ? option.label : t.use;
+      } else {
+        useText.textContent = t.use;
+      }
+    }
+    
+    // Update zone dropdown text
+    const zoneText = (container.querySelector('#zone-dropdown-trigger .filter-dropdown-text') || 
+                     document.querySelector('#zone-dropdown-trigger .filter-dropdown-text'));
+    if (zoneText) {
+      if (currentFilterState.zona) {
+        const zoneOptions = [
+          { value: 'ebro', label: t.ebro },
+          { value: 'centro-sur-extremadura-andalucia', label: t.centroSur },
+          { value: 'noroeste', label: t.noroeste },
+          { value: 'portugal', label: t.portugal },
+        ];
+        const option = zoneOptions.find(opt => opt.value === currentFilterState.zona);
+        zoneText.textContent = option ? option.label : t.zone;
+      } else {
+        zoneText.textContent = t.zone;
+      }
+    }
+    
+    // Update protection dropdown text
+    const protectionText = (container.querySelector('#protection-dropdown-trigger .filter-dropdown-text') || 
+                           document.querySelector('#protection-dropdown-trigger .filter-dropdown-text'));
+    if (protectionText) {
+      const protectionOptions = [
+        { value: 'todos', label: t.todos },
+        { value: 'herbicida', label: t.herbicida },
+        { value: 'insecticida', label: t.insecticida },
+        { value: 'bioestimulante', label: t.bioestimulante },
+      ];
+      const option = protectionOptions.find(opt => opt.value === currentFilterState.proteccion);
+      protectionText.textContent = option ? option.label : t.protection;
+    }
+  }
+  
+  // Update dropdown states based on current filter state
+  function updateDropdownStates() {
+    const container = getVisibleFilterContainer();
+    const useTrigger = container.querySelector('#use-dropdown-trigger') || document.getElementById('use-dropdown-trigger');
+    const zoneTrigger = container.querySelector('#zone-dropdown-trigger') || document.getElementById('zone-dropdown-trigger');
+    
+    // Enable/disable uso and zona based on tipoSemilla
+    if (currentFilterState.tipoSemilla === 'maiz') {
+      if (useTrigger) {
+        useTrigger.removeAttribute('disabled');
+        useTrigger.style.opacity = '1';
+        useTrigger.style.cursor = 'pointer';
+      }
+      if (zoneTrigger) {
+        zoneTrigger.removeAttribute('disabled');
+        zoneTrigger.style.opacity = '1';
+        zoneTrigger.style.cursor = 'pointer';
+      }
+    } else {
+      if (useTrigger) {
+        useTrigger.setAttribute('disabled', 'true');
+        useTrigger.style.opacity = '0.5';
+        useTrigger.style.cursor = 'not-allowed';
+      }
+      if (zoneTrigger) {
+        zoneTrigger.setAttribute('disabled', 'true');
+        zoneTrigger.style.opacity = '0.5';
+        zoneTrigger.style.cursor = 'not-allowed';
+      }
+    }
+    
+    // Update dropdown texts
+    updateDropdownTexts();
+    
+    console.log('🔍 [updateDropdownStates] Updated texts for:', {
+      tipoSemilla: currentFilterState.tipoSemilla,
+      uso: currentFilterState.uso,
+      zona: currentFilterState.zona,
+      proteccion: currentFilterState.proteccion
+    });
+  }
+  
+  // Store reference to visible container
+  let visibleFilterContainer = null;
+  
+  function getVisibleFilterContainer() {
+    if (visibleFilterContainer) {
+      const rect = visibleFilterContainer.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0 && 
+                       window.getComputedStyle(visibleFilterContainer).display !== 'none';
+      if (isVisible) return visibleFilterContainer;
+    }
+    
+    // Find visible container
+    const filterContainers = document.querySelectorAll('.filter-dropdowns-container');
+    for (const container of filterContainers) {
+      const rect = container.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0 && 
+                       window.getComputedStyle(container).display !== 'none';
+      if (isVisible) {
+        visibleFilterContainer = container;
+        return container;
+      }
+    }
+    
+    // Fallback: return first container or document
+    return filterContainers[0] || document;
+  }
+  
+  // Dropdown functionality
+  function initDropdown(dropdownId) {
+    const triggerId = `${dropdownId}-trigger`;
+    const menuId = `${dropdownId}-menu`;
+    
+    // Always use the visible container to find elements
+    const container = getVisibleFilterContainer();
+    
+    // Search within the visible container first, then fallback to document
+    let trigger = container.querySelector(`#${triggerId}`);
+    let menu = container.querySelector(`#${menuId}`);
+    
+    // If not found in visible container, try document (fallback)
+    if (!trigger) {
+      trigger = document.getElementById(triggerId);
+    }
+    if (!menu) {
+      menu = document.getElementById(menuId);
+    }
+    
+    // If still not found, try finding within the container's parent
+    if (!trigger || !menu) {
+      const wrapper = container.closest('.filter-dropdown-wrapper') || container.parentElement;
+      if (wrapper) {
+        trigger = trigger || wrapper.querySelector(`#${triggerId}`);
+        menu = menu || wrapper.querySelector(`#${menuId}`);
+      }
+    }
+    
+    console.log(`🔍 [initDropdown] ${dropdownId}:`, {
+      triggerId,
+      menuId,
+      triggerFound: !!trigger,
+      menuFound: !!menu,
+      containerFound: !!container
+    });
+    
+    if (!trigger || !menu) {
+      console.warn(`⚠️ [initDropdown] ${dropdownId}: Elements not found`);
+      return false;
+    }
+    
+    // Toggle dropdown - only attach if not already attached
+    if (trigger.hasAttribute('data-trigger-listener-attached')) {
+      console.log(`⚠️ [initDropdown] ${dropdownId}: Trigger listener already attached, skipping`);
+      return true;
+    }
+    trigger.setAttribute('data-trigger-listener-attached', 'true');
+    
+    trigger.addEventListener('click', (e) => {
+      console.log(`🔍 [Dropdown] ${dropdownId} clicked`);
+      e.stopPropagation();
+      if (trigger.hasAttribute('disabled')) {
+        console.log(`⚠️ [Dropdown] ${dropdownId} is disabled`);
+        return;
+      }
+      
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      console.log(`🔍 [Dropdown] ${dropdownId} isOpen:`, isOpen);
+      
+      // Close all other dropdowns
+      document.querySelectorAll('.filter-dropdown-trigger').forEach((t) => {
+        if (t !== trigger) {
+          t.setAttribute('aria-expanded', 'false');
+          t.classList.remove('filter-dropdown-trigger-open');
+        }
+      });
+      document.querySelectorAll('.filter-dropdown-menu').forEach((m) => {
+        if (m !== menu) {
+          m.classList.remove('filter-dropdown-menu-open');
+        }
+      });
+      
+      // Toggle current dropdown
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      if (!isOpen) {
+        trigger.classList.add('filter-dropdown-trigger-open');
+        menu.classList.add('filter-dropdown-menu-open');
+      } else {
+        trigger.classList.remove('filter-dropdown-trigger-open');
+        menu.classList.remove('filter-dropdown-menu-open');
+      }
+    });
+    
+    // Handle menu item clicks - only attach if not already attached
+    menu.querySelectorAll('.filter-dropdown-item').forEach((item) => {
+      // Check if listener already attached
+      if (item.hasAttribute('data-listener-attached')) {
+        return;
+      }
+      item.setAttribute('data-listener-attached', 'true');
+      
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log(`🔍 [Dropdown Item] ${dropdownId} item clicked:`, item.getAttribute('data-filter'), item.getAttribute('data-value'));
+        const filter = item.getAttribute('data-filter');
+        const value = item.getAttribute('data-value');
+        
+        if (filter) {
+          // Handle empty value (reset filter) - pass empty string to clear
+          console.log(`🔍 [Dropdown Item] Calling updateFilterState with:`, filter, value || '');
+          updateFilterState(filter, value || '');
+        }
+        
+        // Close dropdown
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.classList.remove('filter-dropdown-trigger-open');
+        menu.classList.remove('filter-dropdown-menu-open');
+      });
+    });
+    
+    console.log(`✅ [initDropdown] ${dropdownId}: Initialized successfully`);
+    return true;
+  }
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!target.closest('.filter-dropdown-wrapper')) {
+      document.querySelectorAll('.filter-dropdown-trigger').forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.classList.remove('filter-dropdown-trigger-open');
+      });
+      document.querySelectorAll('.filter-dropdown-menu').forEach((menu) => {
+        menu.classList.remove('filter-dropdown-menu-open');
+      });
+    }
+  });
+  
+  // Clear filters - attach to all instances but only visible one will work
+  document.querySelectorAll('#clear-filters').forEach((btn) => {
+    if (!btn.hasAttribute('data-listener-attached')) {
+      btn.setAttribute('data-listener-attached', 'true');
+      btn.addEventListener('click', () => {
+        window.location.href = window.location.pathname;
+      });
+    }
+  });
+  
+  // Apply filters button - attach to all instances but only visible one will work
+  document.querySelectorAll('#apply-filters').forEach((btn) => {
+    if (!btn.hasAttribute('data-listener-attached')) {
+      btn.setAttribute('data-listener-attached', 'true');
+      btn.addEventListener('click', () => {
+        window.location.reload();
+      });
+    }
+  });
+  
+  // Global initialization flag to prevent multiple initializations
+  if (!window.__filterDropdownInitialized) {
+    window.__filterDropdownInitialized = true;
+    
+    // Wait for DOM to be ready
+    function init() {
+      console.log('🔍 [FilterDropdown] Initializing dropdowns...');
+      
+      // Find the visible FilterDropdown container (only one should be visible at a time)
+      const filterContainers = document.querySelectorAll('.filter-dropdowns-container');
+      let visibleContainer = null;
+      
+      for (const container of filterContainers) {
+        const rect = container.getBoundingClientRect();
+        const isVisible = rect.width > 0 && rect.height > 0 && 
+                         window.getComputedStyle(container).display !== 'none';
+        if (isVisible) {
+          visibleContainer = container;
+          break;
+        }
+      }
+      
+      if (!visibleContainer) {
+        console.warn('⚠️ [FilterDropdown] No visible filter container found, trying all...');
+        // Fallback: try to initialize all, but only the visible ones will work
+        visibleContainer = filterContainers[0] || document;
+      }
+      
+      // Find dropdowns within the visible container
+      const seedTrigger = visibleContainer.querySelector('#seed-dropdown-trigger');
+      const useTrigger = visibleContainer.querySelector('#use-dropdown-trigger');
+      const zoneTrigger = visibleContainer.querySelector('#zone-dropdown-trigger');
+      const protectionTrigger = visibleContainer.querySelector('#protection-dropdown-trigger');
+      
+      // Only initialize dropdowns that exist and are visible
+      const seedInit = seedTrigger ? initDropdown('seed-dropdown') : false;
+      const useInit = useTrigger ? initDropdown('use-dropdown') : false;
+      const zoneInit = zoneTrigger ? initDropdown('zone-dropdown') : false;
+      const protectionInit = protectionTrigger ? initDropdown('protection-dropdown') : false;
+      
+      console.log('🔍 [FilterDropdown] Dropdowns initialized:', {
+        seed: seedInit,
+        use: useInit,
+        zone: zoneInit,
+        protection: protectionInit
+      });
+      
+      // Update dropdown states on load (with small delay to ensure DOM is ready)
+      setTimeout(() => {
+        updateDropdownStates();
+        updateDropdownTexts();
+        console.log('🔍 [FilterDropdown] Dropdown states updated');
+      }, 50);
+      
+      // Export filter state getter for other components
+      window.getFilterState = () => ({ ...currentFilterState });
+      
+      console.log('🔍 [FilterDropdown] Initialization complete');
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      // DOM already ready, initialize immediately
+      setTimeout(init, 100);
+    }
+  } else {
+    console.log('⚠️ [FilterDropdown] Already initialized, skipping duplicate initialization');
+  }
+</script>
+
+<style>
+  .filter-dropdowns-container {
+    background-color: var(--color-white);
+    border-radius: var(--filter-border-radius-mobile);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-8);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 768px) {
+    .filter-dropdowns-container {
+      border-radius: var(--filter-border-radius-desktop);
+      padding: var(--spacing-5);
+    }
+  }
+
+  .filter-dropdowns {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+  }
+
+  @media (min-width: 768px) {
+    .filter-dropdowns {
+      gap: var(--spacing-4);
+    }
+  }
+
+  .filter-dropdown-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .filter-dropdown-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-light);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-height: 48px;
+  }
+
+  .filter-dropdown-trigger:hover:not(:disabled) {
+    border-color: var(--color-bayer-secondary);
+  }
+
+  .filter-dropdown-trigger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-gray-50);
+  }
+
+  .filter-dropdown-trigger-open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-color: var(--color-bayer-secondary);
+  }
+
+  .filter-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  .filter-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(20%) sepia(8%) saturate(1000%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+
+  .filter-dropdown-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .filter-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-primary);
+    transition: transform var(--transition-fast);
+  }
+
+  .filter-dropdown-trigger-open .filter-chevron {
+    transform: rotate(180deg);
+  }
+
+  .filter-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-light);
+    border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-index-dropdown);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height var(--transition-base), opacity var(--transition-base);
+    margin-top: -1px;
+  }
+
+  .filter-dropdown-menu-open {
+    max-height: 300px;
+    opacity: 1;
+    overflow-y: auto;
+  }
+
+  .filter-dropdown-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-3) var(--spacing-4);
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  .filter-dropdown-item:hover {
+    background-color: var(--color-gray-50);
+  }
+
+  .filter-dropdown-item-active {
+    background-color: var(--color-blue-light);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Action Buttons */
+  .filter-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-4);
+    border-top: 1px solid var(--color-gray-light);
+    margin-top: var(--spacing-4);
+  }
+
+  .filter-action-link {
+    background: none;
+    border: none;
+    color: var(--color-bayer-secondary);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+    padding: var(--spacing-2) 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .filter-action-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+</style>

@@ -1,31 +1,47 @@
 ---
-import type { Producto } from '../types';
+import type { Producto } from "../types";
 
 interface Props {
   products: Producto[];
-  lang?: 'es' | 'pt';
+  lang?: "es" | "pt";
+  carouselId?: string;
 }
 
-const { products = [], lang = 'es' } = Astro.props;
+const {
+  products = [],
+  lang = "es",
+  carouselId = "product-carousel",
+} = Astro.props;
 ---
 
 <div class="product-carousel-wrapper">
-  {products.length > 0 ? (
-    <div class="product-carousel-container" id="product-carousel" data-products={JSON.stringify(products)}>
-      <div class="product-carousel-track" id="product-carousel-track">
-        {products.map((product) => (
-          <div class="product-card" data-product-id={product.id}>
-            {product.imagen_saco?.url && (
-              <div class="product-image-wrapper">
-                <img
-                  src={product.imagen_saco.url}
-                  alt={product.imagen_saco.alt || product.nombre}
-                  class="product-image"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            <div class="product-info">
+  {
+    products.length > 0 ? (
+      <div
+        class="product-carousel-container"
+        id={carouselId}
+        data-products={JSON.stringify(products)}
+      >
+        <div
+          class="product-carousel-track"
+          id={`${carouselId}-track`}
+        >
+          {products.map((product) => (
+            <div
+              class="product-card"
+              data-product-id={product.id}
+            >
+              {product.imagen_saco?.url && (
+                <div class="product-image-wrapper">
+                  <img
+                    src={product.imagen_saco.url}
+                    alt={product.imagen_saco.alt || product.nombre}
+                    class="product-image"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              {/* <div class="product-info">
               <h3 class="product-name">{product.nombre}</h3>
               {product.claim && (
                 <p class="product-claim">{product.claim}</p>
@@ -37,56 +53,88 @@ const { products = [], lang = 'es' } = Astro.props;
               >
                 {lang === 'es' ? 'Ver detalles' : 'Ver detalhes'}
               </button>
+            </div> */}
             </div>
-          </div>
-        ))}
-      </div>
-      {products.length > 4 && (
-        <div class="carousel-controls">
-          <button class="carousel-button carousel-button-prev" aria-label="Anterior" id="carousel-prev">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-          <button class="carousel-button carousel-button-next" aria-label="Siguiente" id="carousel-next">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
+          ))}
         </div>
-      )}
-    </div>
-  ) : (
-    <div class="product-carousel-empty">
-      <p>{lang === 'es' ? 'No se encontraron productos con los filtros seleccionados.' : 'Nenhum produto encontrado com os filtros selecionados.'}</p>
-    </div>
-  )}
+        {products.length > 4 && (
+          <div class="carousel-controls">
+            <button
+              class="carousel-button carousel-button-prev"
+              aria-label="Anterior"
+              id={`${carouselId}-prev`}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              class="carousel-button carousel-button-next"
+              aria-label="Siguiente"
+              id={`${carouselId}-next`}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="product-carousel-empty">
+        <p>
+          {lang === "es"
+            ? "No se encontraron productos con los filtros seleccionados."
+            : "Nenhum produto encontrado com os filtros selecionados."}
+        </p>
+      </div>
+    )
+  }
 </div>
 
-<script define:vars={{ productsJson: JSON.stringify(products) }}>
+<script define:vars={{ productsJson: JSON.stringify(products), carouselId }}>
+  const CAROUSEL_ID = carouselId || "product-carousel";
   let currentProducts = JSON.parse(productsJson);
   let carouselTrack = null;
   let scrollPosition = 0;
 
   function updateCarousel(newProducts) {
-    console.log('🔄 [Carousel] Updating with products:', newProducts.length);
+    console.log("🔄 [Carousel] Updating with products:", newProducts.length);
     currentProducts = newProducts;
-    
-    const carouselElement = document.getElementById('product-carousel');
-    const trackElement = document.getElementById('product-carousel-track');
-    
+
+    const carouselElement = document.getElementById(CAROUSEL_ID);
+    const trackElement = document.getElementById(`${CAROUSEL_ID}-track`);
+
     if (!carouselElement || !trackElement) {
-      console.error('❌ [Carousel] Carousel elements not found');
+      console.error("❌ [Carousel] Carousel elements not found");
       return;
     }
-    
+
     // Update data attribute
     carouselElement.dataset.products = JSON.stringify(newProducts);
-    
+
     // Clear and rebuild HTML
-    trackElement.innerHTML = newProducts.map((product) => `
+    trackElement.innerHTML = newProducts
+      .map(
+        (product) => `
       <div class="product-card" data-product-id="${product.id}">
-        ${product.imagen_saco?.url ? `
+        ${
+          product.imagen_saco?.url
+            ? `
           <div class="product-image-wrapper">
             <img
               src="${product.imagen_saco.url}"
@@ -95,10 +143,12 @@ const { products = [], lang = 'es' } = Astro.props;
               loading="lazy"
             />
           </div>
-        ` : ''}
+        `
+            : ""
+        }
         <div class="product-info">
           <h3 class="product-name">${product.nombre}</h3>
-          ${product.claim ? `<p class="product-claim">${product.claim}</p>` : ''}
+          ${product.claim ? `<p class="product-claim">${product.claim}</p>` : ""}
           <button
             class="btn btn-primary product-view-btn"
             data-product-id="${product.id}"
@@ -108,91 +158,127 @@ const { products = [], lang = 'es' } = Astro.props;
           </button>
         </div>
       </div>
-    `).join('');
-    
+    `
+      )
+      .join("");
+
     // Reset scroll position
     scrollPosition = 0;
     trackElement.scrollLeft = 0;
-    
+
     // Update controls visibility
-    const controls = carouselElement.querySelector('.carousel-controls');
+    const controls = carouselElement.querySelector(".carousel-controls");
     if (controls) {
-      controls.style.display = newProducts.length > 4 ? 'flex' : 'none';
+      controls.style.display = newProducts.length > 4 ? "flex" : "none";
     }
-    
-    console.log('✅ [Carousel] Updated with', newProducts.length, 'products');
+
+    // Center card detection disabled for 3-column layout
+
+    console.log("✅ [Carousel] Updated with", newProducts.length, "products");
+  }
+
+  // Function to update which card is in the center (desktop only) - disabled for 3-column layout
+  function updateCenterCard() {
+    // No longer needed with 3-column grid layout
+    return;
   }
 
   function scrollCarousel(direction) {
     if (!carouselTrack) return;
-    
-    const cardWidth = carouselTrack.querySelector('.product-card')?.offsetWidth || 0;
+
+    const cardWidth =
+      carouselTrack.querySelector(".product-card")?.offsetWidth || 0;
     const gap = 24; // 1.5rem = 24px
     const scrollAmount = cardWidth + gap;
-    
-    scrollPosition += direction === 'next' ? scrollAmount : -scrollAmount;
-    
+
+    scrollPosition += direction === "next" ? scrollAmount : -scrollAmount;
+
     // Clamp scroll position
     const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
     scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
-    
+
     carouselTrack.scrollTo({
       left: scrollPosition,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
+
+    // Center card detection disabled for 3-column layout
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎠 [Carousel] DOMContentLoaded, initializing...');
-    carouselTrack = document.getElementById('product-carousel-track');
-    
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("🎠 [Carousel] DOMContentLoaded, initializing...", CAROUSEL_ID);
+    carouselTrack = document.getElementById(`${CAROUSEL_ID}-track`);
+
     if (!carouselTrack) {
-      console.error('❌ [Carousel] Track element not found');
+      console.error(
+        "❌ [Carousel] Track element not found:",
+        `${CAROUSEL_ID}-track`
+      );
       return;
     }
-    
+
     // Setup navigation buttons
-    const prevBtn = document.getElementById('carousel-prev');
-    const nextBtn = document.getElementById('carousel-next');
-    
+    const prevBtn = document.getElementById(`${CAROUSEL_ID}-prev`);
+    const nextBtn = document.getElementById(`${CAROUSEL_ID}-next`);
+
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => scrollCarousel('prev'));
+      prevBtn.addEventListener("click", () => scrollCarousel("prev"));
     }
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => scrollCarousel('next'));
+      nextBtn.addEventListener("click", () => scrollCarousel("next"));
     }
-    
+
     // Update controls visibility
-    const carouselElement = document.getElementById('product-carousel');
+    const carouselElement = document.getElementById(CAROUSEL_ID);
     if (carouselElement) {
-      const controls = carouselElement.querySelector('.carousel-controls');
+      const controls = carouselElement.querySelector(".carousel-controls");
       if (controls) {
-        controls.style.display = currentProducts.length > 4 ? 'flex' : 'none';
+        controls.style.display = currentProducts.length > 4 ? "flex" : "none";
       }
     }
-    
-    console.log('✅ [Carousel] Initialized');
+
+    // Center card detection disabled for 3-column layout
+
+    console.log("✅ [Carousel] Initialized");
   });
 
-  // Listen for product updates
-  document.addEventListener('updateProducts', (e) => {
-    console.log('🔄 [Carousel] Received updateProducts event:', e.detail);
-    if (e.detail && e.detail.products) {
+  // Listen for product updates - only update if this carousel is visible
+  document.addEventListener("updateProducts", (e) => {
+    console.log("🔄 [Carousel] Received updateProducts event:", e.detail);
+    const carouselElement = document.getElementById(CAROUSEL_ID);
+    if (!carouselElement) return;
+
+    // Check if this carousel is visible
+    const rect = carouselElement.getBoundingClientRect();
+    const isVisible =
+      rect.width > 0 &&
+      rect.height > 0 &&
+      window.getComputedStyle(carouselElement).display !== "none";
+
+    if (isVisible && e.detail && e.detail.products) {
+      console.log("🔄 [Carousel] Updating visible carousel:", CAROUSEL_ID);
       updateCarousel(e.detail.products);
+    } else {
+      console.log(
+        "⚠️ [Carousel] Carousel not visible, skipping update:",
+        CAROUSEL_ID
+      );
     }
   });
 
   // Listen for product card clicks
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     const target = e.target;
-    const productCard = target.closest('.product-card');
-    const viewBtn = target.closest('.product-view-btn');
-    
+    const productCard = target.closest(".product-card");
+    const viewBtn = target.closest(".product-view-btn");
+
     if (productCard || viewBtn) {
-      const productId = (productCard?.getAttribute('data-product-id') || 
-                        viewBtn?.getAttribute('data-product-id')) || '';
+      const productId =
+        productCard?.getAttribute("data-product-id") ||
+        viewBtn?.getAttribute("data-product-id") ||
+        "";
       if (productId) {
-        const event = new CustomEvent('productClick', {
+        const event = new CustomEvent("productClick", {
           detail: { productId },
         });
         document.dispatchEvent(event);
@@ -239,7 +325,7 @@ const { products = [], lang = 'es' } = Astro.props;
   }
 
   .product-carousel-track::-webkit-scrollbar-thumb:hover {
-    background: var(--color-dekalb-primary);
+    background: var(--color-bayer-secondary);
   }
 
   /* Mobile: single column scroll */
@@ -257,37 +343,60 @@ const { products = [], lang = 'es' } = Astro.props;
     }
   }
 
-  /* Desktop: 3-4 columns with horizontal scroll */
+  /* Desktop: 3 visible cards with transparent background */
   @media (min-width: 1024px) {
     .product-carousel-track {
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      max-width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-6);
+      overflow-x: auto;
+      padding: var(--spacing-4);
+      width: 100%;
+    }
+
+    .product-card {
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+      overflow: visible;
+      min-width: 0;
+      padding: 0;
+    }
+
+    .product-image-wrapper {
+      background: transparent;
+      overflow: visible;
+    }
+
+    .product-image {
+      object-fit: contain;
+      object-position: center;
     }
   }
 
   .product-card {
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
+    background: transparent;
+    border-radius: 0;
+    overflow: visible;
+    box-shadow: none;
     transition: all var(--transition-base);
     cursor: pointer;
     display: flex;
     flex-direction: column;
     height: 100%;
     min-width: 280px;
+    padding: 0;
   }
 
   .product-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    box-shadow: none;
   }
 
   .product-image-wrapper {
     width: 100%;
     aspect-ratio: 1;
-    overflow: hidden;
-    background-color: var(--color-gray-100);
+    overflow: visible;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -341,7 +450,7 @@ const { products = [], lang = 'es' } = Astro.props;
   }
 
   .carousel-button {
-    background-color: var(--color-dekalb-primary);
+    background: var(--gradient-button-primary);
     color: var(--color-white);
     border: none;
     border-radius: var(--radius-full);
@@ -356,7 +465,7 @@ const { products = [], lang = 'es' } = Astro.props;
   }
 
   .carousel-button:hover {
-    background-color: var(--color-dekalb-primary-dark);
+    opacity: 0.9;
     transform: scale(1.05);
   }
 
@@ -373,11 +482,11 @@ const { products = [], lang = 'es' } = Astro.props;
     .carousel-controls {
       display: none;
     }
-    
+
     .product-carousel-track {
       scroll-snap-type: x mandatory;
     }
-    
+
     .product-card {
       scroll-snap-align: start;
     }

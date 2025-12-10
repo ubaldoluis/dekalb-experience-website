@@ -1,0 +1,296 @@
+---
+interface Solution {
+  id: string;
+  name: string;
+  description: string;
+  logo: string;
+  icon?: string;
+  link?: string;
+}
+
+interface Props {
+  solutions: Solution[];
+  lang?: 'es' | 'pt';
+}
+
+const { solutions = [], lang = 'es' } = Astro.props;
+---
+
+<div class="solutions-carousel-wrapper">
+  {solutions.length > 0 ? (
+    <div class="solutions-carousel-container" id="solutions-carousel">
+      <div class="solutions-carousel-track" id="solutions-carousel-track">
+        {solutions.map((solution) => (
+          <div class="solution-card" data-solution-id={solution.id}>
+            {solution.icon && (
+              <div class="solution-icon">
+                <img src={solution.icon} alt="" aria-hidden="true" />
+              </div>
+            )}
+            {solution.logo && (
+              <div class="solution-logo">
+                <img src={solution.logo} alt={solution.name} />
+              </div>
+            )}
+            {solution.description && (
+              <p class="solution-description">{solution.description}</p>
+            )}
+          </div>
+        ))}
+      </div>
+      {solutions.length > 1 && (
+        <div class="carousel-controls">
+          <button class="carousel-button carousel-button-prev" aria-label="Anterior" id="solutions-carousel-prev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <button class="carousel-button carousel-button-next" aria-label="Siguiente" id="solutions-carousel-next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  ) : null}
+</div>
+
+<script>
+  let carouselTrack = null;
+  let scrollPosition = 0;
+
+  function initSolutionsCarousel() {
+    carouselTrack = document.getElementById('solutions-carousel-track');
+    if (!carouselTrack) return;
+
+    const prevButton = document.getElementById('solutions-carousel-prev');
+    const nextButton = document.getElementById('solutions-carousel-next');
+
+    if (prevButton) {
+      prevButton.addEventListener('click', () => {
+        scrollCarousel('prev');
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', () => {
+        scrollCarousel('next');
+      });
+    }
+
+    // Auto-hide controls if all cards fit
+    updateControlsVisibility();
+  }
+
+  function scrollCarousel(direction) {
+    if (!carouselTrack) return;
+
+    const cardWidth = carouselTrack.querySelector('.solution-card')?.offsetWidth || 0;
+    const gap = 24; // 1.5rem = 24px
+    const scrollAmount = cardWidth + gap;
+    
+    scrollPosition += direction === 'next' ? scrollAmount : -scrollAmount;
+    
+    // Clamp scroll position
+    const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+    scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+    
+    carouselTrack.scrollTo({
+      left: scrollPosition,
+      behavior: 'smooth'
+    });
+  }
+
+  function updateControlsVisibility() {
+    if (!carouselTrack) return;
+    
+    const prevButton = document.getElementById('solutions-carousel-prev');
+    const nextButton = document.getElementById('solutions-carousel-next');
+    const controls = document.querySelector('.solutions-carousel-container .carousel-controls');
+    
+    // Show controls only if content overflows
+    if (carouselTrack.scrollWidth > carouselTrack.clientWidth) {
+      if (controls) controls.style.display = 'flex';
+    } else {
+      if (controls) controls.style.display = 'none';
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSolutionsCarousel);
+  } else {
+    initSolutionsCarousel();
+  }
+
+  // Update controls visibility on resize
+  window.addEventListener('resize', updateControlsVisibility);
+</script>
+
+<style>
+  .solutions-carousel-wrapper {
+    width: 100%;
+    margin-top: var(--spacing-8);
+  }
+
+  .solutions-carousel-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .solutions-carousel-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-6);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .solutions-carousel-track::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .solutions-carousel-track::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+  }
+
+  .solutions-carousel-track::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: var(--radius-md);
+  }
+
+  .solutions-carousel-track::-webkit-scrollbar-thumb:hover {
+    background: var(--color-bayer-secondary);
+  }
+
+  .solution-card {
+    background: var(--gradient-card-solutions);
+    padding: var(--spacing-6);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4);
+    min-width: 280px;
+    scroll-snap-align: start;
+  }
+
+  .solution-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .solution-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bayer-secondary);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .solution-icon img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  .solution-logo {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--spacing-2) 0;
+  }
+
+  .solution-logo img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .solution-description {
+    font-size: var(--font-size-base-sm);
+    color: var(--color-text-primary);
+    margin: 0;
+    line-height: var(--line-height-relaxed);
+    text-align: center;
+  }
+
+  .carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-6);
+  }
+
+  .carousel-button {
+    background: var(--gradient-button-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-full);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
+  }
+
+  .carousel-button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+
+  .carousel-button:active {
+    transform: scale(0.95);
+  }
+
+  .carousel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 767px) {
+    .carousel-controls {
+      display: none;
+    }
+    
+    .solutions-carousel-track {
+      scroll-snap-type: x mandatory;
+    }
+
+    .solution-card {
+      scroll-snap-align: start;
+    }
+  }
+
+  /* Tablet: 2 columns */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .solutions-carousel-track {
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+    }
+  }
+
+  /* Desktop: 3-4 columns with horizontal scroll */
+  @media (min-width: 1024px) {
+    .solutions-carousel-track {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      max-width: 100%;
+    }
+  }
+</style>
+

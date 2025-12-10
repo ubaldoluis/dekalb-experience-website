@@ -23,7 +23,7 @@ const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
   .solutions-hero {
     position: relative;
     padding: var(--spacing-16) 0;
-    background: linear-gradient(135deg, var(--color-dekalb-primary) 0%, var(--color-bayer-secondary) 100%);
+    background: var(--gradient-hero-solutions);
     color: var(--color-white);
     overflow: hidden;
   }
@@ -51,17 +51,20 @@ const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
   }
 
   .hero-title {
-    font-size: var(--font-size-4xl);
+    font-size: var(--hero-title-size);
     font-weight: var(--font-weight-bold);
     color: var(--color-white);
     margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-normal);
   }
 
   .hero-subtitle {
-    font-size: var(--font-size-xl);
+    font-size: var(--hero-subtitle-size);
     color: var(--color-white);
-    opacity: 0.95;
     margin: 0;
+    line-height: var(--line-height-normal);
+    font-weight: var(--font-weight-regular);
   }
 
   @media (max-width: 767px) {
@@ -70,11 +73,11 @@ const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
     }
 
     .hero-title {
-      font-size: var(--font-size-3xl);
+      font-size: var(--hero-title-size);
     }
 
     .hero-subtitle {
-      font-size: var(--font-size-lg);
+      font-size: var(--hero-subtitle-size);
     }
   }
 </style>

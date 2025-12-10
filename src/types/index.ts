@@ -82,3 +82,17 @@ export interface CatalogoPDF {
   orden?: number;
 }
 
+export interface HomeContent {
+  hero: {
+    title: string;
+    claim: string;
+  };
+  solutions: {
+    integralMaiz: string;
+    fieldview: string;
+    protection: string;
+    preceon: string;
+    avoidProblems: string;
+  };
+}
+
