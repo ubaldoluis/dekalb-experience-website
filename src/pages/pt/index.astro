@@ -92,6 +92,52 @@ const latestArticles = articles.slice(0, 3);
     </div>
   </section>
 
+  <!-- Filter Script (works for both desktop and mobile) -->
+  <script define:vars={{ filterStateJson: JSON.stringify(filterState), allProductsJson: JSON.stringify(allProducts), filteredProductsJson: JSON.stringify(filteredProducts) }}>
+        // Parse filterState from JSON (Astro serialization)
+        const filterState = JSON.parse(filterStateJson);
+        const allProducts = JSON.parse(allProductsJson);
+        const filteredProducts = JSON.parse(filteredProductsJson);
+        
+        // Expose allProducts globally for FilterDropdown component
+        window.__allProducts = allProducts;
+        
+        // ALSO parse from current URL to ensure we have the latest state
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlFilterState = {
+          tipoSemilla: urlParams.get('tipo') === 'maiz' || urlParams.get('tipo') === 'colza' ? urlParams.get('tipo') : undefined,
+          uso: urlParams.get('uso') || undefined,
+          zona: urlParams.get('zona') || undefined,
+          proteccion: urlParams.get('proteccion') || 'todos',
+        };
+        
+        // Client-side filtering fallback (if server filtering didn't work correctly)
+        if (allProducts.length > 0) {
+          let clientFiltered = [...allProducts];
+          
+          if (urlFilterState.tipoSemilla) {
+            clientFiltered = clientFiltered.filter(p => p.tipo_semilla?.toLowerCase() === urlFilterState.tipoSemilla);
+          }
+          if (urlFilterState.uso) {
+            clientFiltered = clientFiltered.filter(p => p.uso?.toLowerCase() === urlFilterState.uso);
+          }
+          if (urlFilterState.zona) {
+            clientFiltered = clientFiltered.filter(p => p.zona?.toLowerCase() === urlFilterState.zona);
+          }
+          if (urlFilterState.proteccion && urlFilterState.proteccion !== 'todos') {
+            clientFiltered = clientFiltered.filter(p => p.proteccion?.toLowerCase() === urlFilterState.proteccion);
+          }
+          
+          // Update carousel with client-filtered products if needed
+          if (clientFiltered.length !== filteredProducts.length) {
+            setTimeout(() => {
+              const event = new CustomEvent('updateProducts', { detail: { products: clientFiltered } });
+              document.dispatchEvent(event);
+            }, 100);
+          }
+        }
+  </script>
+
   <!-- Solutions Section -->
   <section id="soluciones" class="solutions-section">
     <div class="container">
