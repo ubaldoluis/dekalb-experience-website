@@ -429,15 +429,15 @@ const latestArticles = articles.slice(0, 3);
   <!-- Preceon Section -->
   <section class="preceon-section">
     <div class="container">
-      <div class="preceon-wrapper">
-        <div class="preceon-content">
-          <div class="preceon-logo">
+      <div class="content-left-card-wrapper">
+        <div class="content-left-card-content">
+          <div class="content-left-card-logo">
             <img
               src="/Logo_Preceon.svg"
               alt="Preceon"
             />
           </div>
-          <h2 class="preceon-title">
+          <h2 class="content-left-card-title">
             El futuro del maíz está aquí, accede para descubrirlo.
           </h2>
           <a
@@ -446,7 +446,7 @@ const latestArticles = articles.slice(0, 3);
             >Descubrir</a
           >
         </div>
-        <div class="preceon-image">
+        <div class="content-left-card-image">
           <img
             src="/card_background-preceon.png"
             alt="Preceon Pack"
@@ -459,16 +459,16 @@ const latestArticles = articles.slice(0, 3);
   <!-- Calculadora de Densidades Section -->
   <section class="calculator-section">
     <div class="container">
-      <div class="calculator-wrapper">
-        <div class="calculator-image">
+      <div class="content-right-card-wrapper">
+        <div class="content-right-card-image">
           <img
             src="/card_background-calculadora.png"
             alt="Calculadora de densidades"
           />
         </div>
-        <div class="calculator-content">
-          <h2 class="calculator-title">Calculador de densidades</h2>
-          <p class="calculator-description">
+        <div class="content-right-card-content">
+          <h2 class="content-right-card-title">Calculador de densidades</h2>
+          <p class="content-right-card-description">
             Usa nuestra herramienta interactiva para calcular la densidad de
             siembra recomendada y el número de bolsas DEKALB requeridas.
           </p>
@@ -481,12 +481,13 @@ const latestArticles = articles.slice(0, 3);
       </div>
     </div>
   </section>
-  <section class="preceon-section">
+  <!-- Guides Section -->
+  <section class="guides-section">
     <div class="container">
-      <div class="preceon-wrapper">
-        <div class="preceon-content">
-          <h2 class="calculator-title">Evita problemas con tu maíz</h2>
-          <p class="calculator-description">
+      <div class="content-left-card-wrapper">
+        <div class="content-left-card-content">
+          <h2 class="content-left-card-title">Evita problemas con tu maíz</h2>
+          <p>
             Descubre nuestras guías para ayudarte a proteger tu cultivo de maíz.
           </p>
           <a
@@ -495,30 +496,31 @@ const latestArticles = articles.slice(0, 3);
             >Ver guías de cultivo</a
           >
         </div>
-        <div class="preceon-image">
+        <div class="content-left-card-image">
           <img
             src="/card_background-guides.png"
-            alt="Preceon Pack"
+            alt="Guías de cultivo"
           />
         </div>
       </div>
     </div>
   </section>
 
-  <section class="calculator-section">
+  <!-- Catalogs Section -->
+  <section class="catalogs-section">
     <div class="container">
-      <div class="calculator-wrapper">
-        <div class="calculator-image">
+      <div class="content-right-card-wrapper">
+        <div class="content-right-card-image">
           <img
             src="/card_background-catalogs.png"
-            alt="Calculadora de densidades"
+            alt="Catálogos"
           />
         </div>
-        <div class="calculator-content">
-          <h2 class="calculator-title">
+        <div class="content-right-card-content">
+          <h2 class="content-right-card-title">
             Obtén todos nuestros catálogos en un sólo lugar.
           </h2>
-          <p class="calculator-description">
+          <p class="content-right-card-description">
             Soluciones, Guías, Catálogos.  Elige tu país y accede.
           </p>
           <a
@@ -543,8 +545,8 @@ const latestArticles = articles.slice(0, 3);
     </div>
   </section>
 
-  <!-- Catálogos Section -->
-  <section class="catalogs-section">
+  <!-- Catálogos Download Section -->
+  <section class="catalogs-download-section">
     <div class="container">
       <h2 class="section-title">Descarga de Catálogos</h2>
       <div class="catalogs-grid">
@@ -766,13 +768,18 @@ const latestArticles = articles.slice(0, 3);
     padding: var(--spacing-12) 0;
   }
 
-  .preceon-section {
+  /* Generic Card Sections - Layout Styles */
+  .preceon-section,
+  .calculator-section,
+  .guides-section,
+  .catalogs-section {
     padding: var(--spacing-16) 0;
     background: transparent;
     color: var(--color-text-primary);
   }
 
-  .preceon-wrapper {
+  /* Content Left Card (30% contenido / 70% imagen) */
+  .content-left-card-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;
@@ -784,7 +791,7 @@ const latestArticles = articles.slice(0, 3);
     position: relative;
   }
 
-  .preceon-content {
+  .content-left-card-content {
     text-align: left;
     padding: var(--spacing-12) var(--spacing-8);
     display: flex;
@@ -795,19 +802,19 @@ const latestArticles = articles.slice(0, 3);
     z-index: 2;
   }
 
-  .preceon-logo {
+  .content-left-card-logo {
     margin-bottom: var(--spacing-8);
     display: block;
   }
 
-  .preceon-logo img {
+  .content-left-card-logo img {
     height: 110px;
     width: auto;
     object-fit: cover;
     display: block;
   }
 
-  .preceon-title {
+  .content-left-card-title {
     font-size: 1.5rem;
     font-weight: 300;
     font-family: var(--font-family-primary);
@@ -818,53 +825,48 @@ const latestArticles = articles.slice(0, 3);
     display: block;
   }
 
-  .preceon-content .btn {
+  .content-left-card-content .btn {
     width: auto;
     max-width: 212px;
     display: inline-block;
     text-align: center;
   }
 
-  .preceon-image {
+  .content-left-card-image {
     display: none;
     position: relative;
     overflow: hidden;
   }
 
-  .preceon-image img {
+  .content-left-card-image img {
     width: 100%;
     height: 100%;
     object-fit: fill;
     display: block;
   }
 
-  /* Desktop: Two columns layout - 30% contenido / 70% imagen */
+  /* Desktop: Content Left Card - 30% contenido / 70% imagen */
   @media (min-width: 1024px) {
-    .preceon-wrapper {
+    .content-left-card-wrapper {
       grid-template-columns: 30% 70%;
       gap: 0;
       min-height: 400px;
       border-radius: 60px 12px 60px 12px; /* Superior izquierda e inferior derecha con radio mayor */
     }
 
-    .preceon-content {
+    .content-left-card-content {
       padding: var(--spacing-12) var(--spacing-12);
       border-radius: 60px 0 0 0px; /* Solo esquina superior izquierda redondeada */
     }
 
-    .preceon-image {
+    .content-left-card-image {
       display: block;
       border-radius: 0 12px 60px 0; /* Solo esquina inferior derecha redondeada */
     }
   }
 
-  .calculator-section {
-    padding: var(--spacing-16) 0;
-    background: transparent;
-    color: var(--color-text-primary);
-  }
-
-  .calculator-wrapper {
+  /* Content Right Card (65% imagen / 35% contenido) */
+  .content-right-card-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;
@@ -876,18 +878,17 @@ const latestArticles = articles.slice(0, 3);
     position: relative;
   }
 
-  .calculator-content {
+  .content-right-card-content {
     text-align: left;
     padding: var(--spacing-12) var(--spacing-8);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* background: linear-gradient(to left, #e9e7e4 0%, #ffffff 100%); */
     position: relative;
     z-index: 2;
   }
 
-  .calculator-title {
+  .content-right-card-title {
     font-size: 1.7rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
@@ -898,7 +899,7 @@ const latestArticles = articles.slice(0, 3);
     display: block;
   }
 
-  .calculator-description {
+  .content-right-card-description {
     font-size: 20px;
     font-weight: 400;
     font-family: var(--font-family-primary);
@@ -909,29 +910,29 @@ const latestArticles = articles.slice(0, 3);
     display: block;
   }
 
-  .calculator-content .btn {
+  .content-right-card-content .btn {
     width: auto;
     max-width: 212px;
     display: inline-block;
     text-align: center;
   }
 
-  .calculator-image {
+  .content-right-card-image {
     display: none;
     position: relative;
     overflow: hidden;
   }
 
-  .calculator-image img {
+  .content-right-card-image img {
     width: 100%;
     height: 100%;
     object-fit: fill;
     display: block;
   }
 
-  /* Desktop: Two columns layout - 70% imagen / 30% contenido */
+  /* Desktop: Content Right Card - 65% imagen / 35% contenido */
   @media (min-width: 1024px) {
-    .calculator-wrapper {
+    .content-right-card-wrapper {
       grid-template-columns: 65% 35%;
       gap: 0;
       min-height: 400px;
@@ -939,11 +940,11 @@ const latestArticles = articles.slice(0, 3);
       background: linear-gradient(to left, #e9e7e4 0%, #ffffff 100%);
     }
 
-    .calculator-content {
+    .content-right-card-content {
       padding: var(--spacing-12) var(--spacing-12);
     }
 
-    .calculator-image {
+    .content-right-card-image {
       display: block;
     }
   }
@@ -953,7 +954,7 @@ const latestArticles = articles.slice(0, 3);
     background-color: var(--color-gray-50);
   }
 
-  .catalogs-section {
+  .catalogs-download-section {
     padding: var(--spacing-16) 0;
     background-color: var(--color-white);
   }
