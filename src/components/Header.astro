@@ -1,106 +1,397 @@
 ---
-import { getLocalizedPath } from '../utils/i18n';
-import type { Idioma } from '../types';
+import { getLocalizedPath } from "../utils/i18n";
+import type { Idioma } from "../types";
 
 interface Props {
   lang?: Idioma;
 }
 
-const { lang = 'es' } = Astro.props;
+const { lang = "es" } = Astro.props;
 
+// Translations
+const translations = {
+  es: {
+    semillas: "Semillas",
+    preceon: "Preceon",
+    soluciones: "Soluciones",
+    calculadora: "Calculadora de densidad",
+    recursos: "Recursos",
+    solucionesItems: {
+      maiz: "Maíz",
+      colza: "Colza",
+      fieldview: "Fieldview",
+      proteccion: "Protección de cultivo",
+    },
+    recursosItems: {
+      noticias: "Noticias",
+      dekalbInforma: "DEKALB informa",
+      catalogos: "Descarga Catálogos",
+    },
+  },
+  pt: {
+    semillas: "Sementes",
+    preceon: "Preceon",
+    soluciones: "Soluções",
+    calculadora: "Calculadora de densidades",
+    recursos: "Recursos",
+    solucionesItems: {
+      maiz: "Milho",
+      colza: "Colza",
+      fieldview: "Fieldview",
+      proteccion: "Proteção de cultivo",
+    },
+    recursosItems: {
+      noticias: "Notícias",
+      dekalbInforma: "DEKALB informa",
+      catalogos: "Download de Catálogos",
+    },
+  },
+};
+
+const t = translations[lang] || translations.es;
+
+// Navigation items structure
 const navItems = [
-  { label: lang === 'es' ? 'Inicio' : 'Início', path: '/' },
-  { label: lang === 'es' ? 'Productos' : 'Produtos', path: '/#productos' },
-  { label: lang === 'es' ? 'Soluciones' : 'Soluções', path: '/#soluciones' },
-  { label: 'FieldView', path: '/fieldview' },
-  { label: lang === 'es' ? 'Maíz' : 'Milho', path: '/maiz' },
-  { label: lang === 'es' ? 'Colza' : 'Colza', path: '/colza' },
-  { label: 'Blog', path: '/blog' },
+  {
+    label: t.semillas,
+    path: "/#productos",
+    type: "link",
+  },
+  {
+    label: t.preceon,
+    path: "/preceon",
+    type: "link",
+  },
+  {
+    label: t.soluciones,
+    type: "dropdown",
+    id: "soluciones-dropdown",
+    items: [
+      { label: t.solucionesItems.maiz, path: "/maiz" },
+      { label: t.solucionesItems.colza, path: "/colza" },
+      { label: t.solucionesItems.fieldview, path: "/fieldview" },
+      { label: t.solucionesItems.proteccion, path: "/#soluciones" },
+    ],
+  },
+  {
+    label: t.calculadora,
+    path: "/calculadora",
+    type: "link",
+  },
+  {
+    label: t.recursos,
+    type: "dropdown",
+    id: "recursos-dropdown",
+    items: [
+      { label: t.recursosItems.noticias, path: "/blog" },
+      { label: t.recursosItems.dekalbInforma, path: "/blog" },
+      { label: t.recursosItems.catalogos, path: "/catalogo" },
+    ],
+  },
 ];
 
 const currentPath = Astro.url.pathname;
-const otherLang = lang === 'es' ? 'pt' : 'es';
-const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/^\/$/, `/${otherLang}`);
+const otherLang = lang === "es" ? "pt" : "es";
+const otherLangPath = currentPath
+  .replace(`/${lang}`, `/${otherLang}`)
+  .replace(/^\/$/, `/${otherLang}`);
+
+// Helper function to check if path is active
+function isPathActive(path: string, currentPath: string): boolean {
+  if (path === "/") {
+    return (
+      currentPath === "/" ||
+      currentPath === `/${lang}` ||
+      currentPath === `/${otherLang}`
+    );
+  }
+  if (path.startsWith("/#")) {
+    return false; // Hash links are not active by pathname
+  }
+  return currentPath === path || currentPath.startsWith(path);
+}
 ---
 
-<header class="header" role="banner">
+<header
+  class="header"
+  role="banner"
+>
   <div class="container header-container">
-    <a href={getLocalizedPath('/', lang)} class="logo-link" aria-label="DEKALB Experience - Inicio">
-      <img src="/logo-dekalb.svg" alt="DEKALB" class="logo-dekalb" width="120" height="40" />
-    </a>
+    <!-- Left: Both logos -->
+    <div class="header-left">
+      <a
+        href="https://www.bayer.com"
+        class="logo-link"
+        aria-label="Bayer"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="/logo-bayer.svg"
+          alt="Bayer"
+          class="logo-bayer"
+          width="80"
+          height="40"
+        />
+      </a>
+      <a
+        href={getLocalizedPath("/", lang)}
+        class="logo-link"
+        aria-label="DEKALB Experience - Inicio"
+      >
+        <img
+          src="/logo-dekalb.svg"
+          alt="DEKALB"
+          class="logo-dekalb"
+          width="120"
+          height="40"
+        />
+      </a>
+    </div>
 
-    <nav class="nav" aria-label="Navegación principal">
-      <button class="mobile-menu-toggle" aria-label="Abrir menú" aria-expanded="false" id="mobile-menu-toggle">
+    <!-- Right: Navigation -->
+    <nav
+      class="header-nav-right"
+      aria-label="Navegación principal"
+    >
+      <button
+        class="mobile-menu-toggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        id="mobile-menu-toggle"
+      >
         <span class="hamburger"></span>
         <span class="hamburger"></span>
         <span class="hamburger"></span>
       </button>
 
-      <ul class="nav-list" id="nav-list">
-        {navItems.map((item) => {
-          const itemPath = getLocalizedPath(item.path, lang);
-          const isActive = currentPath === itemPath || (item.path !== '/' && currentPath.startsWith(itemPath));
-          return (
-            <li>
-              <a
-                href={itemPath}
-                class:list={['nav-link', { 'nav-link-active': isActive }]}
-              >
-                {item.label}
-              </a>
-            </li>
-          );
-        })}
+      <ul
+        class="nav-list"
+        id="nav-list"
+      >
+        {
+          navItems.map((item) => {
+            if (item.type === "link") {
+              const itemPath = getLocalizedPath(item.path, lang);
+              const isActive = isPathActive(itemPath, currentPath);
+              return (
+                <li>
+                  <a
+                    href={itemPath}
+                    class:list={["nav-link", { "nav-link-active": isActive }]}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            } else if (item.type === "dropdown") {
+              const hasActiveChild = item.items.some((subItem) => {
+                const subPath = getLocalizedPath(subItem.path, lang);
+                return isPathActive(subPath, currentPath);
+              });
+              return (
+                <li class="nav-item-dropdown">
+                  <button
+                    class:list={[
+                      "nav-link",
+                      "nav-link-dropdown",
+                      { "nav-link-active": hasActiveChild },
+                    ]}
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    data-dropdown={item.id}
+                  >
+                    {item.label}
+                    <svg
+                      class="dropdown-arrow"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 13 13"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3.5 5L6.5 8L9.5 5"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <ul
+                    class="dropdown-menu"
+                    data-dropdown-menu={item.id}
+                  >
+                    {item.items.map((subItem) => {
+                      const subPath = getLocalizedPath(subItem.path, lang);
+                      const isActive = isPathActive(subPath, currentPath);
+                      return (
+                        <li>
+                          <a
+                            href={subPath}
+                            class:list={[
+                              "dropdown-item",
+                              { "dropdown-item-active": isActive },
+                            ]}
+                          >
+                            {subItem.label}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            }
+          })
+        }
+
+        <!-- Language selector -->
+        <li class="nav-item-lang">
+          <a
+            href={otherLangPath}
+            class="lang-link"
+            aria-label={lang === "es"
+              ? "Cambiar a Portugués"
+              : "Cambiar a Español"}
+          >
+            {lang === "es" ? "ES" : "PT"} | {lang === "es" ? "PT" : "ES"}
+          </a>
+        </li>
       </ul>
     </nav>
-
-    <div class="header-right">
-      <div class="language-selector">
-        <a
-          href={otherLangPath}
-          class="lang-link"
-          aria-label={lang === 'es' ? 'Cambiar a Portugués' : 'Cambiar a Español'}
-        >
-          {lang === 'es' ? 'PT' : 'ES'}
-        </a>
-      </div>
-      <a href="https://www.bayer.com" class="logo-link" aria-label="Bayer" target="_blank" rel="noopener noreferrer">
-        <img src="/logo-bayer.svg" alt="Bayer" class="logo-bayer" width="80" height="40" />
-      </a>
-    </div>
   </div>
 </header>
 
 <script>
   // Mobile menu toggle
-  const menuToggle = document.getElementById('mobile-menu-toggle');
-  const navList = document.getElementById('nav-list');
+  const menuToggle = document.getElementById("mobile-menu-toggle");
+  const navList = document.getElementById("nav-list");
 
   if (menuToggle && navList) {
-    menuToggle.addEventListener('click', () => {
-      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!isExpanded));
-      navList.classList.toggle('nav-list-open');
-      menuToggle.classList.toggle('mobile-menu-toggle-open');
+    menuToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+      menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+      navList.classList.toggle("nav-list-open");
+      menuToggle.classList.toggle("mobile-menu-toggle-open");
     });
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!menuToggle.contains(e.target as Node) && !navList.contains(e.target as Node)) {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        navList.classList.remove('nav-list-open');
-        menuToggle.classList.remove('mobile-menu-toggle-open');
+    document.addEventListener("click", (e) => {
+      const target = e.target as Node;
+      if (!menuToggle.contains(target) && !navList.contains(target)) {
+        menuToggle.setAttribute("aria-expanded", "false");
+        navList.classList.remove("nav-list-open");
+        menuToggle.classList.remove("mobile-menu-toggle-open");
       }
     });
 
     // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && navList.classList.contains('nav-list-open')) {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        navList.classList.remove('nav-list-open');
-        menuToggle.classList.remove('mobile-menu-toggle-open');
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && navList.classList.contains("nav-list-open")) {
+        menuToggle.setAttribute("aria-expanded", "false");
+        navList.classList.remove("nav-list-open");
+        menuToggle.classList.remove("mobile-menu-toggle-open");
       }
     });
+  }
+
+  // Desktop dropdowns functionality
+  function initDropdowns() {
+    const dropdownTriggers = document.querySelectorAll("[data-dropdown]");
+    const dropdownMenus = document.querySelectorAll("[data-dropdown-menu]");
+
+    dropdownTriggers.forEach((trigger) => {
+      const dropdownId = trigger.getAttribute("data-dropdown");
+      const menu = document.querySelector(
+        `[data-dropdown-menu="${dropdownId}"]`
+      ) as HTMLElement;
+
+      if (!menu) return;
+
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isExpanded = trigger.getAttribute("aria-expanded") === "true";
+
+        // Close all other dropdowns
+        dropdownTriggers.forEach((otherTrigger) => {
+          if (otherTrigger !== trigger) {
+            otherTrigger.setAttribute("aria-expanded", "false");
+            const otherId = otherTrigger.getAttribute("data-dropdown");
+            const otherMenu = document.querySelector(
+              `[data-dropdown-menu="${otherId}"]`
+            ) as HTMLElement;
+            if (otherMenu) {
+              otherMenu.classList.remove("dropdown-menu-open");
+            }
+          }
+        });
+
+        // Toggle current dropdown
+        trigger.setAttribute("aria-expanded", String(!isExpanded));
+        if (!isExpanded) {
+          menu.classList.add("dropdown-menu-open");
+        } else {
+          menu.classList.remove("dropdown-menu-open");
+        }
+      });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      const target = e.target as Node;
+      let clickedInsideDropdown = false;
+
+      dropdownTriggers.forEach((trigger) => {
+        if (trigger.contains(target)) {
+          clickedInsideDropdown = true;
+        }
+      });
+
+      dropdownMenus.forEach((menu) => {
+        if (menu.contains(target)) {
+          clickedInsideDropdown = true;
+        }
+      });
+
+      if (!clickedInsideDropdown) {
+        dropdownTriggers.forEach((trigger) => {
+          trigger.setAttribute("aria-expanded", "false");
+          const dropdownId = trigger.getAttribute("data-dropdown");
+          const menu = document.querySelector(
+            `[data-dropdown-menu="${dropdownId}"]`
+          ) as HTMLElement;
+          if (menu) {
+            menu.classList.remove("dropdown-menu-open");
+          }
+        });
+      }
+    });
+
+    // Close dropdowns on escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        dropdownTriggers.forEach((trigger) => {
+          trigger.setAttribute("aria-expanded", "false");
+          const dropdownId = trigger.getAttribute("data-dropdown");
+          const menu = document.querySelector(
+            `[data-dropdown-menu="${dropdownId}"]`
+          ) as HTMLElement;
+          if (menu) {
+            menu.classList.remove("dropdown-menu-open");
+          }
+        });
+      }
+    });
+  }
+
+  // Initialize dropdowns when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDropdowns);
+  } else {
+    initDropdowns();
   }
 </script>
 
@@ -119,6 +410,13 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
     align-items: center;
     justify-content: space-between;
     height: 100%;
+    gap: var(--spacing-4);
+  }
+
+  /* Left: Both logos */
+  .header-left {
+    display: flex;
+    align-items: center;
     gap: var(--spacing-4);
   }
 
@@ -152,10 +450,12 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
     width: auto;
   }
 
-  .nav {
-    flex: 1;
+  /* Right: Navigation */
+  .header-nav-right {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
   }
 
   .mobile-menu-toggle {
@@ -199,13 +499,20 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
   .nav-link {
     color: var(--color-text-primary);
     text-decoration: none;
-    font-weight: var(--font-weight-bold);
-    font-size: var(--nav-item-font-size);
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-family-primary);
     padding: var(--spacing-2) var(--spacing-3);
     position: relative;
     transition: color var(--transition-fast);
-    border-radius: var(--nav-item-border-radius);
-    line-height: var(--line-height-tight);
+    border-radius: 10px;
+    line-height: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
   .nav-link:hover {
@@ -217,7 +524,7 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
   }
 
   .nav-link-active::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -226,35 +533,103 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
     background-color: var(--color-bayer-secondary);
   }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-4);
+  /* Dropdown styles */
+  .nav-item-dropdown {
+    position: relative;
   }
 
-  .language-selector {
-    display: flex;
-    align-items: center;
+  .nav-link-dropdown {
+    padding-right: var(--spacing-2);
+  }
+
+  .dropdown-arrow {
+    width: 13px;
+    height: 13px;
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+  }
+
+  .nav-link-dropdown[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-2);
+    min-width: 200px;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+    z-index: 1000;
+  }
+
+  .dropdown-menu-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: var(--spacing-2) var(--spacing-3);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-family-primary);
+    line-height: 13px;
+    border-radius: 10px;
+    transition: background-color var(--transition-fast);
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--color-gray-50);
+  }
+
+  .dropdown-item-active {
+    color: var(--color-bayer-secondary);
+    background-color: var(--color-gray-50);
+  }
+
+  /* Language selector */
+  .nav-item-lang {
+    margin-left: var(--spacing-2);
   }
 
   .lang-link {
     color: var(--color-text-primary);
     text-decoration: none;
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-family-primary);
     padding: var(--spacing-2) var(--spacing-3);
-    border: 1px solid var(--color-gray-light);
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     transition: all var(--transition-fast);
+    display: inline-block;
   }
 
   .lang-link:hover {
-    background-color: var(--color-bayer-secondary);
-    color: var(--color-white);
-    border-color: var(--color-bayer-secondary);
+    color: var(--color-bayer-secondary);
   }
 
+  /* Mobile styles */
   @media (max-width: 767px) {
+    .header-left {
+      gap: var(--spacing-2);
+    }
+
+    .logo-bayer {
+      max-height: 30px;
+    }
+
     .mobile-menu-toggle {
       display: flex;
     }
@@ -272,10 +647,11 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
       max-height: 0;
       overflow: hidden;
       transition: max-height var(--transition-base);
+      align-items: stretch;
     }
 
     .nav-list-open {
-      max-height: 500px;
+      max-height: 800px;
     }
 
     .nav-list li {
@@ -286,15 +662,34 @@ const otherLangPath = currentPath.replace(`/${lang}`, `/${otherLang}`).replace(/
       display: block;
       padding: var(--spacing-3) 0;
       width: 100%;
+      justify-content: space-between;
     }
 
-    .header-right {
-      gap: var(--spacing-2);
+    .nav-item-dropdown {
+      width: 100%;
     }
 
-    .logo-bayer {
-      max-height: 30px;
+    .dropdown-menu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      padding: var(--spacing-2) 0 var(--spacing-2) var(--spacing-4);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-base);
+    }
+
+    .dropdown-menu-open {
+      max-height: 300px;
+    }
+
+    .nav-item-lang {
+      margin-left: 0;
+      margin-top: var(--spacing-2);
+      padding-top: var(--spacing-2);
+      border-top: 1px solid var(--color-gray-light);
     }
   }
 </style>
-
