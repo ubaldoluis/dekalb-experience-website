@@ -1,147 +1,216 @@
 ---
-import { getLocalizedPath } from '../utils/i18n';
-import type { Idioma } from '../types';
+import type { Idioma } from "../types";
 
 interface Props {
   lang?: Idioma;
 }
 
-const { lang = 'es' } = Astro.props;
+const { lang = "es" } = Astro.props;
 
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="footer" role="contentinfo">
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3 class="footer-title">{lang === 'es' ? 'DEKALB Experience' : 'DEKALB Experience'}</h3>
-        <p class="footer-description">
-          {lang === 'es' 
-            ? 'Expertos a tu lado. Soluciones agrícolas innovadoras para maximizar tu producción.'
-            : 'Especialistas ao seu lado. Soluções agrícolas inovadoras para maximizar sua produção.'}
-        </p>
-      </div>
-
-      <div class="footer-section">
-        <h4 class="footer-subtitle">{lang === 'es' ? 'Enlaces' : 'Links'}</h4>
-        <ul class="footer-links">
-          <li><a href={getLocalizedPath('/', lang)}>{lang === 'es' ? 'Inicio' : 'Início'}</a></li>
-          <li><a href={getLocalizedPath('/fieldview', lang)}>FieldView</a></li>
-          <li><a href={getLocalizedPath('/maiz', lang)}>{lang === 'es' ? 'Maíz' : 'Milho'}</a></li>
-          <li><a href={getLocalizedPath('/colza', lang)}>Colza</a></li>
-          <li><a href={getLocalizedPath('/blog', lang)}>Blog</a></li>
-          <li><a href={getLocalizedPath('/catalogo', lang)}>{lang === 'es' ? 'Catálogos' : 'Catálogos'}</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4 class="footer-subtitle">{lang === 'es' ? 'Soluciones' : 'Soluções'}</h4>
-        <ul class="footer-links">
-          <li><a href={getLocalizedPath('/acceleron', lang)}>Acceleron</a></li>
-          <li><a href={getLocalizedPath('/fieldshield', lang)}>FieldShield</a></li>
-          <li><a href={getLocalizedPath('/silo-extra', lang)}>Silo Extra</a></li>
-          <li><a href={getLocalizedPath('/preceon', lang)}>Preceon</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4 class="footer-subtitle">{lang === 'es' ? 'Contacto' : 'Contato'}</h4>
-        <ul class="footer-links">
-          <li><a href="https://www.bayer.com" target="_blank" rel="noopener noreferrer">Bayer</a></li>
-          <li><a href="https://www.dekalb.com" target="_blank" rel="noopener noreferrer">DEKALB</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="footer-copyright">
-        &copy; {currentYear} DEKALB / Bayer. {lang === 'es' ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}
-      </p>
+<footer
+  class="footer"
+  role="contentinfo"
+>
+  <div class="footer-container">
+    <p class="footer-copyright">Copyright © {currentYear} Bayer AG</p>
+    <nav class="footer-links">
+      <a
+        href="https://www.cropscience.bayer.es/general-conditions-of-use"
+        class="footer-link"
+        >Condiciones Generales de Uso</a
+      >
+      <a
+        href="https://www.cropscience.bayer.es/imprint"
+        class="footer-link"
+        >Pie de imprenta</a
+      >
+      <a
+        href="https://www.cropscience.bayer.es/privacy-statement"
+        class="footer-link"
+        >Política de privacidad</a
+      >
+      <a
+        href="https://www.cropscience.bayer.es/general-conditions-of-use"
+        class="footer-link"
+        >Datos Técnicos</a
+      >
+    </nav>
+    <div class="footer-social">
+      <a
+        href="https://www.facebook.com/bayer"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-icon"
+        aria-label="Facebook"
+      >
+        <img
+          src="/icon_footer-facebook.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      </a>
+      <a
+        href="https://twitter.com/bayer"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-icon"
+        aria-label="Twitter"
+      >
+        <svg
+          width="27"
+          height="27"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </a>
+      <a
+        href="https://www.instagram.com/bayer"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-icon"
+        aria-label="Instagram"
+      >
+        <img
+          src="/icon_footer-instagram.svg"
+          alt=""
+          aria-hidden="true"
+        />
+      </a>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    background-color: var(--color-bayer-secondary);
-    color: var(--color-white);
-    padding: var(--spacing-12) 0;
+    background-color: #009ddb;
+    color: #ffffff;
+    padding: 0;
     margin-top: var(--spacing-16);
-    min-height: var(--footer-height);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
   }
 
-  .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  .footer-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-10);
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: var(--spacing-8);
-    margin-bottom: var(--spacing-8);
-  }
-
-  .footer-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-4);
-  }
-
-  .footer-title {
-    color: var(--color-white);
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-2);
-    font-weight: var(--font-weight-bold);
-  }
-
-  .footer-subtitle {
-    color: var(--color-white);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--spacing-2);
-  }
-
-  .footer-description {
-    color: var(--color-white);
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-relaxed);
-    opacity: 0.95;
-  }
-
-  .footer-links {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-2);
-  }
-
-  .footer-links a {
-    color: var(--color-white);
-    text-decoration: none;
-    font-size: var(--font-size-lg);
-    transition: color var(--transition-fast);
-  }
-
-  .footer-links a:hover {
-    color: var(--color-white);
-    opacity: 0.8;
-  }
-
-  .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: var(--spacing-6);
-    text-align: center;
   }
 
   .footer-copyright {
-    color: var(--color-white);
-    font-size: var(--font-size-lg);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    line-height: 26px;
     margin: 0;
-    line-height: var(--line-height-relaxed);
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    flex-wrap: wrap;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .footer-link {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    text-decoration: none;
+    line-height: 26px;
+    transition: opacity var(--transition-base);
+    white-space: nowrap;
+  }
+
+  .footer-link:hover {
+    opacity: 0.8;
+  }
+
+  .footer-social {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 27px;
+    color: #ffffff;
+    transition: opacity var(--transition-base);
+  }
+
+  .social-icon:hover {
+    opacity: 0.8;
+  }
+
+  .social-icon img,
+  .social-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .social-icon svg {
+    fill: currentColor;
+  }
+
+  @media (max-width: 1023px) {
+    .footer-container {
+      flex-direction: column;
+      height: auto;
+      padding: var(--spacing-6) var(--spacing-4);
+      gap: var(--spacing-4);
+    }
+
+    .footer-links {
+      flex-direction: column;
+      gap: var(--spacing-4);
+      width: 100%;
+    }
+
+    .footer-link {
+      text-align: center;
+    }
+
+    .footer-copyright {
+      text-align: center;
+    }
+
+    .footer-social {
+      justify-content: center;
+    }
   }
 
   @media (max-width: 767px) {
-    .footer-content {
-      grid-template-columns: 1fr;
-      gap: var(--spacing-6);
+    .footer-container {
+      padding: var(--spacing-4);
+    }
+
+    .footer-copyright,
+    .footer-link {
+      font-size: 16px;
     }
   }
 </style>
-
