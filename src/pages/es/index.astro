@@ -93,8 +93,8 @@ console.log(
   }))
 );
 
-// Get latest 3 articles for blog preview
-const latestArticles = articles.slice(0, 3);
+// Get latest 4 articles for blog preview
+const latestArticles = articles.slice(0, 4);
 ---
 
 <PageLayout
@@ -399,7 +399,7 @@ const latestArticles = articles.slice(0, 3);
   </section>
 
   <!-- FieldView Section -->
-  <section class="fieldview-section">
+  <!-- <section class="fieldview-section">
     <div class="container">
       <CTASection
         title={homeContent.solutions.fieldview}
@@ -410,10 +410,10 @@ const latestArticles = articles.slice(0, 3);
         lang={lang}
       />
     </div>
-  </section>
+  </section> -->
 
   <!-- Protección de Cultivo Section -->
-  <section class="protection-section">
+  <!-- <section class="protection-section">
     <div class="container">
       <CTASection
         title={homeContent.solutions.protection}
@@ -424,7 +424,7 @@ const latestArticles = articles.slice(0, 3);
         lang={lang}
       />
     </div>
-  </section>
+  </section> -->
 
   <!-- Preceon Section -->
   <section class="preceon-section">
@@ -571,30 +571,41 @@ const latestArticles = articles.slice(0, 3);
   <!-- Blog Preview Section -->
   {
     latestArticles.length > 0 && (
-      <section class="blog-preview-section">
+      <section class="news-section">
         <div class="container">
-          <h2 class="section-title">Últimas Noticias</h2>
-          <div class="blog-preview-grid">
+          <div class="news-header">
+            <h2 class="news-title">Actualidad Dekalb</h2>
+            <p class="news-subtitle">
+              Noticias, eventos y novedades para estar siempre al día con todo
+              lo que ocurre en el mundo Dekalb.
+            </p>
+          </div>
+          <div class="news-grid">
             {latestArticles.map((article) => (
-              <article class="blog-preview-card">
-                {article.imagen_destacada?.url && (
-                  <img
-                    src={article.imagen_destacada.url}
-                    alt={article.imagen_destacada.alt || article.titulo}
-                    class="blog-preview-image"
-                    loading="lazy"
-                  />
-                )}
-                <div class="blog-preview-content">
-                  <span class="badge badge-primary">{article.categoria}</span>
-                  <h3 class="blog-preview-title">{article.titulo}</h3>
-                  <p class="blog-preview-date">
-                    {new Date(article.fecha).toLocaleDateString("es-ES")}
+              <article class="news-card">
+                <div class="news-card-image-wrapper">
+                  {article.imagen_destacada?.url && (
+                    <img
+                      src={article.imagen_destacada.url}
+                      alt={article.imagen_destacada.alt || article.titulo}
+                      class="news-card-image"
+                      loading="lazy"
+                    />
+                  )}
+                  <span class="news-card-tag">{article.categoria}</span>
+                </div>
+                <div class="news-card-content">
+                  <p class="news-card-date">
+                    {new Date(article.fecha).toLocaleDateString("es-ES", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </p>
-                  <p class="blog-preview-excerpt">{article.extracto}</p>
+                  <h3 class="news-card-title">{article.titulo}</h3>
                   <a
                     href={`/es/blog/${article.slug}`}
-                    class="btn btn-outline"
+                    class="news-card-link"
                   >
                     Leer más
                   </a>
@@ -602,12 +613,15 @@ const latestArticles = articles.slice(0, 3);
               </article>
             ))}
           </div>
-          <div class="blog-preview-footer">
+          <div class="news-footer">
+            <p class="news-footer-text">
+              Sigue conectado a la innovación y al campo.
+            </p>
             <a
               href="/es/blog"
-              class="btn btn-primary"
+              class="btn btn-primary news-footer-button"
             >
-              Ver todos los artículos
+              Ver todas las noticias
             </a>
           </div>
         </div>
@@ -814,17 +828,6 @@ const latestArticles = articles.slice(0, 3);
     display: block;
   }
 
-  .content-left-card-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    font-family: var(--font-family-primary);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-8);
-    line-height: 1.9rem;
-    max-width: 423px;
-    display: block;
-  }
-
   .content-left-card-content .btn {
     width: auto;
     max-width: 212px;
@@ -888,7 +891,8 @@ const latestArticles = articles.slice(0, 3);
     z-index: 2;
   }
 
-  .content-right-card-title {
+  .content-right-card-title,
+  .content-left-card-title {
     font-size: 1.7rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
@@ -897,6 +901,9 @@ const latestArticles = articles.slice(0, 3);
     line-height: 1.8rem;
     max-width: 345px;
     display: block;
+  }
+  .content-left-card-title {
+    max-width: 423px;
   }
 
   .content-right-card-description {
@@ -1009,73 +1016,180 @@ const latestArticles = articles.slice(0, 3);
     color: inherit;
   }
 
-  .blog-preview-section {
+  /* News Section */
+  .news-section {
     padding: var(--spacing-16) 0;
-    background-color: var(--color-gray-50);
+    background-color: var(--color-white);
   }
 
-  .blog-preview-grid {
+  .news-header {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+  }
+
+  .news-title {
+    font-size: 48px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin: 0 0 var(--spacing-4) 0;
+    letter-spacing: 0.96px;
+    line-height: 48px;
+  }
+
+  .news-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 26px;
+    max-width: 645px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing-6);
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-12);
   }
 
-  .blog-preview-card {
-    background: var(--color-bayer-secondary);
-    border-radius: var(--radius-sm);
+  .news-card {
+    background: linear-gradient(to bottom, #e9e7e4 0%, #ffffff 100%);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
     transition: all var(--transition-base);
   }
 
-  .blog-preview-card:hover {
-    box-shadow: var(--shadow-lg);
+  .news-card:hover {
     transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .blog-preview-image {
+  .news-card-image-wrapper {
+    position: relative;
     width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
+    height: 177px;
+    overflow: hidden;
   }
 
-  .blog-preview-content {
-    padding: var(--spacing-4);
+  .news-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .news-card-tag {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    background-color: #e9e7e4;
+    color: #313639;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    line-height: 18.2px;
+    text-transform: capitalize;
+  }
+
+  .news-card-content {
+    padding: var(--spacing-6);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2);
+    gap: var(--spacing-4);
+    flex: 1;
   }
 
-  .blog-preview-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-regular);
-    color: var(--color-white);
+  .news-card-date {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
     margin: 0;
-    line-height: var(--line-height-extra-relaxed);
+    line-height: 19.6px;
+    text-transform: capitalize;
   }
 
-  .blog-preview-date {
-    font-size: var(--font-size-base-sm);
-    color: var(--color-white);
+  .news-card-title {
+    font-size: 20px;
+    font-weight: 500;
+    font-family: var(--font-family-primary);
+    color: #313639;
     margin: 0;
-    opacity: 0.9;
+    line-height: 28px;
+    flex: 1;
   }
 
-  .blog-preview-excerpt {
-    font-size: var(--font-size-lg);
-    color: var(--color-white);
-    margin: 0;
-    line-height: var(--line-height-extra-relaxed);
+  .news-card-link {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #009ddb;
+    text-decoration: none;
+    display: inline-block;
+    align-self: flex-start;
+    transition: color var(--transition-base);
   }
 
-  .blog-preview-footer {
+  .news-card-link:hover {
+    color: #005475;
+    text-decoration: underline;
+  }
+
+  .news-footer {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-6);
+  }
+
+  .news-footer-text {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 26px;
+  }
+
+  .news-footer-button {
+    width: 212px;
+    height: 40px;
+    border-radius: 26px;
+  }
+
+  @media (max-width: 1023px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .news-title {
+      font-size: 36px;
+      line-height: 40px;
+    }
   }
 
   @media (max-width: 767px) {
-    .blog-preview-grid {
+    .news-grid {
       grid-template-columns: 1fr;
+    }
+
+    .news-title {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .news-subtitle {
+      font-size: 18px;
+      line-height: 24px;
     }
 
     .catalogs-grid {

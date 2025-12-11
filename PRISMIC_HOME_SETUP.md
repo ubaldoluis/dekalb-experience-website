@@ -160,3 +160,4 @@ El código ya está preparado para usar Prismic. La función `getHomeContent()` 
 - Una vez configurado Prismic, el contenido se obtendrá automáticamente desde allí
 - Los cambios en Prismic se reflejarán en la página después de publicar
 
+

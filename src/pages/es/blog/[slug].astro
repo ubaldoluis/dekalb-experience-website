@@ -1,11 +1,12 @@
 ---
-import BlogPost from '../../../layouts/BlogPost.astro';
-import { getArticleBySlug, getAllArticles } from '../../../utils/prismic';
-import { getLocalizedPath } from '../../../utils/i18n';
+import BlogPost from "../../../layouts/BlogPost.astro";
+import { getArticleBySlug, getAllArticles } from "../../../utils/prismic";
+import { getLocalizedPath } from "../../../utils/i18n";
+import { renderRichText } from "../../../utils/prismic-rich-text";
 
 export async function getStaticPaths() {
-  const articles = await getAllArticles('es');
-  
+  const articles = await getAllArticles("es");
+
   return articles.map((article) => ({
     params: { slug: article.slug },
     props: { article },
@@ -13,13 +14,42 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const lang = 'es';
+const lang = "es";
+const siteUrl = import.meta.env.SITE_URL || "https://dekalb-experience.com";
+const articleUrl = `${siteUrl}/es/blog/${article.slug}`;
 
-const categoryLabels: Record<string, string> = {
-  'noticia': 'Noticia',
-  'evento': 'Evento',
-  'articulo': 'Artículo',
-  'lanzamiento': 'Lanzamiento',
+// Debug: log article content structure
+console.log("Article contenido type:", typeof article.contenido);
+console.log("Article contenido is array:", Array.isArray(article.contenido));
+if (
+  article.contenido &&
+  Array.isArray(article.contenido) &&
+  article.contenido.length > 0
+) {
+  console.log(
+    "First content block:",
+    JSON.stringify(article.contenido[0], null, 2)
+  );
+}
+
+// Format date as "FEBRERO 21, 2024"
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const months = [
+    "ENERO",
+    "FEBRERO",
+    "MARZO",
+    "ABRIL",
+    "MAYO",
+    "JUNIO",
+    "JULIO",
+    "AGOSTO",
+    "SEPTIEMBRE",
+    "OCTUBRE",
+    "NOVIEMBRE",
+    "DICIEMBRE",
+  ];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
 // Get related articles (excluding current)
@@ -30,146 +60,335 @@ try {
     .filter((a) => a.id !== article.id && a.categoria === article.categoria)
     .slice(0, 3);
 } catch (error) {
-  console.error('Error fetching related articles:', error);
+  console.error("Error fetching related articles:", error);
 }
 ---
 
-<BlogPost 
+<BlogPost
   title={article.titulo}
   description={article.extracto}
   lang={lang}
   fecha={article.fecha}
-  categoria={categoryLabels[article.categoria] || article.categoria}
+  categoria={article.categoria}
   ogImage={article.imagen_destacada?.url}
 >
-  <div class="container">
-    {article.imagen_destacada?.url && (
-      <img 
-        src={article.imagen_destacada.url} 
-        alt={article.imagen_destacada.alt || article.titulo}
-        class="article-featured-image"
-        loading="eager"
-      />
-    )}
+  <div class="article-wrapper">
+    <div class="article-container">
+      {
+        article.imagen_destacada?.url && (
+          <img
+            src={article.imagen_destacada.url}
+            alt={article.imagen_destacada.alt || article.titulo}
+            class="article-featured-image"
+            loading="eager"
+          />
+        )
+      }
 
-    <div class="article-content">
-      {article.contenido && (
-        <div class="rich-text-content">
-          <!-- Rich text content from Prismic -->
-          <!-- Note: In production, use @prismicio/astro or render rich text properly -->
-          {typeof article.contenido === 'string' ? (
-            <div set:html={article.contenido} />
-          ) : (
-            <p>Contenido del artículo disponible en Prismic.</p>
-          )}
-        </div>
-      )}
+      <div class="article-header">
+        <p class="article-date">{formatDate(article.fecha)}</p>
+        <h1 class="article-title">{article.titulo}</h1>
+        {article.extracto && <p class="article-intro">{article.extracto}</p>}
+        {
+          article.tags && article.tags.length > 0 && (
+            <div class="article-tags">
+              <span class="tags-label">TAGS:</span>
+              {article.tags.map((tag) => (
+                <span class="tag-badge">{tag}</span>
+              ))}
+            </div>
+          )
+        }
+      </div>
 
-      {article.autor && (
-        <div class="article-author">
-          <p><strong>Autor:</strong> {article.autor}</p>
+      <div class="article-content">
+        {
+          article.contenido && (
+            <div
+              class="rich-text-content"
+              set:html={renderRichText(article.contenido)}
+            />
+          )
+        }
+      </div>
+
+      <div class="article-share">
+        <span class="share-label">SHARE:</span>
+        <div class="share-buttons">
+          <a
+            href={`https://www.youtube.com/share?url=${encodeURIComponent(articleUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="share-button share-youtube"
+            aria-label="Compartir en YouTube"
+          >
+            <img
+              src="/icon_share-youtube.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </a>
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="share-button share-facebook"
+            aria-label="Compartir en Facebook"
+          >
+            <img
+              src="/icon_share-facebook.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </a>
+          <button
+            type="button"
+            class="share-button share-instagram"
+            aria-label="Copiar enlace para compartir en Instagram"
+            data-share-url={articleUrl}
+          >
+            <img
+              src="/icon_share-instagram.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </button>
         </div>
-      )}
+      </div>
     </div>
+  </div>
 
-    {relatedArticles.length > 0 && (
+  {
+    relatedArticles.length > 0 && (
       <section class="related-articles">
-        <h2>Artículos relacionados</h2>
-        <div class="related-grid">
-          {relatedArticles.map((related) => (
-            <article class="related-card">
-              {related.imagen_destacada?.url && (
-                <img 
-                  src={related.imagen_destacada.url} 
-                  alt={related.imagen_destacada.alt || related.titulo}
-                  class="related-image"
-                  loading="lazy"
-                />
-              )}
-              <div class="related-content">
-                <h3>
-                  <a href={getLocalizedPath(`/blog/${related.slug}`, lang)}>
-                    {related.titulo}
-                  </a>
-                </h3>
-                <time datetime={related.fecha}>
-                  {new Date(related.fecha).toLocaleDateString('es-ES')}
-                </time>
-              </div>
-            </article>
-          ))}
+        <div class="container">
+          <h2>Artículos relacionados</h2>
+          <div class="related-grid">
+            {relatedArticles.map((related) => (
+              <article class="related-card">
+                {related.imagen_destacada?.url && (
+                  <img
+                    src={related.imagen_destacada.url}
+                    alt={related.imagen_destacada.alt || related.titulo}
+                    class="related-image"
+                    loading="lazy"
+                  />
+                )}
+                <div class="related-content">
+                  <h3>
+                    <a href={getLocalizedPath(`/blog/${related.slug}`, lang)}>
+                      {related.titulo}
+                    </a>
+                  </h3>
+                  <time datetime={related.fecha}>
+                    {new Date(related.fecha).toLocaleDateString("es-ES")}
+                  </time>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
-    )}
-  </div>
+    )
+  }
 </BlogPost>
 
 <style>
+  .article-wrapper {
+    background-image: url("/background-article.png");
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: #ffffff;
+    padding: var(--spacing-16) 0;
+  }
+
+  .article-container {
+    max-width: 1196px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+  }
+
   .article-featured-image {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto var(--spacing-8);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    max-width: 1196px;
+    height: 560px;
+    object-fit: cover;
+    border-radius: 60px;
+    margin-bottom: var(--spacing-12);
+    display: block;
+  }
+
+  .article-header {
+    max-width: 708px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .article-date {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #009ddb;
+    margin: 0 0 var(--spacing-4) 0;
+    line-height: 26px;
+    text-transform: uppercase;
+  }
+
+  .article-title {
+    font-size: 48px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #009ddb;
+    margin: 0 0 var(--spacing-6) 0;
+    line-height: 57.6px;
+    letter-spacing: 0.96px;
+  }
+
+  .article-intro {
+    font-size: 34px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0 0 var(--spacing-8) 0;
+    line-height: 44.2px;
+  }
+
+  .article-tags {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    flex-wrap: wrap;
+  }
+
+  .tags-label {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    line-height: 20.8px;
+  }
+
+  .tag-badge {
+    background-color: #e9e7e4;
+    color: #313639;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    line-height: 18.2px;
+    text-transform: capitalize;
   }
 
   .article-content {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 708px;
+    margin: 0 auto var(--spacing-12);
   }
 
   .rich-text-content {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-relaxed);
-    color: var(--color-gray-800);
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #292929;
+    line-height: 30px;
   }
 
   .rich-text-content :global(h2) {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
+    font-size: 32px;
+    font-weight: 700;
     margin-top: var(--spacing-8);
     margin-bottom: var(--spacing-4);
-    color: var(--color-gray-900);
+    color: #292929;
+    line-height: 1.2;
   }
 
   .rich-text-content :global(h3) {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
+    font-size: 24px;
+    font-weight: 600;
     margin-top: var(--spacing-6);
     margin-bottom: var(--spacing-3);
-    color: var(--color-gray-900);
+    color: #292929;
+    line-height: 1.3;
   }
 
   .rich-text-content :global(p) {
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
   }
 
   .rich-text-content :global(img) {
     max-width: 100%;
     height: auto;
-    border-radius: var(--radius-md);
-    margin: var(--spacing-6) 0;
+    border-radius: 60px;
+    margin: var(--spacing-8) 0;
+    display: block;
   }
 
   .rich-text-content :global(blockquote) {
-    border-left: 4px solid var(--color-dekalb-primary);
+    border-left: 4px solid #009ddb;
     padding-left: var(--spacing-4);
     margin: var(--spacing-6) 0;
     font-style: italic;
-    color: var(--color-gray-700);
+    color: #313639;
   }
 
-  .article-author {
-    margin-top: var(--spacing-8);
-    padding-top: var(--spacing-6);
-    border-top: 1px solid var(--color-gray-200);
-    color: var(--color-gray-600);
+  .article-share {
+    max-width: 708px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .share-label {
+    font-size: 16px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #292929;
+    line-height: 20.8px;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: var(--spacing-4);
+  }
+
+  .share-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #009ddb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .share-button:hover {
+    background-color: #005475;
+    transform: scale(1.1);
+  }
+
+  .share-button img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
   }
 
   .related-articles {
     margin-top: var(--spacing-16);
-    padding-top: var(--spacing-12);
+    padding: var(--spacing-12) 0;
     border-top: 2px solid var(--color-gray-200);
+    background-color: var(--color-white);
+  }
+
+  .related-articles .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
   }
 
   .related-articles h2 {
@@ -217,12 +436,84 @@ try {
   }
 
   .related-content a:hover {
-    color: var(--color-dekalb-primary);
+    color: #009ddb;
   }
 
   .related-content time {
     font-size: var(--font-size-xs);
     color: var(--color-gray-500);
   }
+
+  @media (max-width: 1023px) {
+    .article-featured-image {
+      height: 400px;
+      border-radius: 40px;
+    }
+
+    .article-title {
+      font-size: 36px;
+      line-height: 44px;
+    }
+
+    .article-intro {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .article-featured-image {
+      height: 300px;
+      border-radius: 24px;
+    }
+
+    .article-title {
+      font-size: 32px;
+      line-height: 40px;
+      letter-spacing: 0.5px;
+    }
+
+    .article-intro {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    .article-share {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .share-buttons {
+      flex-wrap: wrap;
+    }
+  }
 </style>
 
+<script>
+  // Handle Instagram share button (copy to clipboard)
+  document.addEventListener("DOMContentLoaded", () => {
+    const instagramButton = document.querySelector(".share-instagram");
+    if (instagramButton) {
+      instagramButton.addEventListener("click", async () => {
+        const url = instagramButton.getAttribute("data-share-url");
+        if (url && navigator.clipboard) {
+          try {
+            await navigator.clipboard.writeText(url);
+            // Optional: Show a toast notification
+            const originalAriaLabel =
+              instagramButton.getAttribute("aria-label");
+            instagramButton.setAttribute("aria-label", "Enlace copiado");
+            setTimeout(() => {
+              instagramButton.setAttribute(
+                "aria-label",
+                originalAriaLabel || ""
+              );
+            }, 2000);
+          } catch (err) {
+            console.error("Failed to copy:", err);
+          }
+        }
+      });
+    }
+  });
+</script>

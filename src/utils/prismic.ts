@@ -152,7 +152,7 @@ export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]>
       titulo: doc.data.titulo || '',
       slug: doc.uid || '',
       categoria: (doc.data.categoria as any) || 'articulo',
-      fecha: doc.first_publication_date || '',
+      fecha: (doc.data.fecha as string) || doc.first_publication_date || '',
       extracto: doc.data.extracto || '',
       imagen_destacada: doc.data.imagen_destacada
         ? {
@@ -188,7 +188,7 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
       titulo: doc.data.titulo || '',
       slug: doc.uid || '',
       categoria: (doc.data.categoria as any) || 'articulo',
-      fecha: doc.first_publication_date || '',
+      fecha: (doc.data.fecha as string) || doc.first_publication_date || '',
       extracto: doc.data.extracto || '',
       imagen_destacada: doc.data.imagen_destacada
         ? {

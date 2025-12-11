@@ -25,82 +25,9 @@ const {
 <Base title={title} description={description} lang={lang} ogImage={ogImage}>
   <Header lang={lang} />
   <main id="main-content">
-    <article class="blog-post">
-      <header class="blog-post-header">
-        <div class="container">
-          {categoria && (
-            <span class="badge badge-primary">{categoria}</span>
-          )}
-          <h1>{title}</h1>
-          {fecha && (
-            <time datetime={fecha}>{new Date(fecha).toLocaleDateString(lang === 'es' ? 'es-ES' : 'pt-PT')}</time>
-          )}
-        </div>
-      </header>
-      <div class="blog-post-content">
-        <slot />
-      </div>
-    </article>
+    <slot />
   </main>
   <Footer lang={lang} />
 </Base>
 
-<style>
-  .blog-post {
-    min-height: 100vh;
-  }
-
-  .blog-post-header {
-    padding: var(--spacing-12) 0 var(--spacing-8);
-    background: linear-gradient(135deg, var(--color-dekalb-primary) 0%, var(--color-bayer-secondary) 100%);
-    color: var(--color-white);
-  }
-
-  .blog-post-header .container {
-    max-width: 800px;
-  }
-
-  .blog-post-header h1 {
-    color: var(--color-white);
-    margin-top: var(--spacing-4);
-    margin-bottom: var(--spacing-2);
-  }
-
-  .blog-post-header time {
-    display: block;
-    opacity: 0.9;
-    font-size: var(--font-size-sm);
-  }
-
-  .blog-post-content {
-    padding: var(--spacing-8) 0;
-  }
-
-  .blog-post-content :global(h2) {
-    margin-top: var(--spacing-8);
-    margin-bottom: var(--spacing-4);
-  }
-
-  .blog-post-content :global(h3) {
-    margin-top: var(--spacing-6);
-    margin-bottom: var(--spacing-3);
-  }
-
-  .blog-post-content :global(p) {
-    margin-bottom: var(--spacing-4);
-  }
-
-  .blog-post-content :global(img) {
-    margin: var(--spacing-6) 0;
-    border-radius: var(--radius-md);
-  }
-
-  .blog-post-content :global(blockquote) {
-    border-left: 4px solid var(--color-dekalb-primary);
-    padding-left: var(--spacing-4);
-    margin: var(--spacing-6) 0;
-    font-style: italic;
-    color: var(--color-gray-700);
-  }
-</style>
 

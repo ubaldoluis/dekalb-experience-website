@@ -194,3 +194,4 @@
 3. Documentar breakpoints exactos
 4. Verificar implementación responsive
 
+

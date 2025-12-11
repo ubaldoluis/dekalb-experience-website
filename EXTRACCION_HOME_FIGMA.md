@@ -253,3 +253,4 @@ _Se completarán durante la extracción_
 5. [ ] Actualizar `src/styles/design-tokens.css`
 6. [ ] Verificar implementación
 
+

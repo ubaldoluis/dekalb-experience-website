@@ -209,3 +209,4 @@
 4. Exportar logos como SVG
 5. Actualizar `design-tokens.css` con todos los valores
 
+
