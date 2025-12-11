@@ -132,30 +132,29 @@ const latestArticles = articles.slice(0, 4);
     </div>
   </section>
 
-  <!-- Mobile: Separate Hero Section -->
+  <!-- Mobile: Combined Hero + Products Section -->
   <section class="mobile-hero-section">
-    <SolutionsHero
-      title={homeContent.hero.title}
-      subtitle={homeContent.hero.claim}
-    />
-  </section>
-
-  <!-- Mobile: Products Section -->
-  <section
-    id="productos"
-    class="mobile-products-section"
-  >
-    <div class="container">
-      <h2 class="section-title">Productos</h2>
-      <FilterDropdown
-        filterState={filterState}
-        lang={lang}
+    <div class="mobile-hero-background"></div>
+    <div class="mobile-hero-overlay"></div>
+    <div class="mobile-hero-content">
+      <SolutionsHero
+        title={homeContent.hero.title}
+        subtitle={homeContent.hero.claim}
       />
-      <ProductCarousel
-        products={filteredProducts}
-        lang={lang}
-        carouselId="product-carousel-mobile"
-      />
+    </div>
+    <div class="mobile-products-content">
+      <div class="container">
+        <h2 class="section-title">Productos</h2>
+        <FilterDropdown
+          filterState={filterState}
+          lang={lang}
+        />
+        <ProductCarousel
+          products={filteredProducts}
+          lang={lang}
+          carouselId="product-carousel-mobile"
+        />
+      </div>
     </div>
   </section>
 
@@ -533,7 +532,7 @@ const latestArticles = articles.slice(0, 4);
     </div>
   </section>
   <!-- Evita Problemas Section -->
-  <section class="avoid-problems-section">
+  <!-- <section class="avoid-problems-section">
     <div class="container">
       <CTASection
         title={homeContent.solutions.avoidProblems}
@@ -543,7 +542,7 @@ const latestArticles = articles.slice(0, 4);
         lang={lang}
       />
     </div>
-  </section>
+  </section> -->
 
   <!-- Catálogos Download Section -->
   <section class="catalogs-download-section">
@@ -724,20 +723,54 @@ const latestArticles = articles.slice(0, 4);
     display: none;
   }
 
-  /* Mobile: Separate Sections */
+  /* Mobile: Combined Hero + Products Section */
   .mobile-hero-section {
     display: block;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
   }
 
-  .mobile-products-section {
-    display: block;
+  .mobile-hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("/Frame_1410119213.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+
+  .mobile-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+  .mobile-hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .mobile-products-content {
+    position: relative;
+    z-index: 2;
     padding: var(--spacing-16) 0;
-    background-color: var(--color-white);
+  }
+
+  .mobile-products-content .section-title {
+    color: var(--color-white);
   }
 
   @media (min-width: 1024px) {
-    .mobile-hero-section,
-    .mobile-products-section {
+    .mobile-hero-section {
       display: none;
     }
   }

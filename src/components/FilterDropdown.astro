@@ -1,49 +1,49 @@
 ---
-import type { FilterState } from '../types/index';
+import type { FilterState } from "../types/index";
 
 interface Props {
   filterState?: FilterState;
-  lang?: 'es' | 'pt';
+  lang?: "es" | "pt";
 }
 
-const { filterState, lang = 'es' } = Astro.props;
+const { filterState, lang = "es" } = Astro.props;
 
 const translations = {
   es: {
-    seed: 'Semilla',
-    protection: 'Protección de Cultivo',
-    tipo: 'Tipo:',
-    uso: 'Uso:',
-    zona: 'Zona geográfica:',
-    todos: 'Todo',
-    maiz: 'Maiz',
-    colza: 'Colza',
-    grano: 'Grano',
-    silo: 'Silo',
-    ebro: 'Ebro',
-    noroeste: 'Noroeste',
-    portugal: 'Portugal',
-    centroSur: 'Centro Sur, Extremadura, Andalucía',
-    clearFilters: 'Borrar filtros',
-    filter: 'Filtrar',
+    seed: "Semilla",
+    protection: "Protección de Cultivo",
+    tipo: "Tipo:",
+    uso: "Uso:",
+    zona: "Zona geográfica:",
+    todos: "Todo",
+    maiz: "Maiz",
+    colza: "Colza",
+    grano: "Grano",
+    silo: "Silo",
+    ebro: "Ebro",
+    noroeste: "Noroeste",
+    portugal: "Portugal",
+    centroSur: "Centro Sur, Extremadura, Andalucía",
+    clearFilters: "Borrar filtros",
+    filter: "Filtrar",
   },
   pt: {
-    seed: 'Semente',
-    protection: 'Proteção de Cultivo',
-    tipo: 'Tipo:',
-    uso: 'Uso:',
-    zona: 'Zona Geográfica:',
-    todos: 'Todo',
-    maiz: 'Milho',
-    colza: 'Colza',
-    grano: 'Grão',
-    silo: 'Silagem',
-    ebro: 'Ebro',
-    noroeste: 'Noroeste',
-    portugal: 'Portugal',
-    centroSur: 'Centro Sul, Extremadura, Andaluzia',
-    clearFilters: 'Limpar filtros',
-    filter: 'Filtrar',
+    seed: "Semente",
+    protection: "Proteção de Cultivo",
+    tipo: "Tipo:",
+    uso: "Uso:",
+    zona: "Zona Geográfica:",
+    todos: "Todo",
+    maiz: "Milho",
+    colza: "Colza",
+    grano: "Grão",
+    silo: "Silagem",
+    ebro: "Ebro",
+    noroeste: "Noroeste",
+    portugal: "Portugal",
+    centroSur: "Centro Sul, Extremadura, Andaluzia",
+    clearFilters: "Limpar filtros",
+    filter: "Filtrar",
   },
 };
 
@@ -53,34 +53,34 @@ const t = translations[lang];
 const selectedSeed = filterState?.tipoSemilla || null;
 const selectedUse = filterState?.uso || null;
 const selectedZone = filterState?.zona || null;
-const selectedProtection = filterState?.proteccion || 'todos';
+const selectedProtection = filterState?.proteccion || "todos";
 
 // Seed options
 const seedOptions = [
-  { value: 'maiz', label: t.maiz },
-  { value: 'colza', label: t.colza },
+  { value: "maiz", label: t.maiz },
+  { value: "colza", label: t.colza },
 ];
 
 // Use options
 const useOptions = [
-  { value: 'grano', label: t.grano },
-  { value: 'silo', label: t.silo },
+  { value: "grano", label: t.grano },
+  { value: "silo", label: t.silo },
 ];
 
 // Zone options
 const zoneOptions = [
-  { value: 'ebro', label: t.ebro },
-  { value: 'noroeste', label: t.noroeste },
-  { value: 'portugal', label: t.portugal },
-  { value: 'centro-sur-extremadura-andalucia', label: t.centroSur },
+  { value: "ebro", label: t.ebro },
+  { value: "noroeste", label: t.noroeste },
+  { value: "portugal", label: t.portugal },
+  { value: "centro-sur-extremadura-andalucia", label: t.centroSur },
 ];
 
 // Protection options
 const protectionOptions = [
-  { value: 'todos', label: t.todos },
-  { value: 'herbicida', label: 'Herbicida' },
-  { value: 'insecticida', label: 'Insecticida' },
-  { value: 'bioestimulante', label: 'Bioestimulante' },
+  { value: "todos", label: t.todos },
+  { value: "herbicida", label: "Herbicida" },
+  { value: "insecticida", label: "Insecticida" },
+  { value: "bioestimulante", label: "Bioestimulante" },
 ];
 
 // Determine if seed button should be active (white) or inactive (blue)
@@ -91,36 +91,81 @@ const isSeedActive = selectedSeed !== null;
   <!-- Main horizontal bar with two buttons -->
   <div class="filter-bar">
     <!-- Seed Button -->
-    <button 
+    <button
       type="button"
-      class:list={['filter-tag', 'filter-tag-seed', { 'filter-tag-active': isSeedActive }]}
+      class:list={[
+        "filter-tag",
+        "filter-tag-seed",
+        { "filter-tag-active": isSeedActive },
+      ]}
       id="seed-filter-trigger"
       aria-expanded="false"
     >
-      <img src="/Icon_Planta.svg" alt="" class="filter-tag-icon" />
+      <img
+        src="/Icon_Planta.svg"
+        alt=""
+        class="filter-tag-icon"
+      />
       <span class="filter-tag-text">{t.seed}</span>
-      <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        class="filter-chevron"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 6L8 10L12 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
       </svg>
     </button>
 
     <!-- Protection Button -->
-    <button 
+    <button
       type="button"
-      class:list={['filter-tag', 'filter-tag-protection', { 'filter-tag-active': selectedProtection !== 'todos' }]}
+      class:list={[
+        "filter-tag",
+        "filter-tag-protection",
+        { "filter-tag-active": selectedProtection !== "todos" },
+      ]}
       id="protection-filter-trigger"
       aria-expanded="false"
     >
-      <img src="/Icon_Seguridad.svg" alt="" class="filter-tag-icon" />
+      <img
+        src="/Icon_Seguridad.svg"
+        alt=""
+        class="filter-tag-icon"
+      />
       <span class="filter-tag-text">{t.protection}</span>
-      <svg class="filter-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        class="filter-chevron"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 6L8 10L12 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
       </svg>
     </button>
   </div>
 
   <!-- Dropdown Panel for Seed Filter -->
-  <div class="filter-dropdown-panel" id="seed-dropdown-panel">
+  <div
+    class="filter-dropdown-panel"
+    id="seed-dropdown-panel"
+  >
     <div class="filter-dropdown-content">
       <!-- Tipo Section -->
       <div class="filter-section">
@@ -128,22 +173,30 @@ const isSeedActive = selectedSeed !== null;
         <div class="filter-tags-row">
           <button
             type="button"
-            class:list={['filter-option-tag', { 'filter-option-tag-active': !selectedSeed }]}
+            class:list={[
+              "filter-option-tag",
+              { "filter-option-tag-active": !selectedSeed },
+            ]}
             data-filter="tipoSemilla"
             data-value=""
           >
             {t.todos}
           </button>
-          {seedOptions.map((option) => (
-            <button
-              type="button"
-              class:list={['filter-option-tag', { 'filter-option-tag-active': selectedSeed === option.value }]}
-              data-filter="tipoSemilla"
-              data-value={option.value}
-            >
-              {option.label}
-            </button>
-          ))}
+          {
+            seedOptions.map((option) => (
+              <button
+                type="button"
+                class:list={[
+                  "filter-option-tag",
+                  { "filter-option-tag-active": selectedSeed === option.value },
+                ]}
+                data-filter="tipoSemilla"
+                data-value={option.value}
+              >
+                {option.label}
+              </button>
+            ))
+          }
         </div>
       </div>
 
@@ -153,24 +206,32 @@ const isSeedActive = selectedSeed !== null;
         <div class="filter-tags-row">
           <button
             type="button"
-            class:list={['filter-option-tag', { 'filter-option-tag-active': !selectedUse }]}
+            class:list={[
+              "filter-option-tag",
+              { "filter-option-tag-active": !selectedUse },
+            ]}
             data-filter="uso"
             data-value=""
-            disabled={!selectedSeed || selectedSeed !== 'maiz'}
+            disabled={!selectedSeed || selectedSeed !== "maiz"}
           >
             {t.todos}
           </button>
-          {useOptions.map((option) => (
-            <button
-              type="button"
-              class:list={['filter-option-tag', { 'filter-option-tag-active': selectedUse === option.value }]}
-              data-filter="uso"
-              data-value={option.value}
-              disabled={!selectedSeed || selectedSeed !== 'maiz'}
-            >
-              {option.label}
-            </button>
-          ))}
+          {
+            useOptions.map((option) => (
+              <button
+                type="button"
+                class:list={[
+                  "filter-option-tag",
+                  { "filter-option-tag-active": selectedUse === option.value },
+                ]}
+                data-filter="uso"
+                data-value={option.value}
+                disabled={!selectedSeed || selectedSeed !== "maiz"}
+              >
+                {option.label}
+              </button>
+            ))
+          }
         </div>
       </div>
 
@@ -180,53 +241,80 @@ const isSeedActive = selectedSeed !== null;
         <div class="filter-tags-row filter-tags-row-wrap">
           <button
             type="button"
-            class:list={['filter-option-tag', { 'filter-option-tag-active': !selectedZone }]}
+            class:list={[
+              "filter-option-tag",
+              { "filter-option-tag-active": !selectedZone },
+            ]}
             data-filter="zona"
             data-value=""
-            disabled={!selectedSeed || selectedSeed !== 'maiz'}
+            disabled={!selectedSeed || selectedSeed !== "maiz"}
           >
             {t.todos}
           </button>
-          {zoneOptions.map((option) => (
-            <button
-              type="button"
-              class:list={['filter-option-tag', { 'filter-option-tag-active': selectedZone === option.value }]}
-              data-filter="zona"
-              data-value={option.value}
-              disabled={!selectedSeed || selectedSeed !== 'maiz'}
-            >
-              {option.label}
-            </button>
-          ))}
+          {
+            zoneOptions.map((option) => (
+              <button
+                type="button"
+                class:list={[
+                  "filter-option-tag",
+                  { "filter-option-tag-active": selectedZone === option.value },
+                ]}
+                data-filter="zona"
+                data-value={option.value}
+                disabled={!selectedSeed || selectedSeed !== "maiz"}
+              >
+                {option.label}
+              </button>
+            ))
+          }
         </div>
       </div>
     </div>
   </div>
 
   <!-- Dropdown Panel for Protection Filter -->
-  <div class="filter-dropdown-panel" id="protection-dropdown-panel">
+  <div
+    class="filter-dropdown-panel"
+    id="protection-dropdown-panel"
+  >
     <div class="filter-dropdown-content">
       <div class="filter-tags-row">
-        {protectionOptions.map((option) => (
-          <button
-            type="button"
-            class:list={['filter-option-tag', { 'filter-option-tag-active': selectedProtection === option.value }]}
-            data-filter="proteccion"
-            data-value={option.value}
-          >
-            {option.label}
-          </button>
-        ))}
+        {
+          protectionOptions.map((option) => (
+            <button
+              type="button"
+              class:list={[
+                "filter-option-tag",
+                {
+                  "filter-option-tag-active":
+                    selectedProtection === option.value,
+                },
+              ]}
+              data-filter="proteccion"
+              data-value={option.value}
+            >
+              {option.label}
+            </button>
+          ))
+        }
       </div>
     </div>
   </div>
 
   <!-- Action Buttons -->
   <div class="filter-actions">
-    <button type="button" class="filter-action-link" id="clear-filters">
+    <button
+      type="button"
+      class="filter-action-link"
+      id="clear-filters"
+    >
       {t.clearFilters}
     </button>
-    <button type="button" class="filter-action-link" id="apply-filters">
+    <button
+      type="button"
+      class="filter-action-link"
+      id="apply-filters"
+    >
       {t.filter}
     </button>
   </div>
@@ -235,28 +323,33 @@ const isSeedActive = selectedSeed !== null;
 <script define:vars={{ filterStateJson: JSON.stringify(filterState || {}) }}>
   // Parse filterState from JSON string (Astro serialization)
   const serverFilterState = JSON.parse(filterStateJson);
-  
+
   // ALSO parse from current URL to ensure we have the latest state
   const urlParams = new URLSearchParams(window.location.search);
   const urlFilterState = {
-    tipoSemilla: urlParams.get('tipo') === 'maiz' || urlParams.get('tipo') === 'colza' ? urlParams.get('tipo') : undefined,
-    uso: urlParams.get('uso') || undefined,
-    zona: urlParams.get('zona') || undefined,
-    proteccion: urlParams.get('proteccion') || 'todos',
+    tipoSemilla:
+      urlParams.get("tipo") === "maiz" || urlParams.get("tipo") === "colza"
+        ? urlParams.get("tipo")
+        : undefined,
+    uso: urlParams.get("uso") || undefined,
+    zona: urlParams.get("zona") || undefined,
+    proteccion: urlParams.get("proteccion") || "todos",
   };
-  
+
   // Use URL state as source of truth, fallback to server state
   let currentFilterState = {
-    tipoSemilla: urlFilterState.tipoSemilla || serverFilterState.tipoSemilla || undefined,
+    tipoSemilla:
+      urlFilterState.tipoSemilla || serverFilterState.tipoSemilla || undefined,
     uso: urlFilterState.uso || serverFilterState.uso || undefined,
     zona: urlFilterState.zona || serverFilterState.zona || undefined,
-    proteccion: urlFilterState.proteccion || serverFilterState.proteccion || 'todos',
+    proteccion:
+      urlFilterState.proteccion || serverFilterState.proteccion || "todos",
   };
-  
+
   // Update filter state and apply immediately
   function updateFilterState(filter, value) {
-    if (filter === 'tipoSemilla') {
-      if (value === '' || value === null || value === undefined) {
+    if (filter === "tipoSemilla") {
+      if (value === "" || value === null || value === undefined) {
         currentFilterState.tipoSemilla = undefined;
       } else {
         if (currentFilterState.tipoSemilla === value) {
@@ -266,12 +359,15 @@ const isSeedActive = selectedSeed !== null;
         }
       }
       // If switching to Colza or clearing tipoSemilla, clear uso and zona
-      if (currentFilterState.tipoSemilla === 'colza' || !currentFilterState.tipoSemilla) {
+      if (
+        currentFilterState.tipoSemilla === "colza" ||
+        !currentFilterState.tipoSemilla
+      ) {
         currentFilterState.uso = undefined;
         currentFilterState.zona = undefined;
       }
-    } else if (filter === 'uso') {
-      if (value === '' || value === null || value === undefined) {
+    } else if (filter === "uso") {
+      if (value === "" || value === null || value === undefined) {
         currentFilterState.uso = undefined;
       } else {
         if (currentFilterState.uso === value) {
@@ -280,8 +376,8 @@ const isSeedActive = selectedSeed !== null;
           currentFilterState.uso = value;
         }
       }
-    } else if (filter === 'zona') {
-      if (value === '' || value === null || value === undefined) {
+    } else if (filter === "zona") {
+      if (value === "" || value === null || value === undefined) {
         currentFilterState.zona = undefined;
       } else {
         if (currentFilterState.zona === value) {
@@ -290,175 +386,202 @@ const isSeedActive = selectedSeed !== null;
           currentFilterState.zona = value;
         }
       }
-    } else if (filter === 'proteccion') {
-      currentFilterState.proteccion = value || 'todos';
+    } else if (filter === "proteccion") {
+      currentFilterState.proteccion = value || "todos";
     }
 
     // Build URL params from current state
     const params = new URLSearchParams();
     if (currentFilterState.tipoSemilla) {
-      params.set('tipo', currentFilterState.tipoSemilla);
+      params.set("tipo", currentFilterState.tipoSemilla);
     }
     if (currentFilterState.uso) {
-      params.set('uso', currentFilterState.uso);
+      params.set("uso", currentFilterState.uso);
     }
     if (currentFilterState.zona) {
-      params.set('zona', currentFilterState.zona);
+      params.set("zona", currentFilterState.zona);
     }
-    if (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos') {
-      params.set('proteccion', currentFilterState.proteccion);
+    if (
+      currentFilterState.proteccion &&
+      currentFilterState.proteccion !== "todos"
+    ) {
+      params.set("proteccion", currentFilterState.proteccion);
     }
 
     // Update URL without reloading
-    const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-    window.history.pushState({}, '', newURL);
-    
+    const newURL =
+      window.location.pathname +
+      (params.toString() ? "?" + params.toString() : "");
+    window.history.pushState({}, "", newURL);
+
     // Filter products client-side - get from window global set by page script
     // The page script sets window.__allProducts
     const allProducts = window.__allProducts || [];
     let filtered = [...allProducts];
-    
+
     if (currentFilterState.tipoSemilla) {
-      filtered = filtered.filter(p => p.tipo_semilla?.toLowerCase() === currentFilterState.tipoSemilla);
+      filtered = filtered.filter(
+        (p) => p.tipo_semilla?.toLowerCase() === currentFilterState.tipoSemilla
+      );
     }
     if (currentFilterState.uso) {
-      filtered = filtered.filter(p => p.uso?.toLowerCase() === currentFilterState.uso);
+      filtered = filtered.filter(
+        (p) => p.uso?.toLowerCase() === currentFilterState.uso
+      );
     }
     if (currentFilterState.zona) {
-      filtered = filtered.filter(p => p.zona?.toLowerCase() === currentFilterState.zona);
+      filtered = filtered.filter(
+        (p) => p.zona?.toLowerCase() === currentFilterState.zona
+      );
     }
-    if (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos') {
-      filtered = filtered.filter(p => p.proteccion?.toLowerCase() === currentFilterState.proteccion);
+    if (
+      currentFilterState.proteccion &&
+      currentFilterState.proteccion !== "todos"
+    ) {
+      filtered = filtered.filter(
+        (p) => p.proteccion?.toLowerCase() === currentFilterState.proteccion
+      );
     }
-    
+
     // Check if filters are active
-    const hasActiveFilters = !!(currentFilterState.tipoSemilla || 
-                                 currentFilterState.uso || 
-                                 currentFilterState.zona || 
-                                 (currentFilterState.proteccion && currentFilterState.proteccion !== 'todos'));
-    
+    const hasActiveFilters = !!(
+      currentFilterState.tipoSemilla ||
+      currentFilterState.uso ||
+      currentFilterState.zona ||
+      (currentFilterState.proteccion &&
+        currentFilterState.proteccion !== "todos")
+    );
+
     // Dispatch updateProducts event to update carousel
     setTimeout(() => {
-      const event = new CustomEvent('updateProducts', { 
-        detail: { 
+      const event = new CustomEvent("updateProducts", {
+        detail: {
           products: filtered,
           isFiltered: hasActiveFilters,
-          totalProducts: allProducts.length
-        } 
+          totalProducts: allProducts.length,
+        },
       });
       document.dispatchEvent(event);
     }, 50);
-    
+
     // Update visual state of filter tags
     updateFilterTagStates();
-    
+
     // Update disabled states after filter change
     const container = getVisibleFilterContainer();
     const seedValue = currentFilterState.tipoSemilla;
     const usoTags = container.querySelectorAll('[data-filter="uso"]');
     const zonaTags = container.querySelectorAll('[data-filter="zona"]');
-    
-    if (seedValue === 'maiz') {
-      usoTags.forEach(tag => {
-        tag.removeAttribute('disabled');
-        tag.style.opacity = '1';
-        tag.style.cursor = 'pointer';
+
+    if (seedValue === "maiz") {
+      usoTags.forEach((tag) => {
+        tag.removeAttribute("disabled");
+        tag.style.opacity = "1";
+        tag.style.cursor = "pointer";
       });
-      zonaTags.forEach(tag => {
-        tag.removeAttribute('disabled');
-        tag.style.opacity = '1';
-        tag.style.cursor = 'pointer';
+      zonaTags.forEach((tag) => {
+        tag.removeAttribute("disabled");
+        tag.style.opacity = "1";
+        tag.style.cursor = "pointer";
       });
     } else {
-      usoTags.forEach(tag => {
-        tag.setAttribute('disabled', 'true');
-        tag.style.opacity = '0.5';
-        tag.style.cursor = 'not-allowed';
+      usoTags.forEach((tag) => {
+        tag.setAttribute("disabled", "true");
+        tag.style.opacity = "0.5";
+        tag.style.cursor = "not-allowed";
       });
-      zonaTags.forEach(tag => {
-        tag.setAttribute('disabled', 'true');
-        tag.style.opacity = '0.5';
-        tag.style.cursor = 'not-allowed';
+      zonaTags.forEach((tag) => {
+        tag.setAttribute("disabled", "true");
+        tag.style.opacity = "0.5";
+        tag.style.cursor = "not-allowed";
       });
     }
   }
-  
+
   // Update visual state of filter tags based on currentFilterState
   function updateFilterTagStates() {
     const container = getVisibleFilterContainer();
-    const seedTag = container.querySelector('#seed-filter-trigger');
-    const protectionTag = container.querySelector('#protection-filter-trigger');
-    
+    const seedTag = container.querySelector("#seed-filter-trigger");
+    const protectionTag = container.querySelector("#protection-filter-trigger");
+
     // Update seed tag active state
     if (seedTag) {
-      const isActive = currentFilterState.tipoSemilla !== null && currentFilterState.tipoSemilla !== undefined;
-      seedTag.classList.toggle('filter-tag-active', isActive);
+      const isActive =
+        currentFilterState.tipoSemilla !== null &&
+        currentFilterState.tipoSemilla !== undefined;
+      seedTag.classList.toggle("filter-tag-active", isActive);
     }
-    
+
     // Update protection tag active state
     if (protectionTag) {
-      const isActive = currentFilterState.proteccion !== 'todos';
-      protectionTag.classList.toggle('filter-tag-active', isActive);
+      const isActive = currentFilterState.proteccion !== "todos";
+      protectionTag.classList.toggle("filter-tag-active", isActive);
     }
   }
-  
+
   // Get visible filter container
   function getVisibleFilterContainer() {
-    const filterContainers = document.querySelectorAll('.filter-container');
+    const filterContainers = document.querySelectorAll(".filter-container");
     for (const container of filterContainers) {
       const rect = container.getBoundingClientRect();
-      const isVisible = rect.width > 0 && rect.height > 0 && 
-                       window.getComputedStyle(container).display !== 'none';
+      const isVisible =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        window.getComputedStyle(container).display !== "none";
       if (isVisible) {
         return container;
       }
     }
     return filterContainers[0] || document;
   }
-  
+
   // Initialize dropdowns
   function initFilterDropdowns() {
     const container = getVisibleFilterContainer();
-    
+
     // Seed filter trigger
-    const seedTrigger = container.querySelector('#seed-filter-trigger');
-    const seedPanel = container.querySelector('#seed-dropdown-panel');
-    
+    const seedTrigger = container.querySelector("#seed-filter-trigger");
+    const seedPanel = container.querySelector("#seed-dropdown-panel");
+
     // Protection filter trigger
-    const protectionTrigger = container.querySelector('#protection-filter-trigger');
-    const protectionPanel = container.querySelector('#protection-dropdown-panel');
-    
+    const protectionTrigger = container.querySelector(
+      "#protection-filter-trigger"
+    );
+    const protectionPanel = container.querySelector(
+      "#protection-dropdown-panel"
+    );
+
     if (seedTrigger && seedPanel) {
-      seedTrigger.addEventListener('click', (e) => {
+      seedTrigger.addEventListener("click", (e) => {
         e.stopPropagation();
-        const isOpen = seedTrigger.getAttribute('aria-expanded') === 'true';
-        
+        const isOpen = seedTrigger.getAttribute("aria-expanded") === "true";
+
         // Close protection panel if open
         if (protectionPanel) {
-          protectionPanel.classList.remove('filter-dropdown-panel-open');
-          protectionTrigger.setAttribute('aria-expanded', 'false');
+          protectionPanel.classList.remove("filter-dropdown-panel-open");
+          protectionTrigger.setAttribute("aria-expanded", "false");
         }
-        
+
         // Toggle seed panel
-        seedTrigger.setAttribute('aria-expanded', String(!isOpen));
+        seedTrigger.setAttribute("aria-expanded", String(!isOpen));
         if (!isOpen) {
-          seedPanel.classList.add('filter-dropdown-panel-open');
+          seedPanel.classList.add("filter-dropdown-panel-open");
         } else {
-          seedPanel.classList.remove('filter-dropdown-panel-open');
+          seedPanel.classList.remove("filter-dropdown-panel-open");
         }
       });
-      
+
       // Handle option clicks in seed panel - don't close panel on click
-      seedPanel.querySelectorAll('.filter-option-tag').forEach((tag) => {
-        if (!tag.hasAttribute('data-listener-attached')) {
-          tag.setAttribute('data-listener-attached', 'true');
-          tag.addEventListener('click', (e) => {
+      seedPanel.querySelectorAll(".filter-option-tag").forEach((tag) => {
+        if (!tag.hasAttribute("data-listener-attached")) {
+          tag.setAttribute("data-listener-attached", "true");
+          tag.addEventListener("click", (e) => {
             e.stopPropagation();
-            if (tag.hasAttribute('disabled')) return;
-            const filter = tag.getAttribute('data-filter');
-            const value = tag.getAttribute('data-value');
+            if (tag.hasAttribute("disabled")) return;
+            const filter = tag.getAttribute("data-filter");
+            const value = tag.getAttribute("data-value");
             if (filter) {
-              updateFilterState(filter, value || '');
+              updateFilterState(filter, value || "");
               // Update active states visually
               updateActiveStates();
             }
@@ -466,37 +589,38 @@ const isSeedActive = selectedSeed !== null;
         }
       });
     }
-    
+
     if (protectionTrigger && protectionPanel) {
-      protectionTrigger.addEventListener('click', (e) => {
+      protectionTrigger.addEventListener("click", (e) => {
         e.stopPropagation();
-        const isOpen = protectionTrigger.getAttribute('aria-expanded') === 'true';
-        
+        const isOpen =
+          protectionTrigger.getAttribute("aria-expanded") === "true";
+
         // Close seed panel if open
         if (seedPanel) {
-          seedPanel.classList.remove('filter-dropdown-panel-open');
-          seedTrigger.setAttribute('aria-expanded', 'false');
+          seedPanel.classList.remove("filter-dropdown-panel-open");
+          seedTrigger.setAttribute("aria-expanded", "false");
         }
-        
+
         // Toggle protection panel
-        protectionTrigger.setAttribute('aria-expanded', String(!isOpen));
+        protectionTrigger.setAttribute("aria-expanded", String(!isOpen));
         if (!isOpen) {
-          protectionPanel.classList.add('filter-dropdown-panel-open');
+          protectionPanel.classList.add("filter-dropdown-panel-open");
         } else {
-          protectionPanel.classList.remove('filter-dropdown-panel-open');
+          protectionPanel.classList.remove("filter-dropdown-panel-open");
         }
       });
-      
+
       // Handle option clicks in protection panel - don't close panel on click
-      protectionPanel.querySelectorAll('.filter-option-tag').forEach((tag) => {
-        if (!tag.hasAttribute('data-listener-attached')) {
-          tag.setAttribute('data-listener-attached', 'true');
-          tag.addEventListener('click', (e) => {
+      protectionPanel.querySelectorAll(".filter-option-tag").forEach((tag) => {
+        if (!tag.hasAttribute("data-listener-attached")) {
+          tag.setAttribute("data-listener-attached", "true");
+          tag.addEventListener("click", (e) => {
             e.stopPropagation();
-            const filter = tag.getAttribute('data-filter');
-            const value = tag.getAttribute('data-value');
+            const filter = tag.getAttribute("data-filter");
+            const value = tag.getAttribute("data-value");
             if (filter) {
-              updateFilterState(filter, value || '');
+              updateFilterState(filter, value || "");
               // Update active states visually
               updateActiveStates();
             }
@@ -504,107 +628,122 @@ const isSeedActive = selectedSeed !== null;
         }
       });
     }
-    
+
     // Update disabled states
     function updateDisabledStates() {
       const seedValue = currentFilterState.tipoSemilla;
       const usoTags = container.querySelectorAll('[data-filter="uso"]');
       const zonaTags = container.querySelectorAll('[data-filter="zona"]');
-      
-      if (seedValue === 'maiz') {
-        usoTags.forEach(tag => tag.removeAttribute('disabled'));
-        zonaTags.forEach(tag => tag.removeAttribute('disabled'));
+
+      if (seedValue === "maiz") {
+        usoTags.forEach((tag) => tag.removeAttribute("disabled"));
+        zonaTags.forEach((tag) => tag.removeAttribute("disabled"));
       } else {
-        usoTags.forEach(tag => tag.setAttribute('disabled', 'true'));
-        zonaTags.forEach(tag => tag.setAttribute('disabled', 'true'));
+        usoTags.forEach((tag) => tag.setAttribute("disabled", "true"));
+        zonaTags.forEach((tag) => tag.setAttribute("disabled", "true"));
       }
     }
-    
+
     updateDisabledStates();
     updateFilterTagStates();
     updateActiveStates();
   }
-  
+
   // Update active states of option tags
   function updateActiveStates() {
     const container = getVisibleFilterContainer();
-    
+
     // Update tipoSemilla tags
-    container.querySelectorAll('[data-filter="tipoSemilla"]').forEach(tag => {
-      const value = tag.getAttribute('data-value') || '';
-      const isActive = value === '' ? !currentFilterState.tipoSemilla : currentFilterState.tipoSemilla === value;
-      tag.classList.toggle('filter-option-tag-active', isActive);
+    container.querySelectorAll('[data-filter="tipoSemilla"]').forEach((tag) => {
+      const value = tag.getAttribute("data-value") || "";
+      const isActive =
+        value === ""
+          ? !currentFilterState.tipoSemilla
+          : currentFilterState.tipoSemilla === value;
+      tag.classList.toggle("filter-option-tag-active", isActive);
     });
-    
+
     // Update uso tags
-    container.querySelectorAll('[data-filter="uso"]').forEach(tag => {
-      const value = tag.getAttribute('data-value') || '';
-      const isActive = value === '' ? !currentFilterState.uso : currentFilterState.uso === value;
-      tag.classList.toggle('filter-option-tag-active', isActive);
+    container.querySelectorAll('[data-filter="uso"]').forEach((tag) => {
+      const value = tag.getAttribute("data-value") || "";
+      const isActive =
+        value === ""
+          ? !currentFilterState.uso
+          : currentFilterState.uso === value;
+      tag.classList.toggle("filter-option-tag-active", isActive);
     });
-    
+
     // Update zona tags
-    container.querySelectorAll('[data-filter="zona"]').forEach(tag => {
-      const value = tag.getAttribute('data-value') || '';
-      const isActive = value === '' ? !currentFilterState.zona : currentFilterState.zona === value;
-      tag.classList.toggle('filter-option-tag-active', isActive);
+    container.querySelectorAll('[data-filter="zona"]').forEach((tag) => {
+      const value = tag.getAttribute("data-value") || "";
+      const isActive =
+        value === ""
+          ? !currentFilterState.zona
+          : currentFilterState.zona === value;
+      tag.classList.toggle("filter-option-tag-active", isActive);
     });
-    
+
     // Update proteccion tags
-    container.querySelectorAll('[data-filter="proteccion"]').forEach(tag => {
-      const value = tag.getAttribute('data-value') || 'todos';
+    container.querySelectorAll('[data-filter="proteccion"]').forEach((tag) => {
+      const value = tag.getAttribute("data-value") || "todos";
       const isActive = currentFilterState.proteccion === value;
-      tag.classList.toggle('filter-option-tag-active', isActive);
+      tag.classList.toggle("filter-option-tag-active", isActive);
     });
   }
-  
+
   // Close dropdowns when clicking outside
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     const container = getVisibleFilterContainer();
     if (!container.contains(e.target)) {
-      const seedPanel = container.querySelector('#seed-dropdown-panel');
-      const protectionPanel = container.querySelector('#protection-dropdown-panel');
-      const seedTrigger = container.querySelector('#seed-filter-trigger');
-      const protectionTrigger = container.querySelector('#protection-filter-trigger');
-      
-      if (seedPanel) seedPanel.classList.remove('filter-dropdown-panel-open');
-      if (protectionPanel) protectionPanel.classList.remove('filter-dropdown-panel-open');
-      if (seedTrigger) seedTrigger.setAttribute('aria-expanded', 'false');
-      if (protectionTrigger) protectionTrigger.setAttribute('aria-expanded', 'false');
+      const seedPanel = container.querySelector("#seed-dropdown-panel");
+      const protectionPanel = container.querySelector(
+        "#protection-dropdown-panel"
+      );
+      const seedTrigger = container.querySelector("#seed-filter-trigger");
+      const protectionTrigger = container.querySelector(
+        "#protection-filter-trigger"
+      );
+
+      if (seedPanel) seedPanel.classList.remove("filter-dropdown-panel-open");
+      if (protectionPanel)
+        protectionPanel.classList.remove("filter-dropdown-panel-open");
+      if (seedTrigger) seedTrigger.setAttribute("aria-expanded", "false");
+      if (protectionTrigger)
+        protectionTrigger.setAttribute("aria-expanded", "false");
     }
   });
-  
+
   // Clear filters
-  document.querySelectorAll('#clear-filters').forEach((btn) => {
-    if (!btn.hasAttribute('data-listener-attached')) {
-      btn.setAttribute('data-listener-attached', 'true');
-      btn.addEventListener('click', () => {
+  document.querySelectorAll("#clear-filters").forEach((btn) => {
+    if (!btn.hasAttribute("data-listener-attached")) {
+      btn.setAttribute("data-listener-attached", "true");
+      btn.addEventListener("click", () => {
         window.location.href = window.location.pathname;
       });
     }
   });
-  
+
   // Apply filters button
-  document.querySelectorAll('#apply-filters').forEach((btn) => {
-    if (!btn.hasAttribute('data-listener-attached')) {
-      btn.setAttribute('data-listener-attached', 'true');
-      btn.addEventListener('click', () => {
+  document.querySelectorAll("#apply-filters").forEach((btn) => {
+    if (!btn.hasAttribute("data-listener-attached")) {
+      btn.setAttribute("data-listener-attached", "true");
+      btn.addEventListener("click", () => {
         window.location.reload();
       });
     }
   });
-  
+
   // Global initialization flag
   if (!window.__filterDropdownInitialized) {
     window.__filterDropdownInitialized = true;
-    
+
     function init() {
       initFilterDropdowns();
       window.getFilterState = () => ({ ...currentFilterState });
     }
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
     } else {
       setTimeout(init, 100);
     }
@@ -639,7 +778,7 @@ const isSeedActive = selectedSeed !== null;
     border-radius: 100px;
     background-color: var(--color-white);
     color: var(--color-text-primary);
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 12px;
     font-weight: 400;
     line-height: 20px;
@@ -696,7 +835,9 @@ const isSeedActive = selectedSeed !== null;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease;
     margin-top: 8px;
   }
 
@@ -720,7 +861,7 @@ const isSeedActive = selectedSeed !== null;
   }
 
   .filter-section-label {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 12px;
     font-weight: 400;
     line-height: 20px;
@@ -746,7 +887,7 @@ const isSeedActive = selectedSeed !== null;
     border-radius: 100px;
     background-color: #f3f3f3;
     color: var(--color-black);
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 12px;
     font-weight: 400;
     line-height: 20px;
@@ -794,6 +935,18 @@ const isSeedActive = selectedSeed !== null;
   .filter-action-link:hover {
     opacity: 0.7;
     text-decoration: underline;
+  }
+
+  @media (max-width: 767px) {
+    .filter-bar {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-tag {
+      width: 100%;
+      flex: none;
+    }
   }
 
   @media (min-width: 768px) {

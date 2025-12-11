@@ -3,13 +3,18 @@ interface Props {
   title: string;
   subtitle?: string;
   backgroundImage?: string;
-  lang?: 'es' | 'pt';
+  lang?: "es" | "pt";
 }
 
-const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
+const { title, subtitle, backgroundImage, lang = "es" } = Astro.props;
 ---
 
-<section class="solutions-hero" style={backgroundImage ? `background-image: url(${backgroundImage})` : undefined}>
+<section
+  class="solutions-hero"
+  style={backgroundImage
+    ? `background-image: url(${backgroundImage})`
+    : undefined}
+>
   <div class="hero-overlay"></div>
   <div class="container">
     <div class="hero-content">
@@ -40,6 +45,16 @@ const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 767px) {
+    .solutions-hero {
+      background: transparent;
+    }
+
+    .hero-overlay {
+      display: none;
+    }
   }
 
   .hero-content {
@@ -81,4 +96,3 @@ const { title, subtitle, backgroundImage, lang = 'es' } = Astro.props;
     }
   }
 </style>
-
