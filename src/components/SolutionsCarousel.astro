@@ -213,35 +213,22 @@ const { solutions = [], lang = "es" } = Astro.props;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     padding: var(--spacing-2) 0;
     flex: 1;
     width: 100%;
   }
 
   .solutions-carousel-track::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .solutions-carousel-track::-webkit-scrollbar-track {
-    background: var(--color-gray-100);
-    border-radius: var(--radius-md);
-  }
-
-  .solutions-carousel-track::-webkit-scrollbar-thumb {
-    background: var(--color-gray-400);
-    border-radius: var(--radius-md);
-  }
-
-  .solutions-carousel-track::-webkit-scrollbar-thumb:hover {
-    background: var(--color-bayer-secondary);
+    display: none;
   }
 
   .solution-card {
     background: var(--gradient-card-solutions);
     padding: var(--spacing-6);
     border-radius: var(--card-border-radius);
-    box-shadow: var(--shadow-md);
+    /* box-shadow: var(--shadow-md); */
     text-align: center;
     transition: all var(--transition-base);
     display: flex;
@@ -333,6 +320,16 @@ const { solutions = [], lang = "es" } = Astro.props;
     transform: scale(0.95);
   }
 
+  @media (max-width: 767px) {
+    .carousel-button:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-button:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+  }
+
   .carousel-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -340,13 +337,37 @@ const { solutions = [], lang = "es" } = Astro.props;
   }
 
   @media (max-width: 767px) {
+    .solutions-carousel-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .solutions-carousel-track {
+      padding: var(--spacing-2) var(--spacing-4);
+      gap: var(--spacing-4);
+    }
+
     .carousel-button {
-      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+    }
+
+    .carousel-button-prev {
+      left: var(--spacing-2);
+    }
+
+    .carousel-button-next {
+      right: var(--spacing-2);
     }
 
     .solution-card {
-      width: calc(100vw - var(--spacing-8));
-      max-width: 344px;
+      width: calc(100vw - var(--spacing-16));
+      min-width: calc(100vw - var(--spacing-16));
+      max-width: calc(100vw - var(--spacing-16));
+      scroll-snap-align: center;
     }
   }
 

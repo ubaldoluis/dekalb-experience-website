@@ -148,6 +148,30 @@ const {
       )
       .join("");
 
+    // Apply mobile/desktop specific styles after HTML update
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile) {
+      // Mobile: ensure slider behavior is maintained - force styles immediately
+      trackElement.style.display = "flex";
+      trackElement.style.flexDirection = "row";
+      trackElement.style.width = "100%";
+      trackElement.style.overflowX = "auto";
+      trackElement.style.overflowY = "hidden";
+      trackElement.style.gridTemplateColumns = "none";
+
+      // Force card widths to ensure only one is visible
+      const cards = trackElement.querySelectorAll(".product-card");
+      const cardWidth = `calc(100vw - var(--spacing-8))`;
+      cards.forEach((card) => {
+        if (card instanceof HTMLElement) {
+          card.style.flexShrink = "0";
+          card.style.width = cardWidth;
+          card.style.minWidth = cardWidth;
+          card.style.maxWidth = cardWidth;
+        }
+      });
+    }
+
     // Center filtered results only if filters are active
     if (isFiltered) {
       // Wait for DOM to update before calculating scroll position
@@ -157,10 +181,12 @@ const {
     } else {
       // Reset styles when showing all products
       setTimeout(() => {
-        trackElement.style.paddingLeft = "";
-        trackElement.style.paddingRight = "";
-        trackElement.style.display = "";
-        trackElement.style.justifyContent = "";
+        if (!isMobile) {
+          trackElement.style.paddingLeft = "";
+          trackElement.style.paddingRight = "";
+          trackElement.style.display = "";
+          trackElement.style.justifyContent = "";
+        }
         trackElement.scrollLeft = 0;
         scrollPosition = 0;
       }, 50);
@@ -228,13 +254,16 @@ const {
           targetScrollPosition = 0;
         }
       } else {
-        // Mobile: maintain slider behavior - don't override styles
-        // Just reset scroll position to start, let CSS handle the layout
-        trackElement.style.display = "";
-        trackElement.style.flexDirection = "";
+        // Mobile: maintain slider behavior - ensure flex layout is maintained
+        // Don't reset display to avoid falling back to grid layout
+        trackElement.style.display = "flex";
+        trackElement.style.flexDirection = "row";
         trackElement.style.justifyContent = "";
         trackElement.style.paddingLeft = "";
         trackElement.style.paddingRight = "";
+        trackElement.style.width = "100%";
+        trackElement.style.overflowX = "auto";
+        trackElement.style.overflowY = "hidden";
         targetScrollPosition = 0;
       }
 
@@ -387,6 +416,8 @@ const {
   @media (max-width: 767px) {
     .product-carousel-container {
       overflow: hidden;
+      width: 100%;
+      max-width: 100%;
     }
   }
 
@@ -396,28 +427,14 @@ const {
     gap: var(--spacing-6);
     overflow-x: auto;
     scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-400) var(--color-gray-100);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
     padding: var(--spacing-2) 0;
   }
 
   .product-carousel-track::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .product-carousel-track::-webkit-scrollbar-track {
-    background: var(--color-gray-100);
-    border-radius: var(--radius-md);
-  }
-
-  .product-carousel-track::-webkit-scrollbar-thumb {
-    background: var(--color-gray-400);
-    border-radius: var(--radius-md);
-  }
-
-  .product-carousel-track::-webkit-scrollbar-thumb:hover {
-    background: var(--color-bayer-secondary);
+    display: none;
   }
 
   /* Mobile: horizontal slider */
@@ -431,12 +448,15 @@ const {
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
+      width: 100%;
     }
 
     .product-card {
       flex: 0 0 auto;
-      width: 100%;
-      max-width: 100%;
+      flex-shrink: 0;
+      width: calc(100vw - var(--spacing-8));
+      min-width: calc(100vw - var(--spacing-8));
+      max-width: calc(100vw - var(--spacing-8));
       scroll-snap-align: start;
     }
   }
@@ -590,6 +610,16 @@ const {
 
   .carousel-button:active {
     transform: scale(0.95);
+  }
+
+  @media (max-width: 767px) {
+    .carousel-button:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-button:active {
+      transform: translateY(-50%) scale(0.95);
+    }
   }
 
   .carousel-button:disabled {
