@@ -302,7 +302,7 @@ const isSeedActive = selectedSeed !== null;
   </div>
 
   <!-- Action Buttons -->
-  <div class="filter-actions">
+  <!-- <div class="filter-actions">
     <button
       type="button"
       class="filter-action-link"
@@ -317,7 +317,7 @@ const isSeedActive = selectedSeed !== null;
     >
       {t.filter}
     </button>
-  </div>
+  </div> -->
 </div>
 
 <script define:vars={{ filterStateJson: JSON.stringify(filterState || {}) }}>
@@ -560,6 +560,8 @@ const isSeedActive = selectedSeed !== null;
         if (protectionPanel) {
           protectionPanel.classList.remove("filter-dropdown-panel-open");
           protectionTrigger.setAttribute("aria-expanded", "false");
+          // Ensure seed button is white when protection panel closes
+          seedTrigger.classList.remove("seed-button-inactive");
         }
 
         // Toggle seed panel
@@ -600,14 +602,20 @@ const isSeedActive = selectedSeed !== null;
         if (seedPanel) {
           seedPanel.classList.remove("filter-dropdown-panel-open");
           seedTrigger.setAttribute("aria-expanded", "false");
+          // Ensure seed button is white when its panel closes
+          seedTrigger.classList.remove("seed-button-inactive");
         }
 
         // Toggle protection panel
         protectionTrigger.setAttribute("aria-expanded", String(!isOpen));
         if (!isOpen) {
           protectionPanel.classList.add("filter-dropdown-panel-open");
+          // Add class to seed button to make it blue when protection panel is open
+          seedTrigger.classList.add("seed-button-inactive");
         } else {
           protectionPanel.classList.remove("filter-dropdown-panel-open");
+          // Remove class from seed button to make it white again
+          seedTrigger.classList.remove("seed-button-inactive");
         }
       });
 
@@ -707,7 +715,10 @@ const isSeedActive = selectedSeed !== null;
       if (seedPanel) seedPanel.classList.remove("filter-dropdown-panel-open");
       if (protectionPanel)
         protectionPanel.classList.remove("filter-dropdown-panel-open");
-      if (seedTrigger) seedTrigger.setAttribute("aria-expanded", "false");
+      if (seedTrigger) {
+        seedTrigger.setAttribute("aria-expanded", "false");
+        seedTrigger.classList.remove("seed-button-inactive");
+      }
       if (protectionTrigger)
         protectionTrigger.setAttribute("aria-expanded", "false");
     }
@@ -754,8 +765,14 @@ const isSeedActive = selectedSeed !== null;
   .filter-container {
     position: relative;
     width: 100%;
-    max-width: 420px;
+    max-width: 500px;
     margin: 0 auto;
+  }
+
+  @media (max-width: 767px) {
+    .filter-container {
+      max-width: 280px;
+    }
   }
 
   /* Main horizontal bar */
@@ -789,11 +806,22 @@ const isSeedActive = selectedSeed !== null;
     justify-content: center;
   }
 
-  .filter-tag-active {
+  /* Seed button: white by default */
+  .filter-tag-seed {
     background-color: var(--color-white);
   }
 
-  .filter-tag:not(.filter-tag-active) {
+  /* Seed button: blue when protection panel is open */
+  .filter-tag-seed.seed-button-inactive {
+    background-color: var(--color-blue-light);
+  }
+
+  /* Protection button: white when active, blue when inactive */
+  .filter-tag-protection.filter-tag-active {
+    background-color: var(--color-white);
+  }
+
+  .filter-tag-protection:not(.filter-tag-active) {
     background-color: var(--color-blue-light);
   }
 

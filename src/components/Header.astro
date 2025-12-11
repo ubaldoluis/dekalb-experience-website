@@ -642,7 +642,7 @@ function isPathActive(path: string, currentPath: string): boolean {
       flex-direction: column;
       background-color: var(--color-white);
       box-shadow: var(--shadow-lg);
-      padding: var(--spacing-4);
+      padding: 0;
       gap: 0;
       max-height: 0;
       overflow: hidden;
@@ -652,6 +652,7 @@ function isPathActive(path: string, currentPath: string): boolean {
 
     .nav-list-open {
       max-height: 800px;
+      padding: var(--spacing-4);
     }
 
     .nav-list li {
