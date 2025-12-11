@@ -57,39 +57,31 @@ const {
             </div>
           ))}
         </div>
-        {products.length > 4 && (
+        {products.length > 0 && (
           <div class="carousel-controls">
             <button
               class="carousel-button carousel-button-prev"
               aria-label="Anterior"
               id={`${carouselId}-prev`}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
+              <img
+                src="/icon-slidder_left.svg"
+                alt=""
+                width="48"
+                height="48"
+              />
             </button>
             <button
               class="carousel-button carousel-button-next"
               aria-label="Siguiente"
               id={`${carouselId}-next`}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M9 18l6-6-6-6" />
-              </svg>
+              <img
+                src="/icon-slidder_right.svg"
+                alt=""
+                width="48"
+                height="48"
+              />
             </button>
           </div>
         )}
@@ -151,17 +143,6 @@ const {
         `
             : ""
         }
-        <div class="product-info">
-          <h3 class="product-name">${product.nombre}</h3>
-          ${product.claim ? `<p class="product-claim">${product.claim}</p>` : ""}
-          <button
-            class="btn btn-primary product-view-btn"
-            data-product-id="${product.id}"
-            aria-label="Ver detalles de ${product.nombre}"
-          >
-            Ver detalles
-          </button>
-        </div>
       </div>
     `
       )
@@ -185,10 +166,11 @@ const {
       }, 50);
     }
 
-    // Update controls visibility
+    // Update controls visibility (show if more than 1 product)
     const controls = carouselElement.querySelector(".carousel-controls");
     if (controls) {
-      controls.style.display = newProducts.length > 4 ? "flex" : "none";
+      const isMobile = window.innerWidth <= 767;
+      controls.style.display = newProducts.length > 1 ? "flex" : "none";
     }
 
     console.log("✅ [Carousel] Updated with", newProducts.length, "products");
@@ -246,23 +228,14 @@ const {
           targetScrollPosition = 0;
         }
       } else {
-        // Mobile/Tablet: center single product, or start from center for multiple
-        if (productCount === 1) {
-          // Center the single product using flexbox
-          trackElement.style.display = "flex";
-          trackElement.style.justifyContent = "center";
-          trackElement.style.paddingLeft = "";
-          trackElement.style.paddingRight = "";
-          targetScrollPosition = 0;
-        } else {
-          // For multiple products on mobile, start from a centered position
-          trackElement.style.display = "grid";
-          trackElement.style.justifyContent = "";
-          const paddingNeeded = trackWidth / 2 - cardWidth / 2;
-          trackElement.style.paddingLeft = `${Math.max(0, paddingNeeded)}px`;
-          trackElement.style.paddingRight = "";
-          targetScrollPosition = 0;
-        }
+        // Mobile: maintain slider behavior - don't override styles
+        // Just reset scroll position to start, let CSS handle the layout
+        trackElement.style.display = "";
+        trackElement.style.flexDirection = "";
+        trackElement.style.justifyContent = "";
+        trackElement.style.paddingLeft = "";
+        trackElement.style.paddingRight = "";
+        targetScrollPosition = 0;
       }
 
       // Reset scroll position
@@ -334,12 +307,12 @@ const {
       nextBtn.addEventListener("click", () => scrollCarousel("next"));
     }
 
-    // Update controls visibility
+    // Update controls visibility (show if more than 1 product)
     const carouselElement = document.getElementById(CAROUSEL_ID);
     if (carouselElement) {
       const controls = carouselElement.querySelector(".carousel-controls");
       if (controls) {
-        controls.style.display = currentProducts.length > 4 ? "flex" : "none";
+        controls.style.display = currentProducts.length > 1 ? "flex" : "none";
       }
     }
 
@@ -400,9 +373,21 @@ const {
     position: relative;
   }
 
+  @media (max-width: 767px) {
+    .product-carousel-wrapper {
+      margin: var(--spacing-4) 0;
+    }
+  }
+
   .product-carousel-container {
     position: relative;
     padding: var(--spacing-4) 0;
+  }
+
+  @media (max-width: 767px) {
+    .product-carousel-container {
+      overflow: hidden;
+    }
   }
 
   .product-carousel-track {
@@ -435,11 +420,24 @@ const {
     background: var(--color-bayer-secondary);
   }
 
-  /* Mobile: single column scroll */
+  /* Mobile: horizontal slider */
   @media (max-width: 767px) {
     .product-carousel-track {
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: row;
+      grid-template-columns: none;
       gap: var(--spacing-4);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .product-card {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 100%;
+      scroll-snap-align: start;
     }
   }
 
@@ -493,6 +491,14 @@ const {
     height: 100%;
     min-width: 280px;
     padding: 0;
+  }
+
+  @media (max-width: 767px) {
+    .product-card {
+      min-width: calc(100vw - var(--spacing-8));
+      width: calc(100vw - var(--spacing-8));
+      max-width: calc(100vw - var(--spacing-8));
+    }
   }
 
   .product-card:hover {
@@ -557,8 +563,7 @@ const {
   }
 
   .carousel-button {
-    background: var(--gradient-button-primary);
-    color: var(--color-white);
+    background: transparent;
     border: none;
     border-radius: var(--radius-full);
     width: 48px;
@@ -568,7 +573,14 @@ const {
     justify-content: center;
     cursor: pointer;
     transition: all var(--transition-fast);
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .carousel-button img {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   .carousel-button:hover {
@@ -587,15 +599,26 @@ const {
 
   @media (max-width: 767px) {
     .carousel-controls {
-      display: none;
+      display: flex;
     }
 
-    .product-carousel-track {
-      scroll-snap-type: x mandatory;
+    .product-carousel-wrapper {
+      position: relative;
     }
 
-    .product-card {
-      scroll-snap-align: start;
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+    }
+
+    .carousel-button-prev {
+      left: var(--spacing-2);
+    }
+
+    .carousel-button-next {
+      right: var(--spacing-2);
     }
   }
 </style>
