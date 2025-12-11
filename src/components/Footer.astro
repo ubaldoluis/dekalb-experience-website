@@ -8,6 +8,25 @@ interface Props {
 const { lang = "es" } = Astro.props;
 
 const currentYear = new Date().getFullYear();
+
+// Translations
+const translations = {
+  es: {
+    generalConditions: "Condiciones Generales de Uso",
+    imprint: "Pie de imprenta",
+    privacy: "Política de privacidad",
+    technicalData: "Datos Técnicos",
+  },
+  pt: {
+    generalConditions: "Condições Gerais de Uso",
+    imprint: "Impressum",
+    privacy: "Política de privacidade",
+    technicalData: "Dados Técnicos",
+  },
+};
+
+const t = translations[lang] || translations.es;
+const domain = lang === "pt" ? "pt" : "es";
 ---
 
 <footer
@@ -18,24 +37,24 @@ const currentYear = new Date().getFullYear();
     <p class="footer-copyright">Copyright © {currentYear} Bayer AG</p>
     <nav class="footer-links">
       <a
-        href="https://www.cropscience.bayer.es/general-conditions-of-use"
+        href={`https://www.cropscience.bayer.${domain}/general-conditions-of-use`}
         class="footer-link"
-        >Condiciones Generales de Uso</a
+        >{t.generalConditions}</a
       >
       <a
-        href="https://www.cropscience.bayer.es/imprint"
+        href={`https://www.cropscience.bayer.${domain}/imprint`}
         class="footer-link"
-        >Pie de imprenta</a
+        >{t.imprint}</a
       >
       <a
-        href="https://www.cropscience.bayer.es/privacy-statement"
+        href={`https://www.cropscience.bayer.${domain}/privacy-statement`}
         class="footer-link"
-        >Política de privacidad</a
+        >{t.privacy}</a
       >
       <a
-        href="https://www.cropscience.bayer.es/general-conditions-of-use"
+        href={`https://www.cropscience.bayer.${domain}/general-conditions-of-use`}
         class="footer-link"
-        >Datos Técnicos</a
+        >{t.technicalData}</a
       >
     </nav>
     <div class="footer-social">

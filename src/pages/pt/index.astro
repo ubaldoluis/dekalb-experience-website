@@ -6,7 +6,7 @@ import ProductModal from '../../components/ProductModal.astro';
 import SolutionsHero from '../../components/SolutionsHero.astro';
 import SolutionsCarousel from '../../components/SolutionsCarousel.astro';
 import CTASection from '../../components/CTASection.astro';
-import { getAllProducts, getAllArticles } from '../../utils/prismic';
+import { getAllProducts, getAllArticles, getHomeContent } from '../../utils/prismic';
 import { filterProducts, getDefaultFilterState, searchParamsToFilterState } from '../../utils/filterLogic';
 import type { Producto, FilterState } from '../../types';
 
@@ -47,8 +47,8 @@ const filterState: FilterState = searchParamsToFilterState(url.searchParams);
 // Filter products based on current filter state
 const filteredProducts = filterProducts(allProducts, filterState);
 
-// Get latest 3 articles for blog preview
-const latestArticles = articles.slice(0, 3);
+// Get latest 4 articles for blog preview
+const latestArticles = articles.slice(0, 4);
 ---
 
 <PageLayout title={homeContent.hero.title} description={homeContent.hero.claim} lang={lang}>
@@ -217,19 +217,24 @@ const latestArticles = articles.slice(0, 3);
   <!-- Preceon Section -->
   <section class="preceon-section">
     <div class="container">
-      <div class="preceon-wrapper">
-        <div class="preceon-content">
-          <div class="preceon-logo">
-            <img src="/Logo_Preceon.svg" alt="Preceon" />
+      <div class="content-left-card-wrapper">
+        <div class="content-left-card-content">
+          <div class="content-left-card-logo">
+            <img
+              src="/Logo_Preceon.svg"
+              alt="Preceon"
+            />
           </div>
-          <h2 class="preceon-title">O futuro do milho está aqui, acesse para descobrir.</h2>
+          <h2 class="content-left-card-title">
+            O futuro do milho está aqui, acesse para descobrir.
+          </h2>
           <a
             href="/pt/preceon"
             class="btn btn-primary"
             >Descobrir</a
           >
         </div>
-        <div class="preceon-image">
+        <div class="content-left-card-image">
           <img
             src="/card_background-preceon.png"
             alt="Preceon Pack"
@@ -239,21 +244,86 @@ const latestArticles = articles.slice(0, 3);
     </div>
   </section>
 
-  <!-- Evita Problemas Section -->
-  <section class="avoid-problems-section">
+  <!-- Calculadora de Densidades Section -->
+  <section class="calculator-section">
     <div class="container">
-      <CTASection
-        title={homeContent.solutions.avoidProblems}
-        buttonText="Ver guias"
-        buttonLink="/pt/evita-problemas"
-        variant="primary"
-        lang={lang}
-      />
+      <div class="content-right-card-wrapper">
+        <div class="content-right-card-image">
+          <img
+            src="/card_background-calculadora.png"
+            alt="Calculadora de densidades"
+          />
+        </div>
+        <div class="content-right-card-content">
+          <h2 class="content-right-card-title">Calculador de densidades</h2>
+          <p class="content-right-card-description">
+            Use nossa ferramenta interativa para calcular a densidade de
+            semeadura recomendada e o número de sacos DEKALB necessários.
+          </p>
+          <a
+            href="/pt/calculadora"
+            class="btn btn-primary"
+            >Acesse ao calculador</a
+          >
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Catálogos Section -->
+  <!-- Guides Section -->
+  <section class="guides-section">
+    <div class="container">
+      <div class="content-left-card-wrapper">
+        <div class="content-left-card-content">
+          <h2 class="content-left-card-title">Evite problemas com seu milho</h2>
+          <p>
+            Descubra nossos guias para ajudá-lo a proteger sua cultura de milho.
+          </p>
+          <a
+            href="/pt/preceon"
+            class="btn btn-primary"
+            >Ver guias de cultivo</a
+          >
+        </div>
+        <div class="content-left-card-image">
+          <img
+            src="/card_background-guides.png"
+            alt="Guías de cultivo"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalogs Section -->
   <section class="catalogs-section">
+    <div class="container">
+      <div class="content-right-card-wrapper">
+        <div class="content-right-card-image">
+          <img
+            src="/card_background-catalogs.png"
+            alt="Catálogos"
+          />
+        </div>
+        <div class="content-right-card-content">
+          <h2 class="content-right-card-title">
+            Obtenha todos os nossos catálogos em um só lugar.
+          </h2>
+          <p class="content-right-card-description">
+            Soluções, Guias, Catálogos. Escolha seu país e acesse.
+          </p>
+          <a
+            href="/pt/calculadora"
+            class="btn btn-primary"
+            >Ver catálogos</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catálogos Download Section -->
+  <section class="catalogs-download-section">
     <div class="container">
       <h2 class="section-title">Download de Catálogos</h2>
       <div class="catalogs-grid">
@@ -269,42 +339,66 @@ const latestArticles = articles.slice(0, 3);
     </div>
   </section>
 
-  <!-- Blog Preview Section -->
-  {latestArticles.length > 0 && (
-    <section class="blog-preview-section">
-      <div class="container">
-        <h2 class="section-title">Últimas Notícias</h2>
-        <div class="blog-preview-grid">
-          {latestArticles.map((article) => (
-            <article class="blog-preview-card">
-              {article.imagen_destacada?.url && (
-                <img 
-                  src={article.imagen_destacada.url} 
-                  alt={article.imagen_destacada.alt || article.titulo}
-                  class="blog-preview-image"
-                  loading="lazy"
-                />
-              )}
-              <div class="blog-preview-content">
-                <span class="badge badge-primary">{article.categoria}</span>
-                <h3 class="blog-preview-title">{article.titulo}</h3>
-                <p class="blog-preview-date">
-                  {new Date(article.fecha).toLocaleDateString('pt-PT')}
-                </p>
-                <p class="blog-preview-excerpt">{article.extracto}</p>
-                <a href={`/pt/blog/${article.slug}`} class="btn btn-outline">
-                  Ler mais
-                </a>
-              </div>
-            </article>
-          ))}
+  <!-- News Section -->
+  {
+    latestArticles.length > 0 && (
+      <section class="news-section">
+        <div class="container">
+          <div class="news-header">
+            <h2 class="news-title">Atualidade Dekalb</h2>
+            <p class="news-subtitle">
+              Notícias, eventos e novidades para estar sempre atualizado com tudo
+              que acontece no mundo Dekalb.
+            </p>
+          </div>
+          <div class="news-grid">
+            {latestArticles.map((article) => (
+              <article class="news-card">
+                <div class="news-card-image-wrapper">
+                  {article.imagen_destacada?.url && (
+                    <img
+                      src={article.imagen_destacada.url}
+                      alt={article.imagen_destacada.alt || article.titulo}
+                      class="news-card-image"
+                      loading="lazy"
+                    />
+                  )}
+                  <span class="news-card-tag">{article.categoria}</span>
+                </div>
+                <div class="news-card-content">
+                  <p class="news-card-date">
+                    {new Date(article.fecha).toLocaleDateString("pt-PT", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <h3 class="news-card-title">{article.titulo}</h3>
+                  <a
+                    href={`/pt/blog/${article.slug}`}
+                    class="news-card-link"
+                  >
+                    Ler mais
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div class="news-footer">
+            <p class="news-footer-text">
+              Continue conectado à inovação e ao campo.
+            </p>
+            <a
+              href="/pt/blog"
+              class="btn btn-primary news-footer-button"
+            >
+              Ver todas as notícias
+            </a>
+          </div>
         </div>
-        <div class="blog-preview-footer">
-          <a href="/pt/blog" class="btn btn-primary">Ver todos os artigos</a>
-        </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
   <ProductModal lang={lang} />
 </PageLayout>
@@ -454,13 +548,18 @@ const latestArticles = articles.slice(0, 3);
     padding: var(--spacing-12) 0;
   }
 
-  .preceon-section {
+  /* Generic Card Sections - Layout Styles */
+  .preceon-section,
+  .calculator-section,
+  .guides-section,
+  .catalogs-section {
     padding: var(--spacing-16) 0;
     background: transparent;
     color: var(--color-text-primary);
   }
 
-  .preceon-wrapper {
+  /* Content Left Card (30% contenido / 70% imagen) */
+  .content-left-card-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;
@@ -472,76 +571,154 @@ const latestArticles = articles.slice(0, 3);
     position: relative;
   }
 
-  .preceon-content {
+  .content-left-card-content {
     text-align: left;
     padding: var(--spacing-12) var(--spacing-8);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: linear-gradient(to bottom, #e9e7e4 0%, #d4d1cc 50%, #e9e7e4 100%);
+    background: linear-gradient(to right, #e9e7e4 0%, #ffffff 100%);
     position: relative;
     z-index: 2;
   }
 
-  .preceon-logo {
+  .content-left-card-logo {
     margin-bottom: var(--spacing-8);
     display: block;
   }
 
-  .preceon-logo img {
-    height: 85px;
+  .content-left-card-logo img {
+    height: 110px;
     width: auto;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
   }
 
-  .preceon-title {
-    font-size: 34px;
-    font-weight: 300;
-    font-family: var(--font-family-primary);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-8);
-    line-height: 44.2px;
-    max-width: 423px;
-    display: block;
-  }
-
-  .preceon-content .btn {
+  .content-left-card-content .btn {
     width: auto;
     max-width: 212px;
     display: inline-block;
+    text-align: center;
   }
 
-  .preceon-image {
+  .content-left-card-image {
     display: none;
     position: relative;
     overflow: hidden;
   }
 
-  .preceon-image img {
+  .content-left-card-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
     display: block;
   }
 
-  /* Desktop: Two columns layout - 30% contenido / 70% imagen */
+  /* Desktop: Content Left Card - 30% contenido / 70% imagen */
   @media (min-width: 1024px) {
-    .preceon-wrapper {
+    .content-left-card-wrapper {
       grid-template-columns: 30% 70%;
       gap: 0;
-      min-height: 500px;
+      min-height: 400px;
       border-radius: 60px 12px 60px 12px; /* Superior izquierda e inferior derecha con radio mayor */
     }
 
-    .preceon-content {
+    .content-left-card-content {
       padding: var(--spacing-12) var(--spacing-12);
-      border-radius: 60px 0 0 60px; /* Solo esquina superior izquierda redondeada */
+      border-radius: 60px 0 0 0px; /* Solo esquina superior izquierda redondeada */
     }
 
-    .preceon-image {
+    .content-left-card-image {
       display: block;
       border-radius: 0 12px 60px 0; /* Solo esquina inferior derecha redondeada */
+    }
+  }
+
+  /* Content Right Card (65% imagen / 35% contenido) */
+  .content-right-card-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: stretch;
+    background: var(--color-white);
+    border-radius: 12px 12px 12px 12px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+  }
+
+  .content-right-card-content {
+    text-align: left;
+    padding: var(--spacing-12) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .content-right-card-title,
+  .content-left-card-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin-bottom: var(--spacing-6);
+    line-height: 1.8rem;
+    max-width: 345px;
+    display: block;
+  }
+  .content-left-card-title {
+    max-width: 423px;
+  }
+
+  .content-right-card-description {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-8);
+    line-height: 26px;
+    max-width: 345px;
+    display: block;
+  }
+
+  .content-right-card-content .btn {
+    width: auto;
+    max-width: 212px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .content-right-card-image {
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .content-right-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+  }
+
+  /* Desktop: Content Right Card - 65% imagen / 35% contenido */
+  @media (min-width: 1024px) {
+    .content-right-card-wrapper {
+      grid-template-columns: 65% 35%;
+      gap: 0;
+      min-height: 400px;
+      border-radius: 60px 12px 60px 12px; /* Superior derecha e inferior izquierda con radio mayor */
+      background: linear-gradient(to left, #e9e7e4 0%, #ffffff 100%);
+    }
+
+    .content-right-card-content {
+      padding: var(--spacing-12) var(--spacing-12);
+    }
+
+    .content-right-card-image {
+      display: block;
     }
   }
 
@@ -550,7 +727,7 @@ const latestArticles = articles.slice(0, 3);
     background-color: var(--color-gray-50);
   }
 
-  .catalogs-section {
+  .catalogs-download-section {
     padding: var(--spacing-16) 0;
     background-color: var(--color-white);
   }
@@ -570,16 +747,29 @@ const latestArticles = articles.slice(0, 3);
     gap: var(--spacing-3);
     padding: var(--spacing-6);
     background: var(--color-white);
-    border: 2px solid var(--color-gray-300);
-    border-radius: var(--radius-lg);
+    border: none;
+    border-radius: var(--card-border-radius);
     text-decoration: none;
     transition: all var(--transition-base);
   }
 
+  @media (max-width: 767px) {
+    .catalog-card {
+      background: var(--catalog-button-bg-mobile);
+      color: var(--catalog-button-text-mobile);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .catalog-card {
+      background: var(--catalog-button-bg-desktop);
+      color: var(--catalog-button-text-desktop);
+    }
+  }
+
   .catalog-card:hover {
-    border-color: var(--color-dekalb-primary);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-4px);
+    opacity: 0.9;
+    transform: translateY(-2px);
   }
 
   .catalog-flag {
@@ -587,74 +777,185 @@ const latestArticles = articles.slice(0, 3);
   }
 
   .catalog-name {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-900);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--button-font-size);
+    color: inherit;
   }
 
-  .blog-preview-section {
+  /* News Section */
+  .news-section {
     padding: var(--spacing-16) 0;
-    background-color: var(--color-gray-50);
+    background-color: var(--color-white);
   }
 
-  .blog-preview-grid {
+  .news-header {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+  }
+
+  .news-title {
+    font-size: 48px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin: 0 0 var(--spacing-4) 0;
+    letter-spacing: 0.96px;
+    line-height: 48px;
+  }
+
+  .news-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 26px;
+    max-width: 645px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing-6);
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-12);
   }
 
-  .blog-preview-card {
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
+  .news-card {
+    background: linear-gradient(to bottom, #e9e7e4 0%, #ffffff 100%);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
     transition: all var(--transition-base);
   }
 
-  .blog-preview-card:hover {
-    box-shadow: var(--shadow-lg);
+  .news-card:hover {
     transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .blog-preview-image {
+  .news-card-image-wrapper {
+    position: relative;
     width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
+    height: 177px;
+    overflow: hidden;
   }
 
-  .blog-preview-content {
-    padding: var(--spacing-4);
+  .news-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .news-card-tag {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    background-color: #e9e7e4;
+    color: #313639;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    line-height: 18.2px;
+    text-transform: capitalize;
+  }
+
+  .news-card-content {
+    padding: var(--spacing-6);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2);
+    gap: var(--spacing-4);
+    flex: 1;
   }
 
-  .blog-preview-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-900);
+  .news-card-date {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
     margin: 0;
+    line-height: 19.6px;
+    text-transform: capitalize;
   }
 
-  .blog-preview-date {
-    font-size: var(--font-size-xs);
-    color: var(--color-gray-500);
+  .news-card-title {
+    font-size: 20px;
+    font-weight: 500;
+    font-family: var(--font-family-primary);
+    color: #313639;
     margin: 0;
+    line-height: 28px;
+    flex: 1;
   }
 
-  .blog-preview-excerpt {
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
-    margin: 0;
+  .news-card-link {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #009ddb;
+    text-decoration: none;
+    display: inline-block;
+    align-self: flex-start;
+    transition: color var(--transition-base);
   }
 
-  .blog-preview-footer {
+  .news-card-link:hover {
+    color: #005475;
+    text-decoration: underline;
+  }
+
+  .news-footer {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-6);
+  }
+
+  .news-footer-text {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 26px;
+  }
+
+  .news-footer-button {
+    width: 212px;
+    height: 40px;
+    border-radius: 26px;
+  }
+
+  @media (max-width: 1023px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .news-title {
+      font-size: 36px;
+      line-height: 40px;
+    }
   }
 
   @media (max-width: 767px) {
-    .blog-preview-grid {
+    .news-grid {
       grid-template-columns: 1fr;
+    }
+
+    .news-title {
+      font-size: 32px;
+      line-height: 36px;
+    }
+
+    .news-subtitle {
+      font-size: 18px;
+      line-height: 24px;
     }
 
     .catalogs-grid {
