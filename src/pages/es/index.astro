@@ -456,6 +456,80 @@ const latestArticles = articles.slice(0, 3);
     </div>
   </section>
 
+  <!-- Calculadora de Densidades Section -->
+  <section class="calculator-section">
+    <div class="container">
+      <div class="calculator-wrapper">
+        <div class="calculator-image">
+          <img
+            src="/card_background-calculadora.png"
+            alt="Calculadora de densidades"
+          />
+        </div>
+        <div class="calculator-content">
+          <h2 class="calculator-title">Calculador de densidades</h2>
+          <p class="calculator-description">
+            Usa nuestra herramienta interactiva para calcular la densidad de
+            siembra recomendada y el número de bolsas DEKALB requeridas.
+          </p>
+          <a
+            href="/es/calculadora"
+            class="btn btn-primary"
+            >Accede al calculador</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="preceon-section">
+    <div class="container">
+      <div class="preceon-wrapper">
+        <div class="preceon-content">
+          <h2 class="calculator-title">Evita problemas con tu maíz</h2>
+          <p class="calculator-description">
+            Descubre nuestras guías para ayudarte a proteger tu cultivo de maíz.
+          </p>
+          <a
+            href="/es/preceon"
+            class="btn btn-primary"
+            >Ver guías de cultivo</a
+          >
+        </div>
+        <div class="preceon-image">
+          <img
+            src="/card_background-guides.png"
+            alt="Preceon Pack"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculator-section">
+    <div class="container">
+      <div class="calculator-wrapper">
+        <div class="calculator-image">
+          <img
+            src="/card_background-catalogs.png"
+            alt="Calculadora de densidades"
+          />
+        </div>
+        <div class="calculator-content">
+          <h2 class="calculator-title">
+            Obtén todos nuestros catálogos en un sólo lugar.
+          </h2>
+          <p class="calculator-description">
+            Soluciones, Guías, Catálogos.  Elige tu país y accede.
+          </p>
+          <a
+            href="/es/calculadora"
+            class="btn btn-primary"
+            >Ver catálogos</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- Evita Problemas Section -->
   <section class="avoid-problems-section">
     <div class="container">
@@ -770,7 +844,7 @@ const latestArticles = articles.slice(0, 3);
       grid-template-columns: 30% 70%;
       gap: 0;
       min-height: 400px;
-      border-radius: 60px 12px 120px 12px; /* Superior izquierda e inferior derecha con radio mayor */
+      border-radius: 60px 12px 60px 12px; /* Superior izquierda e inferior derecha con radio mayor */
     }
 
     .preceon-content {
@@ -781,6 +855,96 @@ const latestArticles = articles.slice(0, 3);
     .preceon-image {
       display: block;
       border-radius: 0 12px 60px 0; /* Solo esquina inferior derecha redondeada */
+    }
+  }
+
+  .calculator-section {
+    padding: var(--spacing-16) 0;
+    background: transparent;
+    color: var(--color-text-primary);
+  }
+
+  .calculator-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: stretch;
+    background: var(--color-white);
+    border-radius: 12px 12px 12px 12px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+  }
+
+  .calculator-content {
+    text-align: left;
+    padding: var(--spacing-12) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* background: linear-gradient(to left, #e9e7e4 0%, #ffffff 100%); */
+    position: relative;
+    z-index: 2;
+  }
+
+  .calculator-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin-bottom: var(--spacing-6);
+    line-height: 1.8rem;
+    max-width: 345px;
+    display: block;
+  }
+
+  .calculator-description {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-8);
+    line-height: 26px;
+    max-width: 345px;
+    display: block;
+  }
+
+  .calculator-content .btn {
+    width: auto;
+    max-width: 212px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .calculator-image {
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calculator-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+  }
+
+  /* Desktop: Two columns layout - 70% imagen / 30% contenido */
+  @media (min-width: 1024px) {
+    .calculator-wrapper {
+      grid-template-columns: 65% 35%;
+      gap: 0;
+      min-height: 400px;
+      border-radius: 60px 12px 60px 12px; /* Superior derecha e inferior izquierda con radio mayor */
+      background: linear-gradient(to left, #e9e7e4 0%, #ffffff 100%);
+    }
+
+    .calculator-content {
+      padding: var(--spacing-12) var(--spacing-12);
+    }
+
+    .calculator-image {
+      display: block;
     }
   }
 
