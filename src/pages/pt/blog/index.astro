@@ -3,7 +3,7 @@ import BlogPost from '../../../layouts/BlogPost.astro';
 import { getAllArticles } from '../../../utils/prismic';
 import { getLocalizedPath } from '../../../utils/i18n';
 
-const lang = 'es';
+const lang = 'pt';
 let articles: any[] = [];
 
 try {
@@ -13,10 +13,10 @@ try {
 }
 
 const categoryLabels: Record<string, string> = {
-  'noticia': 'Noticia',
+  'noticia': 'Notícia',
   'evento': 'Evento',
-  'articulo': 'Artículo',
-  'lanzamiento': 'Lanzamiento',
+  'articulo': 'Artigo',
+  'lanzamiento': 'Lançamento',
 };
 
 // Separar primera noticia (destacada) y resto (máximo 12)
@@ -25,17 +25,17 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
 ---
 
 <BlogPost
-  title="Actualidad Dekalb"
-  description="Noticias, eventos y novedades para mantenerte siempre al día con el mundo Dekalb."
+  title="Atualidade Dekalb"
+  description="Notícias, eventos e novidades para mantê-lo sempre atualizado com o mundo Dekalb."
   lang={lang}
 >
   <div class="blog-wrapper">
     <div class="blog-container">
       <!-- Header -->
       <header class="blog-header">
-        <h1 class="blog-title">Actualidad Dekalb</h1>
+        <h1 class="blog-title">Atualidade Dekalb</h1>
         <p class="blog-subtitle">
-          Noticias, eventos y novedades para mantenerte siempre al día con el mundo Dekalb.
+          Notícias, eventos e novidades para mantê-lo sempre atualizado com o mundo Dekalb.
         </p>
       </header>
 
@@ -60,7 +60,7 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
               href={getLocalizedPath(`/blog/${featuredArticle.slug}`, lang)}
               class="btn btn-primary"
             >
-              Leer más
+              Ler mais
             </a>
           </div>
         </article>
@@ -91,7 +91,7 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
                   </a>
                 </h2>
                 <time class="blog-card-date" datetime={article.fecha}>
-                  {new Date(article.fecha).toLocaleDateString('es-ES', {
+                  {new Date(article.fecha).toLocaleDateString('pt-PT', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -101,7 +101,7 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
                   <p class="blog-card-excerpt">{article.extracto}</p>
                 )}
                 <a href={getLocalizedPath(`/blog/${article.slug}`, lang)} class="btn btn-outline">
-                  Leer más
+                  Ler mais
                 </a>
               </div>
             </article>
@@ -111,7 +111,7 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
 
       {articles.length === 0 && (
         <div class="blog-empty">
-          <p>No hay artículos disponibles en este momento.</p>
+          <p>Não há artigos disponíveis no momento.</p>
         </div>
       )}
     </div>
@@ -374,3 +374,4 @@ const secondaryArticles = articles.slice(1, 13); // Máximo 12 noticias secundar
     }
   }
 </style>
+
