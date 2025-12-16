@@ -179,12 +179,13 @@ const {
         centerFilteredResults(trackElement, newProducts.length);
       }, 50);
     } else {
-      // Reset styles when showing all products
+      // Reset styles when showing all products - ensure flex layout for desktop
       setTimeout(() => {
         if (!isMobile) {
           trackElement.style.paddingLeft = "";
           trackElement.style.paddingRight = "";
-          trackElement.style.display = "";
+          trackElement.style.display = "flex";
+          trackElement.style.flexDirection = "row";
           trackElement.style.justifyContent = "";
         }
         trackElement.scrollLeft = 0;
@@ -413,6 +414,13 @@ const {
     padding: var(--spacing-4) 0;
   }
 
+  @media (min-width: 1024px) {
+    .product-carousel-container {
+      overflow: hidden;
+      width: 100%;
+    }
+  }
+
   @media (max-width: 767px) {
     .product-carousel-container {
       overflow: hidden;
@@ -470,13 +478,25 @@ const {
 
   /* Desktop: 3 visible cards with transparent background */
   @media (min-width: 1024px) {
+    .product-carousel-container {
+      overflow: hidden;
+    }
+
     .product-carousel-track {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
+      flex-direction: row;
       gap: var(--spacing-6);
       overflow-x: auto;
+      overflow-y: hidden;
       padding: var(--spacing-4);
       width: 100%;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .product-carousel-track::-webkit-scrollbar {
+      display: none;
     }
 
     .product-card {
@@ -484,7 +504,9 @@ const {
       box-shadow: none;
       border-radius: 0;
       overflow: visible;
-      min-width: 0;
+      flex: 0 0 calc(33.333% - var(--spacing-4));
+      min-width: calc(33.333% - var(--spacing-4));
+      max-width: calc(33.333% - var(--spacing-4));
       padding: 0;
     }
 
