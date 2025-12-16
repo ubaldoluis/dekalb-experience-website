@@ -104,6 +104,15 @@ vercel inspect
 - Revisa los logs de build en Vercel Dashboard
 - Asegúrate de que `npm run build` funcione localmente
 
+### Error: "Failed to resolve dependency: @splidejs/splide"
+- Asegúrate de que el commit más reciente incluya `@splidejs/splide` en `package.json`
+- Si Vercel está usando un commit anterior, haz un nuevo deploy:
+  1. Ve a Vercel Dashboard → Tu proyecto
+  2. Haz clic en **"Deployments"**
+  3. Haz clic en los **"..."** del último deployment
+  4. Selecciona **"Redeploy"** o **"Redeploy with existing Build Cache"**
+  5. O simplemente haz un nuevo push para trigger automático
+
 ### Error: "Prismic client not initialized"
 - Verifica que `PRISMIC_REPOSITORY_NAME` y `PRISMIC_ACCESS_TOKEN` estén configuradas
 - Asegúrate de que el Access Token tenga permisos de lectura
