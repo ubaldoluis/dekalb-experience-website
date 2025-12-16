@@ -96,3 +96,32 @@ export interface HomeContent {
   };
 }
 
+export interface YieldKitTab {
+  id: 'que-es' | 'compatibilidad' | 'ventajas' | 'conectividad';
+  label: string; // Text simple
+  content: any; // Rich text from Prismic
+}
+
+export interface FieldViewSubsection {
+  id: 'drive' | 'yield-kit' | 'spraykit';
+  titulo: string; // Text simple
+  descripcion: any; // Rich text from Prismic
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  yieldKitTabs?: YieldKitTab[]; // Solo para Yield Kit
+}
+
+export interface FieldViewContent {
+  hero: {
+    titulo: string; // Text simple
+    descripcion: any; // Rich text from Prismic
+  };
+  introduccion: {
+    titulo: string; // Text simple
+    texto: any; // Rich text from Prismic
+  };
+  subsections: FieldViewSubsection[];
+}
+

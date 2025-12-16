@@ -3,7 +3,7 @@
  */
 
 import * as prismic from '@prismicio/client';
-import type { Producto, Articulo, CatalogoPDF, HomeContent } from '../types';
+import type { Producto, Articulo, CatalogoPDF, HomeContent, FieldViewContent } from '../types';
 
 const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || '';
 const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || '';
@@ -234,6 +234,81 @@ export async function getHomeContent(locale: string = 'es'): Promise<HomeContent
     };
   } catch (error) {
     console.error('Error fetching home content:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch FieldView content from Prismic
+ */
+export async function getFieldViewContent(locale: string = 'es'): Promise<FieldViewContent | null> {
+  try {
+    if (!client) {
+      console.warn('Prismic client not initialized');
+      return null;
+    }
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    const doc = await client.getSingle('fieldview', { lang: prismicLocale });
+    
+    // Mapear tabs de Yield Kit
+    const yieldKitTabs = doc.data.yield_kit_tabs?.map((tab: any, index: number) => {
+      const tabIds: Array<'que-es' | 'compatibilidad' | 'ventajas' | 'conectividad'> = 
+        ['que-es', 'compatibilidad', 'ventajas', 'conectividad'];
+      return {
+        id: tabIds[index] || 'que-es',
+        label: tab.label || '',
+        content: tab.content || [],
+      };
+    }) || [];
+
+    return {
+      hero: {
+        titulo: doc.data.hero_titulo || 'Siembra datos y cosecha decisiones',
+        descripcion: doc.data.hero_descripcion || [],
+      },
+      introduccion: {
+        titulo: doc.data.introduccion_titulo || '',
+        texto: doc.data.introduccion_texto || [],
+      },
+      subsections: [
+        {
+          id: 'drive',
+          titulo: doc.data.drive_titulo || 'FieldView Drive',
+          descripcion: doc.data.drive_descripcion || [],
+          imagen: doc.data.drive_imagen
+            ? {
+                url: doc.data.drive_imagen.url || '',
+                alt: doc.data.drive_imagen.alt || '',
+              }
+            : undefined,
+        },
+        {
+          id: 'yield-kit',
+          titulo: doc.data.yield_kit_titulo || 'FieldView Yield Kit',
+          descripcion: doc.data.yield_kit_descripcion || [],
+          imagen: doc.data.yield_kit_imagen
+            ? {
+                url: doc.data.yield_kit_imagen.url || '',
+                alt: doc.data.yield_kit_imagen.alt || '',
+              }
+            : undefined,
+          yieldKitTabs: yieldKitTabs,
+        },
+        {
+          id: 'spraykit',
+          titulo: doc.data.spraykit_titulo || 'FieldView SprayKit',
+          descripcion: doc.data.spraykit_descripcion || [],
+          imagen: doc.data.spraykit_imagen
+            ? {
+                url: doc.data.spraykit_imagen.url || '',
+                alt: doc.data.spraykit_imagen.alt || '',
+              }
+            : undefined,
+        },
+      ],
+    };
+  } catch (error) {
+    console.error('Error fetching FieldView content:', error);
     return null;
   }
 }

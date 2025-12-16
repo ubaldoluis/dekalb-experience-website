@@ -1,0 +1,352 @@
+---
+import { renderRichText } from "../utils/prismic-rich-text";
+import type { YieldKitTab } from "../types";
+
+interface Props {
+  tabs: YieldKitTab[];
+}
+
+const { tabs } = Astro.props;
+
+// IDs de los tabs en orden
+const tabIds: Array<"que-es" | "compatibilidad" | "ventajas" | "conectividad"> =
+  ["que-es", "compatibilidad", "ventajas", "conectividad"];
+---
+
+<div class="yield-kit-tabs-wrapper">
+  <div
+    class="yield-kit-tabs-container"
+    id="yield-kit-tabs"
+  >
+    {
+      tabs.map((tab, index) => (
+        <button
+          class="yield-kit-tab"
+          data-tab-id={tabIds[index]}
+          data-tab-index={index}
+          aria-label={tab.label}
+          aria-selected={index === 0}
+        >
+          {tab.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="yield-kit-content-container">
+    {
+      tabs.map((tab, index) => (
+        <div
+          class="yield-kit-content"
+          data-content-id={tabIds[index]}
+          data-content-index={index}
+          style={index === 0 ? "display: block;" : "display: none;"}
+        >
+          <div
+            class="yield-kit-content-inner"
+            set:html={renderRichText(tab.content)}
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="yield-kit-navigation">
+    <button
+      class="yield-kit-nav-button yield-kit-nav-prev"
+      id="yield-kit-prev"
+      aria-label="Tab anterior"
+      disabled
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+    </button>
+    <button
+      class="yield-kit-nav-button yield-kit-nav-next"
+      id="yield-kit-next"
+      aria-label="Tab siguiente"
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M9 18l6-6-6-6"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  let currentTabIndex = 0;
+  let maxHeight = 0;
+
+  function initializeTabs() {
+    const tabs = document.querySelectorAll(".yield-kit-tab");
+    const contents = document.querySelectorAll(".yield-kit-content");
+    const prevButton = document.getElementById("yield-kit-prev");
+    const nextButton = document.getElementById("yield-kit-next");
+    const container = document.querySelector(
+      ".yield-kit-content-container"
+    ) as HTMLElement;
+
+    if (!tabs.length || !contents.length) return;
+
+    // Primero, hacer visibles todos los contenidos temporalmente para calcular altura
+    contents.forEach((content) => {
+      const contentEl = content as HTMLElement;
+      contentEl.style.display = "block";
+      contentEl.style.position = "absolute";
+      contentEl.style.visibility = "hidden";
+      contentEl.style.opacity = "0";
+      const height = contentEl.scrollHeight;
+      if (height > maxHeight) {
+        maxHeight = height;
+      }
+    });
+
+    // Establecer altura fija al contenedor
+    if (container && maxHeight > 0) {
+      container.style.minHeight = `${maxHeight}px`;
+    }
+
+    // Inicializar el primer tab como visible
+    updateTabDisplay(0);
+
+    // Event listeners para tabs
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        currentTabIndex = index;
+        updateTabDisplay(currentTabIndex);
+      });
+    });
+
+    // Event listeners para navegación
+    if (prevButton) {
+      prevButton.addEventListener("click", () => {
+        if (currentTabIndex > 0) {
+          currentTabIndex--;
+          updateTabDisplay(currentTabIndex);
+        }
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener("click", () => {
+        if (currentTabIndex < tabs.length - 1) {
+          currentTabIndex++;
+          updateTabDisplay(currentTabIndex);
+        }
+      });
+    }
+  }
+
+  function updateTabDisplay(index: number) {
+    const tabs = document.querySelectorAll(".yield-kit-tab");
+    const contents = document.querySelectorAll(".yield-kit-content");
+    const prevButton = document.getElementById("yield-kit-prev");
+    const nextButton = document.getElementById("yield-kit-next");
+
+    // Ocultar todos los contenidos excepto el activo
+    contents.forEach((content, i) => {
+      const contentEl = content as HTMLElement;
+      if (i === index) {
+        contentEl.style.position = "relative";
+        contentEl.style.opacity = "1";
+        contentEl.style.visibility = "visible";
+      } else {
+        contentEl.style.position = "absolute";
+        contentEl.style.opacity = "0";
+        contentEl.style.visibility = "hidden";
+      }
+    });
+
+    // Actualizar estado de tabs
+    tabs.forEach((tab, i) => {
+      const tabEl = tab as HTMLElement;
+      if (i === index) {
+        tabEl.classList.add("active");
+        tabEl.setAttribute("aria-selected", "true");
+      } else {
+        tabEl.classList.remove("active");
+        tabEl.setAttribute("aria-selected", "false");
+      }
+    });
+
+    // Actualizar botones de navegación
+    if (prevButton) {
+      prevButton.disabled = index === 0;
+    }
+    if (nextButton) {
+      nextButton.disabled = index === tabs.length - 1;
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeTabs);
+  } else {
+    initializeTabs();
+  }
+</script>
+
+<style>
+  .yield-kit-tabs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .yield-kit-tabs-container {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: var(--spacing-2);
+  }
+
+  .yield-kit-tabs-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .yield-kit-tab {
+    background: transparent;
+    border: 2px solid #f5a81c;
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-family: "D-DIN-PRO", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #313639;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .yield-kit-tab:hover {
+    background: rgba(245, 168, 28, 0.1);
+  }
+
+  .yield-kit-tab.active {
+    background: #f5a81c;
+    border-color: #f5a81c;
+    color: #313639;
+  }
+
+  .yield-kit-content-container {
+    position: relative;
+    min-height: 200px;
+    transition: min-height 0.2s ease-in-out;
+  }
+
+  .yield-kit-content {
+    transition:
+      opacity 0.2s ease-in-out,
+      visibility 0.2s ease-in-out;
+  }
+
+  .yield-kit-content-inner {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    line-height: 22px;
+  }
+
+  .yield-kit-content-inner:empty::before {
+    content: "Contenido no disponible";
+    color: #999;
+    font-style: italic;
+  }
+
+  .yield-kit-content-inner :global(p) {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .yield-kit-content-inner :global(strong) {
+    font-weight: 700;
+  }
+
+  .yield-kit-content-inner :global(ul),
+  .yield-kit-content-inner :global(ol) {
+    margin-left: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+    padding-left: var(--spacing-4);
+    list-style-type: disc;
+  }
+
+  .yield-kit-content-inner :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .yield-kit-content-inner :global(li) {
+    margin-bottom: 0;
+    line-height: 16px;
+  }
+
+  .yield-kit-content-inner :global(li + li) {
+    margin-top: var(--spacing-2);
+  }
+
+  .yield-kit-navigation {
+    display: flex;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+  }
+
+  .yield-kit-nav-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #f5a81c;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    color: #f5a81c;
+  }
+
+  .yield-kit-nav-button:hover:not(:disabled) {
+    background: #f5a81c;
+    color: #313639;
+  }
+
+  .yield-kit-nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .yield-kit-nav-button.active {
+    background: #f5a81c;
+    color: #313639;
+  }
+
+  @media (max-width: 767px) {
+    .yield-kit-tabs-container {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    .yield-kit-tab {
+      scroll-snap-align: start;
+    }
+  }
+</style>

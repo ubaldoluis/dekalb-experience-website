@@ -1,0 +1,141 @@
+{
+  "id": "fieldview",
+  "label": "FieldView",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "hero_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título Hero",
+          "placeholder": "Siembra datos y cosecha decisiones"
+        }
+      },
+      "hero_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción Hero",
+          "placeholder": "Descubre cómo tomar decisiones agronómicas más inteligentes gracias a los datos de tus propias cosechas.",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "introduccion_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título Introducción",
+          "placeholder": "Transforma datos en decisiones para una agricultura inteligente y eficiente!"
+        }
+      },
+      "introduccion_texto": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Texto Introducción",
+          "placeholder": "La plataforma digital de Bayer, FieldView™, es la herramienta ideal...",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "drive_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título FieldView Drive",
+          "placeholder": "FieldView Drive"
+        }
+      },
+      "drive_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción FieldView Drive",
+          "placeholder": "FieldView™ Drive es la única herramienta...",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "drive_imagen": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen FieldView Drive",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      },
+      "yield_kit_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título FieldView Yield Kit",
+          "placeholder": "FieldView Yield Kit"
+        }
+      },
+      "yield_kit_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción FieldView Yield Kit",
+          "placeholder": "Descripción general del Yield Kit",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "yield_kit_imagen": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen FieldView Yield Kit",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      },
+      "yield_kit_tabs": {
+        "type": "Group",
+        "config": {
+          "label": "Tabs Yield Kit",
+          "fields": {
+            "label": {
+              "type": "Text",
+              "config": {
+                "label": "Etiqueta del Tab",
+                "placeholder": "¿Qué es?"
+              }
+            },
+            "content": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Contenido del Tab",
+                "placeholder": "Contenido del tab en formato rich text",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "spraykit_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título FieldView SprayKit",
+          "placeholder": "FieldView SprayKit"
+        }
+      },
+      "spraykit_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción FieldView SprayKit",
+          "placeholder": "El Spray Kit FieldView™...",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "spraykit_imagen": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen FieldView SprayKit",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      }
+    }
+  }
+}

@@ -1,179 +1,425 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
-import SolutionsHero from '../../components/SolutionsHero.astro';
-import BenefitsGrid from '../../components/BenefitsGrid.astro';
-import CTASection from '../../components/CTASection.astro';
+import PageLayout from "../../layouts/PageLayout.astro";
+import YieldKitTabs from "../../components/YieldKitTabs.astro";
+import { getFieldViewContent } from "../../utils/prismic";
+import { renderRichText } from "../../utils/prismic-rich-text";
+import * as prismic from "@prismicio/client";
 
-const lang = 'es';
+const lang = "es";
+let fieldViewContent = null;
+
+try {
+  fieldViewContent = await getFieldViewContent(lang);
+} catch (error) {
+  console.error("Error fetching FieldView content:", error);
+}
+
+// Fallback content si no hay datos de Prismic
+const defaultContent = {
+  hero: {
+    titulo: "Siembra datos y cosecha decisiones",
+    descripcion: [
+      {
+        type: "paragraph",
+        text: "Descubre cómo tomar decisiones agronómicas más inteligentes gracias a los datos de tus propias cosechas.",
+        spans: [],
+      },
+    ],
+  },
+  introduccion: {
+    titulo:
+      "Transforma datos en decisiones para una agricultura inteligente y eficiente!",
+    texto: [
+      {
+        type: "paragraph",
+        text: "La plataforma digital de Bayer, FieldView™, es la herramienta ideal para la agricultura del futuro: ofrece soluciones innovadoras basadas en ciencia de datos, diseñadas para ayudarle a optimizar cada etapa de su cultivo, desde la siembra hasta la cosecha.",
+        spans: [],
+      },
+    ],
+  },
+  subsections: [
+    {
+      id: "drive" as const,
+      titulo: "FieldView Drive",
+      descripcion: [
+        {
+          type: "paragraph",
+          text: "FieldView™ Drive es la única herramienta de agricultura digital que puede recopilar y procesar datos agrícolas en tiempo real. También es el dispositivo con mayor compatibilidad en maquinaria agrícola del mundo. Se conecta al puerto CAN de casi todos los modelos y marcas de sembradoras, pulverizadoras y cosechadoras de España.",
+          spans: [],
+        },
+      ],
+      imagen: undefined,
+    },
+    {
+      id: "yield-kit" as const,
+      titulo: "FieldView Yield Kit",
+      descripcion: [],
+      imagen: undefined,
+      yieldKitTabs: [
+        {
+          id: "que-es" as const,
+          label: "¿Qué es?",
+          content: [
+            {
+              type: "paragraph",
+              text: "El FieldView Yield Kit es una solución tecnológica 100% compatible con cualquier cosechadora. Te permite recopilar datos precisos durante la recolección y aprovecharlos para mejorar tus decisiones agronómicas futuras.",
+              spans: [],
+            },
+          ],
+        },
+        {
+          id: "compatibilidad" as const,
+          label: "Compatibilidad",
+          content: [],
+        },
+        {
+          id: "ventajas" as const,
+          label: "Ventajas",
+          content: [],
+        },
+        {
+          id: "conectividad" as const,
+          label: "Conectividad",
+          content: [],
+        },
+      ],
+    },
+    {
+      id: "spraykit" as const,
+      titulo: "FieldView SprayKit",
+      descripcion: [
+        {
+          type: "paragraph",
+          text: "El Spray Kit FieldView™ Pulverizador Agrícola de Precisión es la solución ideal para mejorar la eficiencia en la aplicación de pesticidas. Permite monitorear en tiempo real la cantidad exacta de pesticida aplicado, optimizando el rendimiento y reduciendo el desperdicio. Destaca por su precio competitivo y versatilidad. Es compatible con cultivos extensivos, frutales y hortícolas. ¡Descubre cómo este pulverizador agrícola de precisión puede transformar tu manera de trabajar en el campo!",
+          spans: [],
+        },
+      ],
+      imagen: undefined,
+    },
+  ],
+};
+
+const content = fieldViewContent || defaultContent;
 ---
 
-<PageLayout title="FieldView" description="Plataforma digital para gestión agrícola avanzada" lang={lang}>
-  <SolutionsHero 
-    title="FieldView"
-    subtitle="Plataforma digital para gestión agrícola avanzada"
-  />
-
-  <section class="fieldview-content">
+<PageLayout
+  title="FieldView"
+  description={prismic.asText(content.hero.descripcion) || ""}
+  lang={lang}
+>
+  <!-- Hero Section -->
+  <section class="fieldview-hero">
+    <div class="fieldview-hero-gradient"></div>
     <div class="container">
-      <div class="fieldview-intro">
-        <h2>Gestión Inteligente de Cultivos</h2>
-        <p>
-          FieldView es una plataforma digital integral que te permite gestionar tus cultivos de manera más eficiente y tomar decisiones basadas en datos precisos.
-        </p>
+      <div class="fieldview-hero-content">
+        <div class="fieldview-logo">
+          <img
+            src="/logo-fieldview_white.png"
+            alt="FieldView"
+          />
+        </div>
+        <h1 class="fieldview-hero-title">{content.hero.titulo}</h1>
+        <div
+          class="fieldview-hero-description"
+          set:html={renderRichText(content.hero.descripcion)}
+        />
       </div>
+    </div>
+  </section>
 
-      <div class="fieldview-subsections">
-        <div class="subsection">
-          <div class="subsection-content">
-            <h3>FieldView Drive</h3>
-            <p>
-              Sistema de monitoreo y análisis de datos en tiempo real para optimizar el rendimiento de tus cultivos.
-            </p>
-            <ul>
-              <li>Análisis de rendimiento por zona</li>
-              <li>Monitoreo de condiciones climáticas</li>
-              <li>Gestión de inventario</li>
-            </ul>
-          </div>
-          <div class="subsection-image">
-            <div class="placeholder-image">FieldView Drive</div>
-          </div>
-        </div>
-
-        <div class="subsection">
-          <div class="subsection-content">
-            <h3>Yield Kit</h3>
-            <p>
-              Herramientas avanzadas para medir y analizar el rendimiento de tus cultivos con precisión.
-            </p>
-            <ul>
-              <li>Medición precisa de producción</li>
-              <li>Mapas de rendimiento detallados</li>
-              <li>Análisis comparativo</li>
-            </ul>
-          </div>
-          <div class="subsection-image">
-            <div class="placeholder-image">Yield Kit</div>
-          </div>
-        </div>
-
-        <div class="subsection">
-          <div class="subsection-content">
-            <h3>SprayKit</h3>
-            <p>
-              Solución completa para la gestión y aplicación de tratamientos fitosanitarios.
-            </p>
-            <ul>
-              <li>Planificación de tratamientos</li>
-              <li>Seguimiento de aplicaciones</li>
-              <li>Optimización de dosis</li>
-            </ul>
-          </div>
-          <div class="subsection-image">
-            <div class="placeholder-image">SprayKit</div>
-          </div>
-        </div>
+  <!-- Introducción Section -->
+  <section class="fieldview-intro">
+    <div class="container">
+      <div class="fieldview-intro-content">
+        <h2 class="fieldview-intro-title">{content.introduccion.titulo}</h2>
+        <div
+          class="fieldview-intro-text"
+          set:html={renderRichText(content.introduccion.texto)}
+        />
       </div>
+    </div>
+  </section>
 
-      <CTASection
-        title="¿Listo para comenzar?"
-        description="Descubre cómo FieldView puede mejorar la gestión de tus cultivos"
-        buttonText="Contactar"
-        buttonLink="#contacto"
-        variant="primary"
-        lang={lang}
-      />
+  <!-- Subsections -->
+  <section class="fieldview-subsections">
+    <div class="container">
+      {
+        content.subsections.map((subsection) => (
+          <div
+            class={`fieldview-subsection fieldview-subsection-${subsection.id}`}
+          >
+            <div class="fieldview-subsection-image">
+              {subsection.imagen?.url ? (
+                <img
+                  src={subsection.imagen.url}
+                  alt={subsection.imagen.alt || subsection.titulo}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="fieldview-subsection-placeholder">
+                  {subsection.titulo}
+                </div>
+              )}
+            </div>
+            <div class="fieldview-subsection-content">
+              <h3 class="fieldview-subsection-title">{subsection.titulo}</h3>
+              {subsection.id === "yield-kit" && subsection.yieldKitTabs ? (
+                <YieldKitTabs tabs={subsection.yieldKitTabs} />
+              ) : subsection.descripcion ? (
+                <div class="fieldview-subsection-description">
+                  {typeof subsection.descripcion === "string" ? (
+                    <p>{subsection.descripcion}</p>
+                  ) : (
+                    <div set:html={renderRichText(subsection.descripcion)} />
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        ))
+      }
     </div>
   </section>
 </PageLayout>
 
 <style>
-  .fieldview-content {
+  /* Hero Section */
+  .fieldview-hero {
+    position: relative;
     padding: var(--spacing-16) 0;
+    background-color: #ffffff;
+    overflow: hidden;
+    min-width: auto;
+    min-height: 628px;
   }
 
+  .fieldview-hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 828px;
+    background: linear-gradient(135deg, #f5a81c 0%, rgba(245, 168, 28, 0) 100%);
+    z-index: 0;
+  }
+
+  /* Desktop: usar imagen de fondo en lugar de degradado */
+  @media (min-width: 1024px) {
+    .fieldview-hero-gradient {
+      background: url("/fieldview_top-background.png") no-repeat center top;
+      background-size: contain;
+      height: 100%;
+    }
+    .fieldview-hero {
+      position: relative;
+      min-width: 500px !important;
+    }
+  }
+
+  .fieldview-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 360px;
+    padding-top: var(--spacing-20);
+  }
+
+  .fieldview-logo {
+    margin-bottom: var(--spacing-8);
+  }
+
+  .fieldview-logo img {
+    height: 80px;
+    width: auto;
+  }
+
+  .fieldview-hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #ffffff;
+    margin: 0 0 var(--spacing-4) 0;
+    line-height: 2.2rem;
+    letter-spacing: 0.96px;
+  }
+
+  .fieldview-hero-description {
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3rem;
+  }
+
+  /* Introducción Section */
   .fieldview-intro {
+    padding: var(--spacing-16) 0;
+    background-color: #ffffff;
+  }
+
+  .fieldview-intro-content {
+    max-width: 707px;
+    margin: 0 auto;
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto var(--spacing-12);
   }
 
-  .fieldview-intro h2 {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--spacing-4);
+  .fieldview-intro-title {
+    font-size: 34px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #f5a81c;
+    margin: 0 0 var(--spacing-6) 0;
+    line-height: 40.8px;
   }
 
-  .fieldview-intro p {
-    font-size: var(--font-size-lg);
-    color: var(--color-gray-600);
+  .fieldview-intro-text {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 28px;
   }
 
+  /* Subsections */
   .fieldview-subsections {
+    padding: var(--spacing-16) 0;
+    background-color: #ffffff;
+  }
+
+  .fieldview-subsection {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-12);
+    gap: 0;
     margin-bottom: var(--spacing-12);
+    overflow: hidden;
+    background: linear-gradient(to right, #ffffff 0%, #e9e7e4 100%);
   }
 
-  .subsection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-8);
-    align-items: center;
+  .fieldview-subsection-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
   }
 
-  .subsection:nth-child(even) {
-    direction: rtl;
+  .fieldview-subsection-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
-  .subsection:nth-child(even) > * {
-    direction: ltr;
-  }
-
-  .subsection-content h3 {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--spacing-4);
-    color: var(--color-dekalb-primary);
-  }
-
-  .subsection-content p {
-    font-size: var(--font-size-base);
-    color: var(--color-gray-700);
-    margin-bottom: var(--spacing-4);
-  }
-
-  .subsection-content ul {
-    list-style: disc;
-    padding-left: var(--spacing-6);
-    color: var(--color-gray-700);
-  }
-
-  .subsection-content li {
-    margin-bottom: var(--spacing-2);
-  }
-
-  .subsection-image {
-    background-color: var(--color-gray-100);
-    border-radius: var(--radius-lg);
-    aspect-ratio: 16/9;
+  .fieldview-subsection-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #e9e7e4 0%, #ffffff 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #313639;
+    font-size: 24px;
+    font-weight: 600;
   }
 
-  .placeholder-image {
-    color: var(--color-gray-500);
-    font-weight: var(--font-weight-semibold);
+  .fieldview-subsection-content {
+    padding: var(--spacing-8);
+    background-color: transparent;
   }
 
-  @media (max-width: 767px) {
-    .subsection {
-      grid-template-columns: 1fr;
+  .fieldview-subsection-title {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #f5a81c;
+    margin: 0 0 var(--spacing-4) 0;
+    line-height: 34px;
+  }
+
+  .fieldview-subsection-description {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    line-height: 22px;
+  }
+
+  .fieldview-subsection-description :global(p) {
+    margin-bottom: var(--spacing-4);
+  }
+
+  /* Desktop Layout */
+  @media (min-width: 1024px) {
+    .fieldview-subsection {
+      flex-direction: row;
+      align-items: stretch;
+      border-radius: 0 0 60px 0;
     }
 
-    .subsection:nth-child(even) {
-      direction: ltr;
+    .fieldview-subsection-image {
+      width: 45%;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .fieldview-subsection-content {
+      width: 55%;
+      padding: var(--spacing-6) var(--spacing-20);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: transparent;
+    }
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .fieldview-hero-title {
+      font-size: 36px;
+      line-height: 44px;
+    }
+
+    .fieldview-intro-title {
+      font-size: 28px;
+      line-height: 34px;
+    }
+
+    .fieldview-subsection-title {
+      font-size: 28px;
+      line-height: 34px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .fieldview-hero-title {
+      font-size: 32px;
+      line-height: 40px;
+      letter-spacing: 0.5px;
+    }
+
+    .fieldview-hero-description {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .fieldview-intro-title {
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .fieldview-intro-text {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .fieldview-subsection-title {
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .fieldview-subsection-description {
+      font-size: 18px;
+      line-height: 24px;
     }
   }
 </style>
-
