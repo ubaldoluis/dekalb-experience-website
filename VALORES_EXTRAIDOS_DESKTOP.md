@@ -195,3 +195,4 @@
 4. Verificar implementación responsive
 
 
+

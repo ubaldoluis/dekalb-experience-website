@@ -1,41 +1,41 @@
 ---
 interface Props {
-  lang?: 'es' | 'pt';
+  lang?: "es" | "pt";
 }
 
-const { lang = 'es' } = Astro.props;
+const { lang = "es" } = Astro.props;
 
 const translations = {
   es: {
-    title: 'Calculador de Densidades',
-    use: 'Uso del maíz',
-    grano: 'Grano',
-    silo: 'Silo',
-    zone: 'Zona geográfica',
-    potential: 'Potencial de producción (Tn/Ha)',
-    hybrid: 'Híbrido DEKALB',
-    surface: 'Superficie a sembrar',
-    calculate: 'CALCULAR',
+    title: "Calculador de Densidades",
+    use: "Uso del maíz",
+    grano: "Grano",
+    silo: "Silo",
+    zone: "Zona geográfica",
+    potential: "Potencial de producción (Tn/Ha)",
+    hybrid: "Híbrido DEKALB",
+    surface: "Superficie a sembrar",
+    calculate: "CALCULAR",
     result: {
-      density: 'Densidad Recomendada',
-      bags: 'Nº de bolsas DEKALB',
-      plantsPerHa: 'miles plantas/Ha',
+      density: "Densidad Recomendada",
+      bags: "Nº de bolsas DEKALB",
+      plantsPerHa: "miles plantas/Ha",
     },
   },
   pt: {
-    title: 'Calculadora de Densidades',
-    use: 'Uso do milho',
-    grano: 'Grão',
-    silo: 'Silagem',
-    zone: 'Zona geográfica',
-    potential: 'Potencial de produção (Tn/Ha)',
-    hybrid: 'Híbrido DEKALB',
-    surface: 'Superfície a semear',
-    calculate: 'CALCULAR',
+    title: "Calculadora de Densidades",
+    use: "Uso do milho",
+    grano: "Grão",
+    silo: "Silagem",
+    zone: "Zona geográfica",
+    potential: "Potencial de produção (Tn/Ha)",
+    hybrid: "Híbrido DEKALB",
+    surface: "Superfície a semear",
+    calculate: "CALCULAR",
     result: {
-      density: 'Densidade Recomendada',
-      bags: 'Nº de sacos DEKALB',
-      plantsPerHa: 'mil plantas/Ha',
+      density: "Densidade Recomendada",
+      bags: "Nº de sacos DEKALB",
+      plantsPerHa: "mil plantas/Ha",
     },
   },
 };
@@ -43,25 +43,47 @@ const translations = {
 const t = translations[lang];
 
 const zones = [
-  { value: 'ebro', label: lang === 'es' ? 'Ebro' : 'Ebro' },
-  { value: 'centro-sur', label: lang === 'es' ? 'Centro Sur, Extremadura, Andalucía' : 'Centro Sul, Extremadura, Andaluzia' },
-  { value: 'noroeste', label: lang === 'es' ? 'Noroeste' : 'Noroeste' },
-  { value: 'portugal', label: lang === 'es' ? 'Portugal' : 'Portugal' },
+  { value: "ebro", label: lang === "es" ? "Ebro" : "Ebro" },
+  {
+    value: "centro-sur",
+    label:
+      lang === "es"
+        ? "Centro Sur, Extremadura, Andalucía"
+        : "Centro Sul, Extremadura, Andaluzia",
+  },
+  { value: "noroeste", label: lang === "es" ? "Noroeste" : "Noroeste" },
+  { value: "portugal", label: lang === "es" ? "Portugal" : "Portugal" },
 ];
 ---
 
-<div class="density-calculator" id="density-calculator">
+<div
+  class="density-calculator"
+  id="density-calculator"
+>
   <h2 class="calculator-title">{t.title}</h2>
-  
-  <form class="calculator-form" id="calculator-form">
+
+  <form
+    class="calculator-form"
+    id="calculator-form"
+  >
     <!-- Uso del maíz -->
     <div class="form-group">
       <label class="form-label">{t.use}</label>
       <div class="button-group">
-        <button type="button" class="use-button" data-use="grano" aria-pressed="false">
+        <button
+          type="button"
+          class="use-button"
+          data-use="grano"
+          aria-pressed="false"
+        >
           {t.grano}
         </button>
-        <button type="button" class="use-button" data-use="silo" aria-pressed="false">
+        <button
+          type="button"
+          class="use-button"
+          data-use="silo"
+          aria-pressed="false"
+        >
           {t.silo}
         </button>
       </div>
@@ -69,27 +91,38 @@ const zones = [
 
     <!-- Zona geográfica -->
     <div class="form-group">
-      <label for="zone-select" class="form-label">{t.zone}</label>
-      <select id="zone-select" class="form-select" required>
-        <option value="">{lang === 'es' ? 'Seleccionar zona' : 'Selecionar zona'}</option>
-        {zones.map((zone) => (
-          <option value={zone.value}>{zone.label}</option>
-        ))}
+      <label
+        for="zone-select"
+        class="form-label"
+        >{t.zone}</label
+      >
+      <select
+        id="zone-select"
+        class="form-select"
+        required
+      >
+        <option value=""
+          >{lang === "es" ? "Seleccionar zona" : "Selecionar zona"}</option
+        >
+        {zones.map((zone) => <option value={zone.value}>{zone.label}</option>)}
       </select>
     </div>
 
     <!-- Potencial de producción -->
     <div class="form-group">
-      <label for="potential-slider" class="form-label">
+      <label
+        for="potential-slider"
+        class="form-label"
+      >
         {t.potential}: <span id="potential-value">10</span> Tn/Ha
       </label>
-      <input 
-        type="range" 
-        id="potential-slider" 
-        class="form-slider" 
-        min="0" 
-        max="20" 
-        step="0.5" 
+      <input
+        type="range"
+        id="potential-slider"
+        class="form-slider"
+        min="0"
+        max="20"
+        step="0.5"
         value="10"
         required
       />
@@ -97,40 +130,68 @@ const zones = [
 
     <!-- Híbrido DEKALB -->
     <div class="form-group">
-      <label for="hybrid-select" class="form-label">{t.hybrid}</label>
-      <select id="hybrid-select" class="form-select" required>
-        <option value="">{lang === 'es' ? 'Seleccionar híbrido' : 'Selecionar híbrido'}</option>
+      <label
+        for="hybrid-select"
+        class="form-label"
+        >{t.hybrid}</label
+      >
+      <select
+        id="hybrid-select"
+        class="form-select"
+        required
+      >
+        <option value=""
+          >{
+            lang === "es" ? "Seleccionar híbrido" : "Selecionar híbrido"
+          }</option
+        >
         <!-- Options will be populated dynamically based on zone -->
       </select>
     </div>
 
     <!-- Superficie a sembrar -->
     <div class="form-group">
-      <label for="surface-input" class="form-label">{t.surface}</label>
-      <input 
-        type="number" 
-        id="surface-input" 
-        class="form-input" 
-        min="0.1" 
-        step="0.1" 
+      <label
+        for="surface-input"
+        class="form-label"
+        >{t.surface}</label
+      >
+      <input
+        type="number"
+        id="surface-input"
+        class="form-input"
+        min="0.1"
+        step="0.1"
         placeholder="0.0"
         required
       />
       <span class="input-unit">Ha</span>
     </div>
 
-    <button type="submit" class="btn btn-primary calculate-button">
+    <button
+      type="submit"
+      class="btn btn-primary calculate-button"
+    >
       {t.calculate}
     </button>
   </form>
 
   <!-- Results -->
-  <div class="calculator-results" id="calculator-results" style="display: none;">
+  <div
+    class="calculator-results"
+    id="calculator-results"
+    style="display: none;"
+  >
     <div class="result-card">
       <div class="result-icon">🌾</div>
       <div class="result-content">
         <h3>{t.result.density}</h3>
-        <p class="result-value" id="result-density">-</p>
+        <p
+          class="result-value"
+          id="result-density"
+        >
+          -
+        </p>
         <span class="result-unit">{t.result.plantsPerHa}</span>
       </div>
     </div>
@@ -138,66 +199,96 @@ const zones = [
       <div class="result-icon">📦</div>
       <div class="result-content">
         <h3>{t.result.bags}</h3>
-        <p class="result-value" id="result-bags">-</p>
+        <p
+          class="result-value"
+          id="result-bags"
+        >
+          -
+        </p>
       </div>
     </div>
     <div class="result-image">
-      <img src="/calculator-result.jpg" alt="Resultado" id="result-image" />
+      <img
+        src="/calculator-result.jpg"
+        alt="Resultado"
+        id="result-image"
+      />
     </div>
   </div>
 </div>
 
 <script>
-  const form = document.getElementById('calculator-form') as HTMLFormElement;
-  const useButtons = document.querySelectorAll('.use-button');
-  const zoneSelect = document.getElementById('zone-select') as HTMLSelectElement;
-  const potentialSlider = document.getElementById('potential-slider') as HTMLInputElement;
-  const potentialValue = document.getElementById('potential-value');
-  const hybridSelect = document.getElementById('hybrid-select') as HTMLSelectElement;
-  const surfaceInput = document.getElementById('surface-input') as HTMLInputElement;
-  const resultsDiv = document.getElementById('calculator-results');
-  const resultDensity = document.getElementById('result-density');
-  const resultBags = document.getElementById('result-bags');
+  const form = document.getElementById("calculator-form") as HTMLFormElement;
+  const useButtons = document.querySelectorAll(".use-button");
+  const zoneSelect = document.getElementById(
+    "zone-select"
+  ) as HTMLSelectElement;
+  const potentialSlider = document.getElementById(
+    "potential-slider"
+  ) as HTMLInputElement;
+  const potentialValue = document.getElementById("potential-value");
+  const hybridSelect = document.getElementById(
+    "hybrid-select"
+  ) as HTMLSelectElement;
+  const surfaceInput = document.getElementById(
+    "surface-input"
+  ) as HTMLInputElement;
+  const resultsDiv = document.getElementById("calculator-results");
+  const resultDensity = document.getElementById("result-density");
+  const resultBags = document.getElementById("result-bags");
 
-  let selectedUse: 'grano' | 'silo' | null = null;
+  let selectedUse: "grano" | "silo" | null = null;
 
   // Update potential value display
   if (potentialSlider && potentialValue) {
-    potentialSlider.addEventListener('input', () => {
+    potentialSlider.addEventListener("input", () => {
       potentialValue.textContent = potentialSlider.value;
     });
   }
 
   // Handle use buttons
   useButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener("click", () => {
       useButtons.forEach((b) => {
-        b.classList.remove('use-button-active');
-        b.setAttribute('aria-pressed', 'false');
+        b.classList.remove("use-button-active");
+        b.setAttribute("aria-pressed", "false");
       });
-      btn.classList.add('use-button-active');
-      btn.setAttribute('aria-pressed', 'true');
-      selectedUse = btn.getAttribute('data-use') as 'grano' | 'silo';
+      btn.classList.add("use-button-active");
+      btn.setAttribute("aria-pressed", "true");
+      selectedUse = btn.getAttribute("data-use") as "grano" | "silo";
     });
   });
 
   // Update hybrids based on zone
   if (zoneSelect && hybridSelect) {
-    zoneSelect.addEventListener('change', () => {
+    zoneSelect.addEventListener("change", () => {
       const zone = zoneSelect.value;
-      hybridSelect.innerHTML = '<option value="">Seleccionar híbrido</option>';
-      
+
+      // ✅ SECURITY: Clear using removeChild instead of innerHTML
+      while (hybridSelect.firstChild) {
+        hybridSelect.removeChild(hybridSelect.firstChild);
+      }
+
+      // Create default option
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      // Get lang from data attribute or default to 'es'
+      const currentLang = document.documentElement.lang || "es";
+      defaultOption.textContent =
+        currentLang === "es" ? "Seleccionar híbrido" : "Selecionar híbrido";
+      hybridSelect.appendChild(defaultOption);
+
       // Mock hybrid data - In production, fetch from API/Prismic
       const hybrids: Record<string, string[]> = {
-        'ebro': ['DKC3045', 'DKC6836SC', 'DKC6648SC'],
-        'centro-sur': ['DKC3045', 'DKC6836SC'],
-        'noroeste': ['DKC3045', 'DKC6648SC'],
-        'portugal': ['DKC3045', 'DKC6836SC', 'DKC6648SC'],
+        ebro: ["DKC3045", "DKC6836SC", "DKC6648SC"],
+        "centro-sur": ["DKC3045", "DKC6836SC"],
+        noroeste: ["DKC3045", "DKC6648SC"],
+        portugal: ["DKC3045", "DKC6836SC", "DKC6648SC"],
       };
 
       if (zone && hybrids[zone]) {
         hybrids[zone].forEach((hybrid) => {
-          const option = document.createElement('option');
+          const option = document.createElement("option");
           option.value = hybrid;
           option.textContent = hybrid;
           hybridSelect.appendChild(option);
@@ -208,8 +299,13 @@ const zones = [
 
   // Calculate function
   function calculate() {
-    if (!selectedUse || !zoneSelect.value || !hybridSelect.value || !surfaceInput.value) {
-      alert('Por favor, completa todos los campos');
+    if (
+      !selectedUse ||
+      !zoneSelect.value ||
+      !hybridSelect.value ||
+      !surfaceInput.value
+    ) {
+      alert("Por favor, completa todos los campos");
       return;
     }
 
@@ -217,24 +313,42 @@ const zones = [
     const surface = parseFloat(surfaceInput.value);
     const zone = zoneSelect.value;
 
+    // ✅ SECURITY: Validate input ranges
+    if (isNaN(potential) || potential < 0 || potential > 20) {
+      alert("El potencial debe estar entre 0 y 20 Tn/Ha");
+      return;
+    }
+
+    if (isNaN(surface) || surface <= 0 || surface > 10000) {
+      alert("La superficie debe ser un valor válido entre 0.1 y 10000 Ha");
+      return;
+    }
+
+    // Validate zone
+    const validZones = ["ebro", "centro-sur", "noroeste", "portugal"];
+    if (!validZones.includes(zone)) {
+      alert("Zona no válida");
+      return;
+    }
+
     // Simplified calculation logic
     // In production, this would use actual formulas based on use, zone, potential
     let density = 0;
-    
-    if (selectedUse === 'grano') {
-      density = 80 + (potential * 2); // Base density + potential factor
-    } else if (selectedUse === 'silo') {
-      density = 100 + (potential * 2.5);
+
+    if (selectedUse === "grano") {
+      density = 80 + potential * 2; // Base density + potential factor
+    } else if (selectedUse === "silo") {
+      density = 100 + potential * 2.5;
     }
 
     // Adjust by zone (simplified)
     const zoneFactors: Record<string, number> = {
-      'ebro': 1.0,
-      'centro-sur': 0.95,
-      'noroeste': 1.05,
-      'portugal': 1.0,
+      ebro: 1.0,
+      "centro-sur": 0.95,
+      noroeste: 1.05,
+      portugal: 1.0,
     };
-    
+
     density = density * (zoneFactors[zone] || 1.0);
 
     // Calculate bags (assuming 50,000 seeds per bag)
@@ -250,14 +364,14 @@ const zones = [
       resultBags.textContent = bags.toString();
     }
     if (resultsDiv) {
-      resultsDiv.style.display = 'block';
-      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      resultsDiv.style.display = "block";
+      resultsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 
   // Form submission
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
       calculate();
     });
@@ -454,4 +568,3 @@ const zones = [
     }
   }
 </style>
-

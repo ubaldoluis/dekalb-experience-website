@@ -181,3 +181,4 @@ Aplicar todos los tokens de diseño extraídos de Figma (mobile y desktop) al pr
 **Estado Final**: ✅ Todos los tokens principales de Figma han sido aplicados al proyecto.
 
 
+

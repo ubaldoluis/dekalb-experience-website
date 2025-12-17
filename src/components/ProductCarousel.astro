@@ -124,29 +124,39 @@ const {
     // Update data attribute
     carouselElement.dataset.products = JSON.stringify(newProducts);
 
-    // Clear and rebuild HTML
-    trackElement.innerHTML = newProducts
-      .map(
-        (product) => `
-      <div class="product-card" data-product-id="${product.id}">
-        ${
-          product.imagen_saco?.url
-            ? `
-          <div class="product-image-wrapper">
-            <img
-              src="${product.imagen_saco.url}"
-              alt="${product.imagen_saco.alt || product.nombre}"
-              class="product-image"
-              loading="lazy"
-            />
-          </div>
-        `
-            : ""
-        }
-      </div>
-    `
-      )
-      .join("");
+    // ✅ SECURITY: Clear and rebuild HTML using DOM methods instead of innerHTML
+    // Clear existing content
+    trackElement.innerHTML = "";
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Build DOM elements safely
+    newProducts.forEach((product) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.setAttribute("data-product-id", product.id);
+
+      if (product.imagen_saco?.url) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "product-image-wrapper";
+
+        const img = document.createElement("img");
+        img.src = product.imagen_saco.url; // URL validated by Prismic
+        img.alt = product.imagen_saco.alt || product.nombre || "";
+        img.className = "product-image";
+        img.loading = "lazy";
+
+        wrapper.appendChild(img);
+        card.appendChild(wrapper);
+      }
+
+      trackElement.appendChild(card);
+    });
 
     // Apply mobile/desktop specific styles after HTML update
     const isMobile = window.innerWidth <= 767;

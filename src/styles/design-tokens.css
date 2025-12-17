@@ -11,24 +11,34 @@
   --color-dekalb-primary: #00A651;
   --color-dekalb-primary-dark: #008040;
   --color-dekalb-primary-light: #00C060;
-  
+
   /* Colors - Bayer Secondary (Blue) - Extraídos de Figma */
-  --color-bayer-secondary: #009ddb; /* Bayer Blue principal */
-  --color-bayer-secondary-dark: #005475; /* Bayer Blue oscuro */
-  --color-bayer-secondary-darker: #00527f; /* Bayer Blue muy oscuro (títulos) */
-  --color-bayer-secondary-light: #00B8E0; /* Mantener para hover states */
-  
+  --color-bayer-secondary: #009ddb;
+  /* Bayer Blue principal */
+  --color-bayer-secondary-dark: #005475;
+  /* Bayer Blue oscuro */
+  --color-bayer-secondary-darker: #00527f;
+  /* Bayer Blue muy oscuro (títulos) */
+  --color-bayer-secondary-light: #00B8E0;
+  /* Mantener para hover states */
+
   /* Colors - Accent Colors */
-  --color-yellow: #ffcb05; /* Amarillo para botones especiales (mobile) */
-  --color-blue-light: #abe2f8; /* Azul claro para filtros activos (desktop) */
-  
+  --color-yellow: #ffcb05;
+  /* Amarillo para botones especiales (mobile) */
+  --color-blue-light: #abe2f8;
+  /* Azul claro para filtros activos (desktop) */
+
   /* Neutral Colors - Extraídos de Figma */
   --color-white: #FFFFFF;
   --color-black: #000000;
-  --color-text-primary: #313639; /* Gris oscuro para texto principal */
-  --color-gray-light: #e9e7e4; /* Gris claro para fondos y bordes */
-  --color-gray-light-alt: #e8e6e4; /* Gris claro alternativo */
-  --color-gray-border: #e7e7e7; /* Gris para bordes (desktop) */
+  --color-text-primary: #313639;
+  /* Gris oscuro para texto principal */
+  --color-gray-light: #e9e7e4;
+  /* Gris claro para fondos y bordes */
+  --color-gray-light-alt: #e8e6e4;
+  /* Gris claro alternativo */
+  --color-gray-border: #e7e7e7;
+  /* Gris para bordes (desktop) */
   --color-gray-50: #FAFAFA;
   --color-gray-100: #F5F5F5;
   --color-gray-200: #EEEEEE;
@@ -39,122 +49,170 @@
   --color-gray-700: #616161;
   --color-gray-800: #424242;
   --color-gray-900: #212121;
-  
+
   /* Semantic Colors */
   --color-success: #00A651;
   --color-error: #D32F2F;
   --color-warning: #F57C00;
   --color-info: #009ddb;
-  
+
   /* Typography - Extraído de Figma */
   --font-family-primary: 'Bayer Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-family-secondary: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-family-heading: var(--font-family-primary);
-  
+
   /* Font Weights */
-  --font-weight-light: 300; /* Solo desktop (Preceon) */
+  --font-weight-light: 300;
+  /* Solo desktop (Preceon) */
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
+
   /* Font Sizes - Mobile (Extraídos de Figma) */
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.8125rem; /* 13px */
-  --font-size-base-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 2rem;       /* 32px */
-  --font-size-2xl: 2.125rem;  /* 34px */
-  --font-size-3xl: 2.5rem;    /* 40px */
-  --font-size-4xl: 3rem;      /* 48px */
-  
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.8125rem;
+  /* 13px */
+  --font-size-base-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.25rem;
+  /* 20px */
+  --font-size-xl: 2rem;
+  /* 32px */
+  --font-size-2xl: 2.125rem;
+  /* 34px */
+  --font-size-3xl: 2.5rem;
+  /* 40px */
+  --font-size-4xl: 3rem;
+  /* 48px */
+
   /* Line Heights - Extraídos de Figma */
-  --line-height-tight: 1.0;      /* 40px / 40px */
-  --line-height-normal: 1.0;     /* 32px / 32px */
-  --line-height-relaxed: 1.3;    /* 26px / 20px */
-  --line-height-extra-relaxed: 1.4; /* 28px / 20px */
-  --line-height-custom-1: 1.1375; /* 18.2px / 16px */
-  --line-height-custom-2: 1.21875; /* 19.5px / 16px */
-  --line-height-custom-3: 1.3125; /* 21px / 16px */
-  --line-height-custom-4: 1.2;   /* 40.8px / 34px */
-  
+  --line-height-tight: 1.0;
+  /* 40px / 40px */
+  --line-height-normal: 1.0;
+  /* 32px / 32px */
+  --line-height-relaxed: 1.3;
+  /* 26px / 20px */
+  --line-height-extra-relaxed: 1.4;
+  /* 28px / 20px */
+  --line-height-custom-1: 1.1375;
+  /* 18.2px / 16px */
+  --line-height-custom-2: 1.21875;
+  /* 19.5px / 16px */
+  --line-height-custom-3: 1.3125;
+  /* 21px / 16px */
+  --line-height-custom-4: 1.2;
+  /* 40.8px / 34px */
+
   /* Letter Spacing */
   --letter-spacing-normal: 0;
   --letter-spacing-tight: 0.32px;
   --letter-spacing-wide: 0.4px;
   --letter-spacing-wider: 0.64px;
-  --letter-spacing-widest: 0.96px; /* Desktop - títulos de sección */
-  
+  --letter-spacing-widest: 0.96px;
+  /* Desktop - títulos de sección */
+
   /* Spacing - 8px grid system */
   --spacing-0: 0;
-  --spacing-1: 0.25rem;   /* 4px */
-  --spacing-2: 0.5rem;     /* 8px */
-  --spacing-3: 0.75rem;    /* 12px */
-  --spacing-4: 1rem;       /* 16px */
-  --spacing-5: 1.25rem;    /* 20px */
-  --spacing-6: 1.5rem;     /* 24px */
-  --spacing-8: 2rem;       /* 32px */
-  --spacing-10: 2.5rem;    /* 40px */
-  --spacing-12: 3rem;      /* 48px */
-  --spacing-16: 4rem;      /* 64px */
-  --spacing-20: 5rem;      /* 80px */
-  --spacing-24: 6rem;      /* 96px */
-  
+  --spacing-1: 0.25rem;
+  /* 4px */
+  --spacing-2: 0.5rem;
+  /* 8px */
+  --spacing-3: 0.75rem;
+  /* 12px */
+  --spacing-4: 1rem;
+  /* 16px */
+  --spacing-5: 1.25rem;
+  /* 20px */
+  --spacing-6: 1.5rem;
+  /* 24px */
+  --spacing-8: 2rem;
+  /* 32px */
+  --spacing-10: 2.5rem;
+  /* 40px */
+  --spacing-12: 3rem;
+  /* 48px */
+  --spacing-16: 4rem;
+  /* 64px */
+  --spacing-20: 5rem;
+  /* 80px */
+  --spacing-24: 6rem;
+  /* 96px */
+
   /* Border Radius - Extraídos de Figma */
-  --radius-sm: 8px;      /* Cards de blog */
-  --radius-md: 12px;     /* Cards de soluciones */
-  --radius-lg: 16px;     /* Filtros mobile */
-  --radius-xl: 24px;     /* Filtros desktop */
-  --radius-2xl: 26px;    /* Botones */
-  --radius-nav: 10px;    /* Nav items (desktop) */
-  --radius-logo: 24.5px; /* Logo Bayer (desktop) */
-  --radius-full: 100px;   /* Pills/filtros redondeados */
-  --radius-round: 9999px; /* Completamente redondo */
-  
+  --radius-sm: 8px;
+  /* Cards de blog */
+  --radius-md: 12px;
+  /* Cards de soluciones */
+  --radius-lg: 16px;
+  /* Filtros mobile */
+  --radius-xl: 24px;
+  /* Filtros desktop */
+  --radius-2xl: 26px;
+  /* Botones */
+  --radius-nav: 10px;
+  /* Nav items (desktop) */
+  --radius-logo: 24.5px;
+  /* Logo Bayer (desktop) */
+  --radius-full: 100px;
+  /* Pills/filtros redondeados */
+  --radius-round: 9999px;
+  /* Completamente redondo */
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 250ms ease-in-out;
   --transition-slow: 300ms ease-in-out;
-  
+
   /* Breakpoints - Extraídos de Figma */
-  --breakpoint-mobile: 393px; /* Ancho del frame mobile en Figma */
+  --breakpoint-mobile: 393px;
+  /* Ancho del frame mobile en Figma */
   --breakpoint-tablet: 768px;
   --breakpoint-desktop: 1024px;
-  --breakpoint-desktop-large: 1600px; /* Ancho del frame desktop en Figma */
-  
+  --breakpoint-desktop-large: 1600px;
+  /* Ancho del frame desktop en Figma */
+
   /* Container */
   --container-max-width: 1280px;
-  --container-padding-mobile: 1.5rem; /* ~24px basado en análisis del frame mobile */
-  --container-padding-desktop: 5rem; /* ~80px basado en análisis del frame desktop */
-  
+  --container-padding-mobile: 1.5rem;
+  /* ~24px basado en análisis del frame mobile */
+  --container-padding-desktop: 5rem;
+  /* ~80px basado en análisis del frame desktop */
+
   /* Gradients - Extraídos de Figma */
   --gradient-button-primary: linear-gradient(to right, #009ddb 30%, #005475 100%);
   --gradient-hero-solutions: linear-gradient(to bottom, #005475 0%, #ffffff 100%);
   --gradient-card-solutions: linear-gradient(to bottom, #ffffff 0%, #e9e7e4 100%);
-  
+
   /* Component Specific - Shared */
   --header-height: 64px;
-  --hero-title-size: 2.5rem; /* 40px */
-  --hero-subtitle-size: 2rem; /* 32px */
+  --hero-title-size: 2.2rem;
+  /* 40px */
+  --hero-subtitle-size: 1.5rem;
+  /* 32px */
   --button-height: 40px;
   --button-border-radius: 26px;
-  --button-font-size: 1rem; /* 16px */
+  --button-font-size: 1rem;
+  /* 16px */
   --card-border-radius: 12px;
-  --footer-height: 140px; /* Desktop */
-  
+  --footer-height: 140px;
+  /* Desktop */
+
   /* Component Specific - Mobile */
   --filter-height-mobile: 79px;
   --filter-border-radius-mobile: 16px;
   --filter-opacity-mobile: 0.7;
   --catalog-button-bg-mobile: #ffcb05;
   --catalog-button-text-mobile: #313639;
-  
+
   /* Component Specific - Desktop */
   --filter-height-desktop: 64px;
   --filter-border-radius-desktop: 24px;
@@ -163,14 +221,16 @@
   --filter-border-color-desktop: #e7e7e7;
   --catalog-button-bg-desktop: #00527f;
   --catalog-button-text-desktop: #ffffff;
-  --nav-item-font-size: 0.8125rem; /* 13px */
+  --nav-item-font-size: 0.8125rem;
+  /* 13px */
   --nav-item-border-radius: 10px;
   --logo-width-mobile: 80px;
   --logo-width-desktop: 78px;
-  
+
   /* Line Heights - Desktop Specific */
-  --line-height-preceon-desktop: 1.3; /* 44.2px / 34px */
-  
+  --line-height-preceon-desktop: 1.3;
+  /* 44.2px / 34px */
+
   /* Z-index */
   --z-index-dropdown: 1000;
   --z-index-sticky: 1020;
@@ -180,4 +240,3 @@
   --z-index-popover: 1060;
   --z-index-tooltip: 1070;
 }
-

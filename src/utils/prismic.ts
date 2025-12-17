@@ -2,77 +2,106 @@
  * Prismic client configuration
  */
 
-import * as prismic from '@prismicio/client';
-import type { Producto, Articulo, CatalogoPDF, HomeContent, FieldViewContent, ProteccionCultivoContent } from '../types';
+import * as prismic from "@prismicio/client";
+import type {
+  Producto,
+  Articulo,
+  CatalogoPDF,
+  HomeContent,
+  FieldViewContent,
+  ProteccionCultivoContent,
+} from "../types";
 
-const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || '';
-const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || '';
+import { logger } from "./logger";
+
+const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || "";
+const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || "";
 
 if (!repositoryName) {
-  console.warn('PRISMIC_REPOSITORY_NAME is not set');
+  logger.warn("PRISMIC_REPOSITORY_NAME is not set");
 }
 
 // Create client only if repository name is available
-export const client = repositoryName 
+export const client = repositoryName
   ? prismic.createClient(repositoryName, {
       accessToken: accessToken || undefined,
     })
-  : null as any;
+  : (null as any);
 
 /**
  * Fetch all products from Prismic
  */
-export async function getAllProducts(locale: string = 'es'): Promise<Producto[]> {
+export async function getAllProducts(
+  locale: string = "es"
+): Promise<Producto[]> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      logger.warn("Prismic client not initialized");
       return [];
     }
     // Convert locale code: 'es' -> 'es-es', 'pt' -> 'pt-pt'
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const documents = await client.getAllByType('producto', {
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const documents = await client.getAllByType("producto", {
       lang: prismicLocale,
       orderings: {
-        field: 'my.producto.orden',
-        direction: 'asc',
+        field: "my.producto.orden",
+        direction: "asc",
       },
     });
 
     return documents.map((doc) => ({
       id: doc.id,
-      nombre: doc.data.nombre || '',
-      codigo: doc.data.codigo || '',
+      nombre: doc.data.nombre || "",
+      codigo: doc.data.codigo || "",
       imagen_saco: doc.data.imagen_saco
         ? {
-            url: doc.data.imagen_saco.url || '',
-            alt: doc.data.imagen_saco.alt || '',
+            url: doc.data.imagen_saco.url || "",
+            alt: doc.data.imagen_saco.alt || "",
           }
         : undefined,
       claim: doc.data.claim || undefined,
-      tipo_semilla: (typeof doc.data.tipo_semilla === 'string' ? doc.data.tipo_semilla.toLowerCase() : doc.data.tipo_semilla) as 'maiz' | 'colza' || 'maiz',
-      uso: typeof doc.data.uso === 'string' ? doc.data.uso.toLowerCase() as 'grano' | 'silo' | 'preceon' : doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
-      zona: typeof doc.data.zona === 'string' ? doc.data.zona.toLowerCase() : doc.data.zona as any,
-      categoria: (doc.data.categoria as any) || 'maiz-grano',
-      proteccion: (typeof doc.data.proteccion === 'string' ? doc.data.proteccion.toLowerCase() : doc.data.proteccion) as 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos' || 'todos',
-      beneficios: doc.data.beneficios 
-        ? (Array.isArray(doc.data.beneficios) 
-            ? doc.data.beneficios.map((b: any) => {
-                if (typeof b === 'string') return b;
+      tipo_semilla:
+        ((typeof doc.data.tipo_semilla === "string"
+          ? doc.data.tipo_semilla.toLowerCase()
+          : doc.data.tipo_semilla) as "maiz" | "colza") || "maiz",
+      uso:
+        typeof doc.data.uso === "string"
+          ? (doc.data.uso.toLowerCase() as "grano" | "silo" | "preceon")
+          : (doc.data.uso as "grano" | "silo" | "preceon" | undefined),
+      zona:
+        typeof doc.data.zona === "string"
+          ? doc.data.zona.toLowerCase()
+          : (doc.data.zona as any),
+      categoria: (doc.data.categoria as any) || "maiz-grano",
+      proteccion:
+        ((typeof doc.data.proteccion === "string"
+          ? doc.data.proteccion.toLowerCase()
+          : doc.data.proteccion) as
+          | "herbicida"
+          | "insecticida"
+          | "bioestimulante"
+          | "todos") || "todos",
+      beneficios: doc.data.beneficios
+        ? Array.isArray(doc.data.beneficios)
+          ? doc.data.beneficios
+              .map((b: any) => {
+                if (typeof b === "string") return b;
                 if (b.text) return b.text;
-                if (b.type === 'paragraph' && b.text) return b.text;
-                return '';
-              }).filter(Boolean)
-            : [])
+                if (b.type === "paragraph" && b.text) return b.text;
+                return "";
+              })
+              .filter(Boolean)
+          : []
         : [],
-      recomendaciones_uso: doc.data.recomendaciones_uso 
-        ? (typeof doc.data.recomendaciones_uso === 'string' 
-            ? doc.data.recomendaciones_uso 
-            : prismic.asText(doc.data.recomendaciones_uso) || '')
+      recomendaciones_uso: doc.data.recomendaciones_uso
+        ? typeof doc.data.recomendaciones_uso === "string"
+          ? doc.data.recomendaciones_uso
+          : prismic.asText(doc.data.recomendaciones_uso) || ""
         : undefined,
       orden: doc.data.orden || undefined,
     }));
   } catch (error) {
-    console.error('Error fetching products:', error);
+    logger.error("Error fetching products:", error);
     return [];
   }
 }
@@ -80,50 +109,71 @@ export async function getAllProducts(locale: string = 'es'): Promise<Producto[]>
 /**
  * Fetch product by ID
  */
-export async function getProductById(id: string, locale: string = 'es'): Promise<Producto | null> {
+export async function getProductById(
+  id: string,
+  locale: string = "es"
+): Promise<Producto | null> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      console.warn("Prismic client not initialized");
       return null;
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
     const doc = await client.getByID(id, { lang: prismicLocale });
-    
+
     return {
       id: doc.id,
-      nombre: doc.data.nombre || '',
-      codigo: doc.data.codigo || '',
+      nombre: doc.data.nombre || "",
+      codigo: doc.data.codigo || "",
       imagen_saco: doc.data.imagen_saco
         ? {
-            url: doc.data.imagen_saco.url || '',
-            alt: doc.data.imagen_saco.alt || '',
+            url: doc.data.imagen_saco.url || "",
+            alt: doc.data.imagen_saco.alt || "",
           }
         : undefined,
       claim: doc.data.claim || undefined,
-      tipo_semilla: (typeof doc.data.tipo_semilla === 'string' ? doc.data.tipo_semilla.toLowerCase() : doc.data.tipo_semilla) as 'maiz' | 'colza' || 'maiz',
-      uso: typeof doc.data.uso === 'string' ? doc.data.uso.toLowerCase() as 'grano' | 'silo' | 'preceon' : doc.data.uso as 'grano' | 'silo' | 'preceon' | undefined,
-      zona: typeof doc.data.zona === 'string' ? doc.data.zona.toLowerCase() : doc.data.zona as any,
-      categoria: (doc.data.categoria as any) || 'maiz-grano',
-      proteccion: (typeof doc.data.proteccion === 'string' ? doc.data.proteccion.toLowerCase() : doc.data.proteccion) as 'herbicida' | 'insecticida' | 'bioestimulante' | 'todos' || 'todos',
-      beneficios: doc.data.beneficios 
-        ? (Array.isArray(doc.data.beneficios) 
-            ? doc.data.beneficios.map((b: any) => {
-                if (typeof b === 'string') return b;
+      tipo_semilla:
+        ((typeof doc.data.tipo_semilla === "string"
+          ? doc.data.tipo_semilla.toLowerCase()
+          : doc.data.tipo_semilla) as "maiz" | "colza") || "maiz",
+      uso:
+        typeof doc.data.uso === "string"
+          ? (doc.data.uso.toLowerCase() as "grano" | "silo" | "preceon")
+          : (doc.data.uso as "grano" | "silo" | "preceon" | undefined),
+      zona:
+        typeof doc.data.zona === "string"
+          ? doc.data.zona.toLowerCase()
+          : (doc.data.zona as any),
+      categoria: (doc.data.categoria as any) || "maiz-grano",
+      proteccion:
+        ((typeof doc.data.proteccion === "string"
+          ? doc.data.proteccion.toLowerCase()
+          : doc.data.proteccion) as
+          | "herbicida"
+          | "insecticida"
+          | "bioestimulante"
+          | "todos") || "todos",
+      beneficios: doc.data.beneficios
+        ? Array.isArray(doc.data.beneficios)
+          ? doc.data.beneficios
+              .map((b: any) => {
+                if (typeof b === "string") return b;
                 if (b.text) return b.text;
-                if (b.type === 'paragraph' && b.text) return b.text;
-                return '';
-              }).filter(Boolean)
-            : [])
+                if (b.type === "paragraph" && b.text) return b.text;
+                return "";
+              })
+              .filter(Boolean)
+          : []
         : [],
-      recomendaciones_uso: doc.data.recomendaciones_uso 
-        ? (typeof doc.data.recomendaciones_uso === 'string' 
-            ? doc.data.recomendaciones_uso 
-            : prismic.asText(doc.data.recomendaciones_uso) || '')
+      recomendaciones_uso: doc.data.recomendaciones_uso
+        ? typeof doc.data.recomendaciones_uso === "string"
+          ? doc.data.recomendaciones_uso
+          : prismic.asText(doc.data.recomendaciones_uso) || ""
         : undefined,
       orden: doc.data.orden || undefined,
     };
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error("Error fetching product:", error);
     return null;
   }
 }
@@ -131,33 +181,35 @@ export async function getProductById(id: string, locale: string = 'es'): Promise
 /**
  * Fetch all articles from Prismic
  */
-export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]> {
+export async function getAllArticles(
+  locale: string = "es"
+): Promise<Articulo[]> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      logger.warn("Prismic client not initialized");
       return [];
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const documents = await client.getAllByType('articulo', {
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const documents = await client.getAllByType("articulo", {
       lang: prismicLocale,
-      filters: [prismic.filter.at('my.articulo.publicado', true)],
+      filters: [prismic.filter.at("my.articulo.publicado", true)],
       orderings: {
-        field: 'document.first_publication_date',
-        direction: 'desc',
+        field: "document.first_publication_date",
+        direction: "desc",
       },
     });
 
     return documents.map((doc) => ({
       id: doc.id,
-      titulo: doc.data.titulo || '',
-      slug: doc.uid || '',
-      categoria: (doc.data.categoria as any) || 'articulo',
-      fecha: (doc.data.fecha as string) || doc.first_publication_date || '',
-      extracto: doc.data.extracto || '',
+      titulo: doc.data.titulo || "",
+      slug: doc.uid || "",
+      categoria: (doc.data.categoria as any) || "articulo",
+      fecha: (doc.data.fecha as string) || doc.first_publication_date || "",
+      extracto: doc.data.extracto || "",
       imagen_destacada: doc.data.imagen_destacada
         ? {
-            url: doc.data.imagen_destacada.url || '',
-            alt: doc.data.imagen_destacada.alt || '',
+            url: doc.data.imagen_destacada.url || "",
+            alt: doc.data.imagen_destacada.alt || "",
           }
         : undefined,
       contenido: doc.data.contenido,
@@ -166,7 +218,7 @@ export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]>
       publicado: doc.data.publicado || false,
     }));
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    console.error("Error fetching articles:", error);
     return [];
   }
 }
@@ -174,26 +226,31 @@ export async function getAllArticles(locale: string = 'es'): Promise<Articulo[]>
 /**
  * Fetch article by slug
  */
-export async function getArticleBySlug(slug: string, locale: string = 'es'): Promise<Articulo | null> {
+export async function getArticleBySlug(
+  slug: string,
+  locale: string = "es"
+): Promise<Articulo | null> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      console.warn("Prismic client not initialized");
       return null;
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const doc = await client.getByUID('articulo', slug, { lang: prismicLocale });
-    
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getByUID("articulo", slug, {
+      lang: prismicLocale,
+    });
+
     return {
       id: doc.id,
-      titulo: doc.data.titulo || '',
-      slug: doc.uid || '',
-      categoria: (doc.data.categoria as any) || 'articulo',
-      fecha: (doc.data.fecha as string) || doc.first_publication_date || '',
-      extracto: doc.data.extracto || '',
+      titulo: doc.data.titulo || "",
+      slug: doc.uid || "",
+      categoria: (doc.data.categoria as any) || "articulo",
+      fecha: (doc.data.fecha as string) || doc.first_publication_date || "",
+      extracto: doc.data.extracto || "",
       imagen_destacada: doc.data.imagen_destacada
         ? {
-            url: doc.data.imagen_destacada.url || '',
-            alt: doc.data.imagen_destacada.alt || '',
+            url: doc.data.imagen_destacada.url || "",
+            alt: doc.data.imagen_destacada.alt || "",
           }
         : undefined,
       contenido: doc.data.contenido,
@@ -202,7 +259,7 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
       publicado: doc.data.publicado || false,
     };
   } catch (error) {
-    console.error('Error fetching article:', error);
+    console.error("Error fetching article:", error);
     return null;
   }
 }
@@ -210,30 +267,34 @@ export async function getArticleBySlug(slug: string, locale: string = 'es'): Pro
 /**
  * Fetch home content from Prismic
  */
-export async function getHomeContent(locale: string = 'es'): Promise<HomeContent | null> {
+export async function getHomeContent(
+  locale: string = "es"
+): Promise<HomeContent | null> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      console.warn("Prismic client not initialized");
       return null;
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const doc = await client.getSingle('home', { lang: prismicLocale });
-    
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("home", { lang: prismicLocale });
+
     return {
       hero: {
-        title: doc.data.hero_title || 'DEKALB EXPERIENCE',
-        claim: doc.data.hero_claim || 'Siempre a tu lado',
+        title: doc.data.hero_title || "DEKALB EXPERIENCE",
+        claim: doc.data.hero_claim || "Siempre a tu lado",
       },
       solutions: {
-        integralMaiz: doc.data.solutions_integral_maiz || 'Soluciones Integrales para Maíz',
-        fieldview: doc.data.solutions_fieldview || 'FieldView',
-        protection: doc.data.solutions_protection || 'Protección de Cultivo',
-        preceon: doc.data.solutions_preceon || 'Smart Corn System PRECEON',
-        avoidProblems: doc.data.solutions_avoid_problems || 'Evita problemas con tu maíz',
+        integralMaiz:
+          doc.data.solutions_integral_maiz || "Soluciones Integrales para Maíz",
+        fieldview: doc.data.solutions_fieldview || "FieldView",
+        protection: doc.data.solutions_protection || "Protección de Cultivo",
+        preceon: doc.data.solutions_preceon || "Smart Corn System PRECEON",
+        avoidProblems:
+          doc.data.solutions_avoid_problems || "Evita problemas con tu maíz",
       },
     };
   } catch (error) {
-    console.error('Error fetching home content:', error);
+    console.error("Error fetching home content:", error);
     return null;
   }
 }
@@ -241,74 +302,78 @@ export async function getHomeContent(locale: string = 'es'): Promise<HomeContent
 /**
  * Fetch FieldView content from Prismic
  */
-export async function getFieldViewContent(locale: string = 'es'): Promise<FieldViewContent | null> {
+export async function getFieldViewContent(
+  locale: string = "es"
+): Promise<FieldViewContent | null> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      console.warn("Prismic client not initialized");
       return null;
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const doc = await client.getSingle('fieldview', { lang: prismicLocale });
-    
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("fieldview", { lang: prismicLocale });
+
     // Mapear tabs de Yield Kit
-    const yieldKitTabs = doc.data.yield_kit_tabs?.map((tab: any, index: number) => {
-      const tabIds: Array<'que-es' | 'compatibilidad' | 'ventajas' | 'conectividad'> = 
-        ['que-es', 'compatibilidad', 'ventajas', 'conectividad'];
-      return {
-        id: tabIds[index] || 'que-es',
-        label: tab.label || '',
-        content: tab.content || [],
-      };
-    }) || [];
+    const yieldKitTabs =
+      doc.data.yield_kit_tabs?.map((tab: any, index: number) => {
+        const tabIds: Array<
+          "que-es" | "compatibilidad" | "ventajas" | "conectividad"
+        > = ["que-es", "compatibilidad", "ventajas", "conectividad"];
+        return {
+          id: tabIds[index] || "que-es",
+          label: tab.label || "",
+          content: tab.content || [],
+        };
+      }) || [];
 
     return {
       hero: {
-        titulo: doc.data.hero_titulo || 'Siembra datos y cosecha decisiones',
+        titulo: doc.data.hero_titulo || "Siembra datos y cosecha decisiones",
         descripcion: doc.data.hero_descripcion || [],
       },
       introduccion: {
-        titulo: doc.data.introduccion_titulo || '',
+        titulo: doc.data.introduccion_titulo || "",
         texto: doc.data.introduccion_texto || [],
       },
       subsections: [
         {
-          id: 'drive',
-          titulo: doc.data.drive_titulo || 'FieldView Drive',
+          id: "drive",
+          titulo: doc.data.drive_titulo || "FieldView Drive",
           descripcion: doc.data.drive_descripcion || [],
           imagen: doc.data.drive_imagen
             ? {
-                url: doc.data.drive_imagen.url || '',
-                alt: doc.data.drive_imagen.alt || '',
+                url: doc.data.drive_imagen.url || "",
+                alt: doc.data.drive_imagen.alt || "",
               }
             : undefined,
         },
         {
-          id: 'yield-kit',
-          titulo: doc.data.yield_kit_titulo || 'FieldView Yield Kit',
+          id: "yield-kit",
+          titulo: doc.data.yield_kit_titulo || "FieldView Yield Kit",
           descripcion: doc.data.yield_kit_descripcion || [],
           imagen: doc.data.yield_kit_imagen
             ? {
-                url: doc.data.yield_kit_imagen.url || '',
-                alt: doc.data.yield_kit_imagen.alt || '',
+                url: doc.data.yield_kit_imagen.url || "",
+                alt: doc.data.yield_kit_imagen.alt || "",
               }
             : undefined,
           yieldKitTabs: yieldKitTabs,
         },
         {
-          id: 'spraykit',
-          titulo: doc.data.spraykit_titulo || 'FieldView SprayKit',
+          id: "spraykit",
+          titulo: doc.data.spraykit_titulo || "FieldView SprayKit",
           descripcion: doc.data.spraykit_descripcion || [],
           imagen: doc.data.spraykit_imagen
             ? {
-                url: doc.data.spraykit_imagen.url || '',
-                alt: doc.data.spraykit_imagen.alt || '',
+                url: doc.data.spraykit_imagen.url || "",
+                alt: doc.data.spraykit_imagen.alt || "",
               }
             : undefined,
         },
       ],
     };
   } catch (error) {
-    console.error('Error fetching FieldView content:', error);
+    console.error("Error fetching FieldView content:", error);
     return null;
   }
 }
@@ -316,86 +381,114 @@ export async function getFieldViewContent(locale: string = 'es'): Promise<FieldV
 /**
  * Fetch ProteccionCultivo content from Prismic
  */
-export async function getProteccionCultivoContent(locale: string = 'es'): Promise<ProteccionCultivoContent | null> {
+export async function getProteccionCultivoContent(
+  locale: string = "es"
+): Promise<ProteccionCultivoContent | null> {
   try {
-    console.log('=== getProteccionCultivoContent called ===');
-    console.log('Locale:', locale);
-    console.log('Client exists:', !!client);
-    console.log('Repository name:', repositoryName);
-    
+    logger.log("=== getProteccionCultivoContent called ===");
+    logger.log("Locale:", locale);
+    logger.log("Client exists:", !!client);
+    logger.log("Repository name:", repositoryName);
+
     if (!client) {
-      console.error('❌ Prismic client not initialized');
-      console.error('Repository name:', repositoryName);
-      console.error('Access token exists:', !!accessToken);
+      logger.error("❌ Prismic client not initialized");
+      logger.error("Repository name:", repositoryName);
+      logger.error("Access token exists:", !!accessToken);
       return null;
     }
-    
+
     // Intentar primero con el locale específico, luego sin locale si falla
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    console.log('Attempting to fetch with locale:', prismicLocale);
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    logger.log("Attempting to fetch with locale:", prismicLocale);
     let doc;
-    
+
     try {
-      doc = await client.getSingle('proteccion_cultivo', { lang: prismicLocale });
-      console.log('✅ Document fetched successfully with locale');
+      doc = await client.getSingle("proteccion_cultivo", {
+        lang: prismicLocale,
+      });
+      logger.log("✅ Document fetched successfully with locale");
     } catch (localeError: any) {
-      console.warn(`⚠️ Failed to fetch with locale ${prismicLocale}:`, localeError?.message || localeError);
-      console.warn('Error details:', {
+      logger.warn(
+        `⚠️ Failed to fetch with locale ${prismicLocale}:`,
+        localeError?.message || localeError
+      );
+      logger.warn("Error details:", {
         name: localeError?.name,
         message: localeError?.message,
         status: localeError?.status,
         response: localeError?.response,
       });
-      
+
       try {
-        console.log('Attempting to fetch without locale...');
-        doc = await client.getSingle('proteccion_cultivo');
-        console.log('✅ Document fetched successfully without locale');
+        logger.log("Attempting to fetch without locale...");
+        doc = await client.getSingle("proteccion_cultivo");
+        logger.log("✅ Document fetched successfully without locale");
       } catch (noLocaleError: any) {
-        console.error('❌ Failed to fetch proteccion_cultivo document:', noLocaleError?.message || noLocaleError);
-        console.error('Error details:', {
+        logger.error(
+          "❌ Failed to fetch proteccion_cultivo document:",
+          noLocaleError?.message || noLocaleError
+        );
+        logger.error("Error details:", {
           name: noLocaleError?.name,
           message: noLocaleError?.message,
           status: noLocaleError?.status,
           response: noLocaleError?.response,
         });
-        
+
         // Verificar si el error es 404 (documento no encontrado)
-        if (noLocaleError?.status === 404 || noLocaleError?.message?.includes('404')) {
-          console.error('🔍 Document not found. Please check:');
-          console.error('1. The Custom Type "proteccion_cultivo" exists in Prismic');
-          console.error('2. The document is published (not just saved as draft)');
-          console.error('3. The Custom Type ID matches exactly: "proteccion_cultivo"');
+        if (
+          noLocaleError?.status === 404 ||
+          noLocaleError?.message?.includes("404")
+        ) {
+          logger.error("🔍 Document not found. Please check:");
+          logger.error(
+            '1. The Custom Type "proteccion_cultivo" exists in Prismic'
+          );
+          logger.error(
+            "2. The document is published (not just saved as draft)"
+          );
+          logger.error(
+            '3. The Custom Type ID matches exactly: "proteccion_cultivo"'
+          );
         }
-        
+
         throw noLocaleError;
       }
     }
-    
+
     if (!doc || !doc.data) {
-      console.warn('Document proteccion_cultivo not found or has no data');
+      logger.warn("Document proteccion_cultivo not found or has no data");
       return null;
     }
-    
-    console.log('Prismic doc fetched successfully');
-    console.log('Document ID:', doc.id);
-    console.log('Document type:', doc.type);
-    console.log('Document lang:', doc.lang);
-    console.log('Soluciones raw:', doc.data.soluciones);
-    console.log('Soluciones type:', typeof doc.data.soluciones);
-    console.log('Soluciones is array:', Array.isArray(doc.data.soluciones));
-    console.log('seccion_imagen_texto raw:', doc.data.seccion_imagen_texto);
-    console.log('seccion_imagen_texto type:', typeof doc.data.seccion_imagen_texto);
-    console.log('seccion_imagen_texto is array:', Array.isArray(doc.data.seccion_imagen_texto));
+
+    logger.log("Prismic doc fetched successfully");
+    logger.log("Document ID:", doc.id);
+    logger.log("Document type:", doc.type);
+    logger.log("Document lang:", doc.lang);
+    logger.debug("Soluciones raw:", doc.data.soluciones);
+    logger.debug("Soluciones type:", typeof doc.data.soluciones);
+    logger.debug("Soluciones is array:", Array.isArray(doc.data.soluciones));
+    logger.debug("seccion_imagen_texto raw:", doc.data.seccion_imagen_texto);
+    logger.debug(
+      "seccion_imagen_texto type:",
+      typeof doc.data.seccion_imagen_texto
+    );
+    logger.debug(
+      "seccion_imagen_texto is array:",
+      Array.isArray(doc.data.seccion_imagen_texto)
+    );
     if (doc.data.seccion_imagen_texto) {
-      console.log('seccion_imagen_texto content:', JSON.stringify(doc.data.seccion_imagen_texto, null, 2));
+      logger.debug(
+        "seccion_imagen_texto content:",
+        JSON.stringify(doc.data.seccion_imagen_texto, null, 2)
+      );
     }
-    
+
     // Mapear soluciones - Prismic Groups se devuelven como arrays
     const solucionesRaw = doc.data.soluciones;
-    
+
     if (!solucionesRaw) {
-      console.warn('No soluciones field found in document');
+      console.warn("No soluciones field found in document");
       // Procesar seccion_imagen_texto incluso si no hay soluciones
       const seccionImagenTextoRaw = doc.data.seccion_imagen_texto;
       let seccionImagenTexto = {
@@ -404,22 +497,28 @@ export async function getProteccionCultivoContent(locale: string = 'es'): Promis
       };
 
       if (seccionImagenTextoRaw) {
-        if (Array.isArray(seccionImagenTextoRaw) && seccionImagenTextoRaw.length > 0) {
+        if (
+          Array.isArray(seccionImagenTextoRaw) &&
+          seccionImagenTextoRaw.length > 0
+        ) {
           const seccionData = seccionImagenTextoRaw[0];
           if (seccionData.imagen?.url) {
-            let imagenUrl = seccionData.imagen.url.split('?')[0];
+            let imagenUrl = seccionData.imagen.url.split("?")[0];
             seccionImagenTexto.imagen = {
               url: imagenUrl,
-              alt: seccionData.imagen.alt || '',
+              alt: seccionData.imagen.alt || "",
             };
           }
           seccionImagenTexto.texto = seccionData.texto || [];
-        } else if (typeof seccionImagenTextoRaw === 'object' && !Array.isArray(seccionImagenTextoRaw)) {
+        } else if (
+          typeof seccionImagenTextoRaw === "object" &&
+          !Array.isArray(seccionImagenTextoRaw)
+        ) {
           if (seccionImagenTextoRaw.imagen?.url) {
-            let imagenUrl = seccionImagenTextoRaw.imagen.url.split('?')[0];
+            let imagenUrl = seccionImagenTextoRaw.imagen.url.split("?")[0];
             seccionImagenTexto.imagen = {
               url: imagenUrl,
-              alt: seccionImagenTextoRaw.imagen.alt || '',
+              alt: seccionImagenTextoRaw.imagen.alt || "",
             };
           }
           seccionImagenTexto.texto = seccionImagenTextoRaw.texto || [];
@@ -432,25 +531,29 @@ export async function getProteccionCultivoContent(locale: string = 'es'): Promis
         seccion_imagen_texto: seccionImagenTexto,
       };
     }
-    
-    const soluciones = Array.isArray(solucionesRaw) 
+
+    const soluciones = Array.isArray(solucionesRaw)
       ? solucionesRaw.map((solucion: any, index: number) => {
-          console.log(`Processing solucion ${index}:`, solucion);
+          logger.debug(`Processing solucion ${index}:`, solucion);
           return {
-            logo: solucion.logo && solucion.logo.url
-              ? {
-                  // Remover parámetros de tamaño de Prismic para mantener dimensiones originales
-                  url: (solucion.logo.url || '').replace(/[?&]w=\d+/g, '').replace(/[?&]h=\d+/g, '').replace(/[?&]rect=[^&]*/g, ''),
-                  alt: solucion.logo.alt || '',
-                }
-              : undefined,
+            logo:
+              solucion.logo && solucion.logo.url
+                ? {
+                    // Remover parámetros de tamaño de Prismic para mantener dimensiones originales
+                    url: (solucion.logo.url || "")
+                      .replace(/[?&]w=\d+/g, "")
+                      .replace(/[?&]h=\d+/g, "")
+                      .replace(/[?&]rect=[^&]*/g, ""),
+                    alt: solucion.logo.alt || "",
+                  }
+                : undefined,
             texto_introductorio: solucion.texto_introductorio || [],
             tabla: solucion.tabla || [],
           };
         })
       : [];
 
-    console.log(`Mapped ${soluciones.length} soluciones`);
+    logger.debug(`Mapped ${soluciones.length} soluciones`);
 
     // Procesar seccion_imagen_texto - Prismic Groups se devuelven como arrays
     const seccionImagenTextoRaw = doc.data.seccion_imagen_texto;
@@ -461,33 +564,42 @@ export async function getProteccionCultivoContent(locale: string = 'es'): Promis
 
     if (seccionImagenTextoRaw) {
       // Si es un array (Group), tomar el primer elemento
-      if (Array.isArray(seccionImagenTextoRaw) && seccionImagenTextoRaw.length > 0) {
+      if (
+        Array.isArray(seccionImagenTextoRaw) &&
+        seccionImagenTextoRaw.length > 0
+      ) {
         const seccionData = seccionImagenTextoRaw[0];
         if (seccionData.imagen?.url) {
           let imagenUrl = seccionData.imagen.url;
           // Eliminar parámetros de tamaño de Prismic para mantener dimensiones originales
-          imagenUrl = imagenUrl.split('?')[0];
+          imagenUrl = imagenUrl.split("?")[0];
           seccionImagenTexto.imagen = {
             url: imagenUrl,
-            alt: seccionData.imagen.alt || '',
+            alt: seccionData.imagen.alt || "",
           };
         }
         seccionImagenTexto.texto = seccionData.texto || [];
-      } else if (typeof seccionImagenTextoRaw === 'object' && !Array.isArray(seccionImagenTextoRaw)) {
+      } else if (
+        typeof seccionImagenTextoRaw === "object" &&
+        !Array.isArray(seccionImagenTextoRaw)
+      ) {
         // Si es un objeto directo (no array)
         if (seccionImagenTextoRaw.imagen?.url) {
           let imagenUrl = seccionImagenTextoRaw.imagen.url;
-          imagenUrl = imagenUrl.split('?')[0];
+          imagenUrl = imagenUrl.split("?")[0];
           seccionImagenTexto.imagen = {
             url: imagenUrl,
-            alt: seccionImagenTextoRaw.imagen.alt || '',
+            alt: seccionImagenTextoRaw.imagen.alt || "",
           };
         }
         seccionImagenTexto.texto = seccionImagenTextoRaw.texto || [];
       }
     }
 
-    console.log('Processed seccion_imagen_texto:', JSON.stringify(seccionImagenTexto, null, 2));
+    logger.debug(
+      "Processed seccion_imagen_texto:",
+      JSON.stringify(seccionImagenTexto, null, 2)
+    );
 
     return {
       soluciones: soluciones,
@@ -495,16 +607,21 @@ export async function getProteccionCultivoContent(locale: string = 'es'): Promis
       seccion_imagen_texto: seccionImagenTexto,
     };
   } catch (error) {
-    console.error('Error fetching ProteccionCultivo content:', error);
+    logger.error("Error fetching ProteccionCultivo content:", error);
     if (error instanceof Error) {
-      console.error('Error message:', error.message);
-      console.error('Error name:', error.name);
+      logger.error("Error message:", error.message);
+      logger.error("Error name:", error.name);
       // Verificar si es un error 404 (documento no encontrado)
-      if (error.message.includes('404') || error.message.includes('not found')) {
-        console.error('Document "proteccion_cultivo" not found in Prismic. Please check:');
-        console.error('1. The document exists and is published');
-        console.error('2. The Custom Type ID matches "proteccion_cultivo"');
-        console.error('3. The repository name and access token are correct');
+      if (
+        error.message.includes("404") ||
+        error.message.includes("not found")
+      ) {
+        logger.error(
+          'Document "proteccion_cultivo" not found in Prismic. Please check:'
+        );
+        logger.error("1. The document exists and is published");
+        logger.error('2. The Custom Type ID matches "proteccion_cultivo"');
+        logger.error("3. The repository name and access token are correct");
       }
     }
     return null;
@@ -514,34 +631,35 @@ export async function getProteccionCultivoContent(locale: string = 'es'): Promis
 /**
  * Fetch all catalogs from Prismic
  */
-export async function getAllCatalogs(locale: string = 'es'): Promise<CatalogoPDF[]> {
+export async function getAllCatalogs(
+  locale: string = "es"
+): Promise<CatalogoPDF[]> {
   try {
     if (!client) {
-      console.warn('Prismic client not initialized');
+      logger.warn("Prismic client not initialized");
       return [];
     }
-    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
-    const documents = await client.getAllByType('catalogo_pdf', {
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const documents = await client.getAllByType("catalogo_pdf", {
       lang: prismicLocale,
       orderings: {
-        field: 'my.catalogo_pdf.orden',
-        direction: 'asc',
+        field: "my.catalogo_pdf.orden",
+        direction: "asc",
       },
     });
 
     return documents.map((doc) => ({
       id: doc.id,
-      nombre: doc.data.nombre || '',
-      tipo: (doc.data.tipo as 'maiz' | 'colza') || 'maiz',
-      subcategoria: (doc.data.subcategoria as any) || 'otros',
-      pais: (doc.data.pais as 'espana' | 'portugal') || 'espana',
+      nombre: doc.data.nombre || "",
+      tipo: (doc.data.tipo as "maiz" | "colza") || "maiz",
+      subcategoria: (doc.data.subcategoria as any) || "otros",
+      pais: (doc.data.pais as "espana" | "portugal") || "espana",
       zona: doc.data.zona as any,
-      url_pdf: prismic.asLink(doc.data.url_pdf) || '',
+      url_pdf: prismic.asLink(doc.data.url_pdf) || "",
       orden: doc.data.orden || undefined,
     }));
   } catch (error) {
-    console.error('Error fetching catalogs:', error);
+    console.error("Error fetching catalogs:", error);
     return [];
   }
 }
-

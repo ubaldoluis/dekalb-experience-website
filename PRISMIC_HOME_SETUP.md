@@ -161,3 +161,4 @@ El código ya está preparado para usar Prismic. La función `getHomeContent()` 
 - Los cambios en Prismic se reflejarán en la página después de publicar
 
 
+
