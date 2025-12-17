@@ -125,8 +125,8 @@ const isSeedActive = selectedSeed !== null;
       </svg>
     </button>
 
-    <!-- Protection Button -->
-    <button
+    <!-- Protection Button - Comentado temporalmente -->
+    <!-- <button
       type="button"
       class:list={[
         "filter-tag",
@@ -158,7 +158,7 @@ const isSeedActive = selectedSeed !== null;
           stroke-linejoin="round"
         ></path>
       </svg>
-    </button>
+    </button> -->
   </div>
 
   <!-- Dropdown Panel for Seed Filter -->
@@ -272,8 +272,8 @@ const isSeedActive = selectedSeed !== null;
     </div>
   </div>
 
-  <!-- Dropdown Panel for Protection Filter -->
-  <div
+  <!-- Dropdown Panel for Protection Filter - Comentado temporalmente -->
+  <!-- <div
     class="filter-dropdown-panel"
     id="protection-dropdown-panel"
   >
@@ -299,7 +299,7 @@ const isSeedActive = selectedSeed !== null;
         }
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Action Buttons -->
   <!-- <div class="filter-actions">
@@ -333,7 +333,7 @@ const isSeedActive = selectedSeed !== null;
         : undefined,
     uso: urlParams.get("uso") || undefined,
     zona: urlParams.get("zona") || undefined,
-    proteccion: urlParams.get("proteccion") || "todos",
+    proteccion: "todos", // Siempre "todos" - filtro de protección deshabilitado
   };
 
   // Use URL state as source of truth, fallback to server state
@@ -342,8 +342,7 @@ const isSeedActive = selectedSeed !== null;
       urlFilterState.tipoSemilla || serverFilterState.tipoSemilla || undefined,
     uso: urlFilterState.uso || serverFilterState.uso || undefined,
     zona: urlFilterState.zona || serverFilterState.zona || undefined,
-    proteccion:
-      urlFilterState.proteccion || serverFilterState.proteccion || "todos",
+    proteccion: "todos", // Siempre "todos" - filtro de protección deshabilitado
   };
 
   // Update filter state and apply immediately
@@ -401,12 +400,7 @@ const isSeedActive = selectedSeed !== null;
     if (currentFilterState.zona) {
       params.set("zona", currentFilterState.zona);
     }
-    if (
-      currentFilterState.proteccion &&
-      currentFilterState.proteccion !== "todos"
-    ) {
-      params.set("proteccion", currentFilterState.proteccion);
-    }
+    // Protección siempre "todos" - no se añade a URL
 
     // Update URL without reloading
     const newURL =
@@ -434,22 +428,13 @@ const isSeedActive = selectedSeed !== null;
         (p) => p.zona?.toLowerCase() === currentFilterState.zona
       );
     }
-    if (
-      currentFilterState.proteccion &&
-      currentFilterState.proteccion !== "todos"
-    ) {
-      filtered = filtered.filter(
-        (p) => p.proteccion?.toLowerCase() === currentFilterState.proteccion
-      );
-    }
+    // Protección siempre "todos" - no se filtra por protección
 
-    // Check if filters are active
+    // Check if filters are active (protección siempre "todos", no cuenta)
     const hasActiveFilters = !!(
       currentFilterState.tipoSemilla ||
       currentFilterState.uso ||
-      currentFilterState.zona ||
-      (currentFilterState.proteccion &&
-        currentFilterState.proteccion !== "todos")
+      currentFilterState.zona
     );
 
     // Dispatch updateProducts event to update carousel
@@ -502,7 +487,6 @@ const isSeedActive = selectedSeed !== null;
   function updateFilterTagStates() {
     const container = getVisibleFilterContainer();
     const seedTag = container.querySelector("#seed-filter-trigger");
-    const protectionTag = container.querySelector("#protection-filter-trigger");
 
     // Update seed tag active state
     if (seedTag) {
@@ -512,11 +496,7 @@ const isSeedActive = selectedSeed !== null;
       seedTag.classList.toggle("filter-tag-active", isActive);
     }
 
-    // Update protection tag active state
-    if (protectionTag) {
-      const isActive = currentFilterState.proteccion !== "todos";
-      protectionTag.classList.toggle("filter-tag-active", isActive);
-    }
+    // Protection tag comentado - no se actualiza
   }
 
   // Get visible filter container
@@ -543,26 +523,20 @@ const isSeedActive = selectedSeed !== null;
     const seedTrigger = container.querySelector("#seed-filter-trigger");
     const seedPanel = container.querySelector("#seed-dropdown-panel");
 
-    // Protection filter trigger
-    const protectionTrigger = container.querySelector(
-      "#protection-filter-trigger"
-    );
-    const protectionPanel = container.querySelector(
-      "#protection-dropdown-panel"
-    );
+    // Protection filter trigger - Comentado
+    // const protectionTrigger = container.querySelector(
+    //   "#protection-filter-trigger"
+    // );
+    // const protectionPanel = container.querySelector(
+    //   "#protection-dropdown-panel"
+    // );
 
     if (seedTrigger && seedPanel) {
       seedTrigger.addEventListener("click", (e) => {
         e.stopPropagation();
         const isOpen = seedTrigger.getAttribute("aria-expanded") === "true";
 
-        // Close protection panel if open
-        if (protectionPanel) {
-          protectionPanel.classList.remove("filter-dropdown-panel-open");
-          protectionTrigger.setAttribute("aria-expanded", "false");
-          // Ensure seed button is white when protection panel closes
-          seedTrigger.classList.remove("seed-button-inactive");
-        }
+        // Protection panel comentado - ya no se cierra
 
         // Toggle seed panel
         seedTrigger.setAttribute("aria-expanded", String(!isOpen));
@@ -592,50 +566,7 @@ const isSeedActive = selectedSeed !== null;
       });
     }
 
-    if (protectionTrigger && protectionPanel) {
-      protectionTrigger.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isOpen =
-          protectionTrigger.getAttribute("aria-expanded") === "true";
-
-        // Close seed panel if open
-        if (seedPanel) {
-          seedPanel.classList.remove("filter-dropdown-panel-open");
-          seedTrigger.setAttribute("aria-expanded", "false");
-          // Ensure seed button is white when its panel closes
-          seedTrigger.classList.remove("seed-button-inactive");
-        }
-
-        // Toggle protection panel
-        protectionTrigger.setAttribute("aria-expanded", String(!isOpen));
-        if (!isOpen) {
-          protectionPanel.classList.add("filter-dropdown-panel-open");
-          // Add class to seed button to make it blue when protection panel is open
-          seedTrigger.classList.add("seed-button-inactive");
-        } else {
-          protectionPanel.classList.remove("filter-dropdown-panel-open");
-          // Remove class from seed button to make it white again
-          seedTrigger.classList.remove("seed-button-inactive");
-        }
-      });
-
-      // Handle option clicks in protection panel - don't close panel on click
-      protectionPanel.querySelectorAll(".filter-option-tag").forEach((tag) => {
-        if (!tag.hasAttribute("data-listener-attached")) {
-          tag.setAttribute("data-listener-attached", "true");
-          tag.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const filter = tag.getAttribute("data-filter");
-            const value = tag.getAttribute("data-value");
-            if (filter) {
-              updateFilterState(filter, value || "");
-              // Update active states visually
-              updateActiveStates();
-            }
-          });
-        }
-      });
-    }
+    // Protection trigger y panel comentados - código eliminado
 
     // Update disabled states
     function updateDisabledStates() {
@@ -691,12 +622,7 @@ const isSeedActive = selectedSeed !== null;
       tag.classList.toggle("filter-option-tag-active", isActive);
     });
 
-    // Update proteccion tags
-    container.querySelectorAll('[data-filter="proteccion"]').forEach((tag) => {
-      const value = tag.getAttribute("data-value") || "todos";
-      const isActive = currentFilterState.proteccion === value;
-      tag.classList.toggle("filter-option-tag-active", isActive);
-    });
+    // Protección tags comentados - no se actualizan
   }
 
   // Close dropdowns when clicking outside
@@ -704,23 +630,14 @@ const isSeedActive = selectedSeed !== null;
     const container = getVisibleFilterContainer();
     if (!container.contains(e.target)) {
       const seedPanel = container.querySelector("#seed-dropdown-panel");
-      const protectionPanel = container.querySelector(
-        "#protection-dropdown-panel"
-      );
       const seedTrigger = container.querySelector("#seed-filter-trigger");
-      const protectionTrigger = container.querySelector(
-        "#protection-filter-trigger"
-      );
 
       if (seedPanel) seedPanel.classList.remove("filter-dropdown-panel-open");
-      if (protectionPanel)
-        protectionPanel.classList.remove("filter-dropdown-panel-open");
       if (seedTrigger) {
         seedTrigger.setAttribute("aria-expanded", "false");
         seedTrigger.classList.remove("seed-button-inactive");
       }
-      if (protectionTrigger)
-        protectionTrigger.setAttribute("aria-expanded", "false");
+      // Protection panel comentado - no se cierra
     }
   });
 
