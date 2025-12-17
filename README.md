@@ -11,24 +11,28 @@ Sitio web B2B para DEKALB Experience, empresa agrícola que comercializa semilla
 ## Configuración
 
 1. Instalar dependencias:
+
 ```bash
-npm install
+pnpm install
 ```
 
 2. Configurar variables de entorno:
+
 ```bash
 cp .env.example .env
 # Editar .env con tus credenciales de Prismic
 ```
 
 3. Ejecutar servidor de desarrollo:
+
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 4. Construir para producción:
+
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## Estructura del Proyecto

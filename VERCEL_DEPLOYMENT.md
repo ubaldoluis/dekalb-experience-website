@@ -22,9 +22,9 @@ Esta guía te ayudará a desplegar el proyecto Dekalb Experience Website en Verc
 Vercel debería detectar automáticamente:
 
 - **Framework Preset**: Astro
-- **Build Command**: `npm run build`
+- **Build Command**: `pnpm run build`
 - **Output Directory**: `dist`
-- **Install Command**: `npm install`
+- **Install Command**: `pnpm install` (detectado automáticamente por la presencia de `pnpm-lock.yaml`)
 
 Si no se detecta automáticamente, configura manualmente:
 
@@ -96,7 +96,7 @@ vercel logs
 ### Desplegar manualmente desde CLI
 
 ```bash
-npm i -g vercel
+pnpm add -g vercel
 vercel
 ```
 
@@ -112,7 +112,7 @@ vercel inspect
 
 - Verifica que las variables de entorno estén configuradas
 - Revisa los logs de build en Vercel Dashboard
-- Asegúrate de que `npm run build` funcione localmente
+- Asegúrate de que `pnpm run build` funcione localmente
 
 ### Error: "Failed to resolve dependency: @splidejs/splide"
 

@@ -10,6 +10,7 @@ import type {
   HomeContent,
   FieldViewContent,
   ProteccionCultivoContent,
+  AcceleronContent,
 } from "../types";
 
 import { logger } from "./logger";
@@ -661,5 +662,111 @@ export async function getAllCatalogs(
   } catch (error) {
     console.error("Error fetching catalogs:", error);
     return [];
+  }
+}
+
+/**
+ * Fetch Acceleron content from Prismic
+ */
+export async function getAcceleronContent(
+  locale: string = "es"
+): Promise<AcceleronContent | null> {
+  try {
+    if (!client) {
+      console.warn("Prismic client not initialized");
+      return null;
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("acceleron", { lang: prismicLocale });
+
+    // Procesar hero logo
+    let heroLogoUrl = doc.data.hero_logo?.url || "";
+    if (heroLogoUrl) {
+      heroLogoUrl = heroLogoUrl.split("?")[0];
+    }
+
+    // Procesar hero imagen fondo
+    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
+    if (heroImagenFondoUrl) {
+      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+    }
+
+    // Mapear bloques
+    const bloquesRaw = doc.data.bloques;
+    const bloques = Array.isArray(bloquesRaw)
+      ? bloquesRaw.map((bloque: any) => {
+          let imagenUrl = bloque.imagen?.url || "";
+          if (imagenUrl) {
+            imagenUrl = imagenUrl.split("?")[0];
+          }
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: bloque.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: bloque.titulo || "",
+            descripcion: bloque.descripcion || [],
+          };
+        })
+      : [];
+
+    // Procesar bloque final
+    const bloqueFinalRaw = Array.isArray(doc.data.bloque_final)
+      ? doc.data.bloque_final[0]
+      : doc.data.bloque_final;
+
+    let imagenDesktopUrl = bloqueFinalRaw?.imagen_desktop?.url || "";
+    if (imagenDesktopUrl) {
+      imagenDesktopUrl = imagenDesktopUrl.split("?")[0];
+    }
+
+    let imagenMobileUrl = bloqueFinalRaw?.imagen_mobile?.url || "";
+    if (imagenMobileUrl) {
+      imagenMobileUrl = imagenMobileUrl.split("?")[0];
+    }
+
+    return {
+      hero: {
+        logo: heroLogoUrl
+          ? {
+              url: heroLogoUrl,
+              alt: doc.data.hero_logo?.alt || "",
+            }
+          : undefined,
+        titulo: doc.data.hero_titulo || "",
+        descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+      },
+      introduccion: {
+        titulo: doc.data.introduccion_titulo || "",
+        texto: doc.data.introduccion_texto || [],
+      },
+      bloques: bloques,
+      bloque_final: {
+        imagen_desktop: imagenDesktopUrl
+          ? {
+              url: imagenDesktopUrl,
+              alt: bloqueFinalRaw?.imagen_desktop?.alt || "",
+            }
+          : undefined,
+        imagen_mobile: imagenMobileUrl
+          ? {
+              url: imagenMobileUrl,
+              alt: bloqueFinalRaw?.imagen_mobile?.alt || "",
+            }
+          : undefined,
+        texto: bloqueFinalRaw?.texto || [],
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching Acceleron content:", error);
+    return null;
   }
 }

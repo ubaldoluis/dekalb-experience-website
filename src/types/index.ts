@@ -2,31 +2,31 @@
  * TypeScript types for DEKALB Experience Website
  */
 
-export type Idioma = 'es' | 'pt';
+export type Idioma = "es" | "pt";
 
-export type TipoSemilla = 'maiz' | 'colza';
+export type TipoSemilla = "maiz" | "colza";
 
-export type UsoMaiz = 'grano' | 'silo' | 'preceon';
+export type UsoMaiz = "grano" | "silo" | "preceon";
 
-export type ZonaGeografica = 
-  | 'ebro' 
-  | 'centro-sur' 
-  | 'noroeste' 
-  | 'portugal'
-  | 'centro-sur-extremadura-andalucia';
+export type ZonaGeografica =
+  | "ebro"
+  | "centro-sur"
+  | "noroeste"
+  | "portugal"
+  | "centro-sur-extremadura-andalucia";
 
-export type ProteccionCultivo = 
-  | 'herbicida' 
-  | 'insecticida' 
-  | 'bioestimulante' 
-  | 'todos';
+export type ProteccionCultivo =
+  | "herbicida"
+  | "insecticida"
+  | "bioestimulante"
+  | "todos";
 
-export type CategoriaProducto = 
-  | 'maiz-grano' 
-  | 'silo' 
-  | 'preceon' 
-  | 'colza' 
-  | 'fitosanitario';
+export type CategoriaProducto =
+  | "maiz-grano"
+  | "silo"
+  | "preceon"
+  | "colza"
+  | "fitosanitario";
 
 export interface FilterState {
   tipoSemilla?: TipoSemilla;
@@ -58,7 +58,7 @@ export interface Articulo {
   id: string;
   titulo: string;
   slug: string;
-  categoria: 'noticia' | 'evento' | 'articulo' | 'lanzamiento';
+  categoria: "noticia" | "evento" | "articulo" | "lanzamiento";
   fecha: string;
   extracto: string;
   imagen_destacada?: {
@@ -74,9 +74,9 @@ export interface Articulo {
 export interface CatalogoPDF {
   id: string;
   nombre: string;
-  tipo: 'maiz' | 'colza';
-  subcategoria: 'genetica-agronomia' | 'proteccion-cultivo' | 'otros';
-  pais: 'espana' | 'portugal';
+  tipo: "maiz" | "colza";
+  subcategoria: "genetica-agronomia" | "proteccion-cultivo" | "otros";
+  pais: "espana" | "portugal";
   zona?: ZonaGeografica;
   url_pdf: string;
   orden?: number;
@@ -97,13 +97,13 @@ export interface HomeContent {
 }
 
 export interface YieldKitTab {
-  id: 'que-es' | 'compatibilidad' | 'ventajas' | 'conectividad';
+  id: "que-es" | "compatibilidad" | "ventajas" | "conectividad";
   label: string; // Text simple
   content: any; // Rich text from Prismic
 }
 
 export interface FieldViewSubsection {
-  id: 'drive' | 'yield-kit' | 'spraykit';
+  id: "drive" | "yield-kit" | "spraykit";
   titulo: string; // Text simple
   descripcion: any; // Rich text from Prismic
   imagen?: {
@@ -146,3 +146,42 @@ export interface ProteccionCultivoContent {
   };
 }
 
+export interface AcceleronBloque {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string; // Text simple
+  descripcion: any; // Rich text from Prismic
+}
+
+export interface AcceleronContent {
+  hero: {
+    logo?: {
+      url: string;
+      alt?: string;
+    };
+    titulo: string; // Text simple
+    descripcion: any; // Rich text from Prismic
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  introduccion: {
+    titulo: string; // Text simple
+    texto: any; // Rich text from Prismic
+  };
+  bloques: AcceleronBloque[];
+  bloque_final: {
+    imagen_desktop?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_mobile?: {
+      url: string;
+      alt?: string;
+    };
+    texto: any; // Rich text from Prismic
+  };
+}
