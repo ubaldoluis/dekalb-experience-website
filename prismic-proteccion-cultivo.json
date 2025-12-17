@@ -1,0 +1,81 @@
+{
+  "id": "proteccion-cultivo",
+  "label": "Protección de Cultivo",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "soluciones": {
+        "type": "Group",
+        "config": {
+          "label": "Soluciones",
+          "fields": {
+            "logo": {
+              "type": "Image",
+              "config": {
+                "label": "Logo",
+                "constraint": {
+                  "width": 200,
+                  "height": 100
+                },
+                "thumbnails": []
+              }
+            },
+            "texto_introductorio": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto Introductorio",
+                "placeholder": "Texto introductorio de la solución",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            },
+            "tabla": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Tabla",
+                "placeholder": "Contenido de la tabla en formato rich text",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "tabla_tratamientos": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Tabla de Tratamientos",
+          "placeholder": "Contenido de la tabla de tratamientos en formato rich text",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "seccion_imagen_texto": {
+        "type": "Group",
+        "config": {
+          "label": "Sección Imagen y Texto",
+          "fields": {
+            "imagen": {
+              "type": "Image",
+              "config": {
+                "label": "Imagen",
+                "constraint": {
+                  "width": 585,
+                  "height": 500
+                },
+                "thumbnails": []
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "Texto descriptivo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

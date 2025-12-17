@@ -1,0 +1,555 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { getProteccionCultivoContent } from "../../utils/prismic";
+import { renderRichText } from "../../utils/prismic-rich-text";
+import * as prismic from "@prismicio/client";
+
+const lang = "es";
+let proteccionCultivoContent = null;
+
+try {
+  proteccionCultivoContent = await getProteccionCultivoContent(lang);
+} catch (error) {
+  console.error("Error fetching ProteccionCultivo content:", error);
+}
+
+// Traducciones
+const translations = {
+  es: {
+    soluciones: "Soluciones",
+  },
+  pt: {
+    soluciones: "Soluções",
+  },
+};
+
+const t = translations[lang as keyof typeof translations] || translations.es;
+
+// Fallback content si no hay datos de Prismic
+const defaultContent = {
+  soluciones: [
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+  ],
+  tabla_tratamientos: [],
+  seccion_imagen_texto: {
+    imagen: undefined,
+    texto: [],
+  },
+};
+
+const content = proteccionCultivoContent || defaultContent;
+---
+
+<PageLayout
+  title="Protección de Cultivo"
+  description="Soluciones de protección para tus cultivos"
+  lang={lang}
+>
+  <!-- Hero Section -->
+  <section class="proteccion-hero">
+    <div class="proteccion-hero-gradient"></div>
+    <div class="container">
+      <div class="proteccion-hero-content">
+        <h1 class="proteccion-hero-title">Protección de Cultivo</h1>
+        <div class="proteccion-hero-description">
+          <p>Soluciones integrales para proteger y optimizar tus cultivos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Soluciones -->
+  <section class="proteccion-soluciones">
+    <div class="container">
+      <h2 class="proteccion-soluciones-title">{t.soluciones}</h2>
+      {
+        content.soluciones && content.soluciones.length > 0 ? (
+          <div class="proteccion-soluciones-grid">
+            {content.soluciones.map((solucion, index) => (
+              <div class="proteccion-solucion-card">
+                <div class="proteccion-solucion-header">
+                  {solucion.logo?.url && (
+                    <div class="proteccion-solucion-logo">
+                      <img
+                        src={solucion.logo.url}
+                        alt={solucion.logo.alt || `Solución ${index + 1}`}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  {solucion.texto_introductorio &&
+                    (Array.isArray(solucion.texto_introductorio)
+                      ? solucion.texto_introductorio.length > 0
+                      : solucion.texto_introductorio) && (
+                      <div
+                        class="proteccion-solucion-texto"
+                        set:html={renderRichText(solucion.texto_introductorio)}
+                      />
+                    )}
+                </div>
+                {solucion.tabla &&
+                  (Array.isArray(solucion.tabla)
+                    ? solucion.tabla.length > 0
+                    : solucion.tabla) && (
+                    <div
+                      class="proteccion-solucion-tabla"
+                      set:html={renderRichText(solucion.tabla)}
+                    />
+                  )}
+              </div>
+            ))}
+          </div>
+        ) : null
+      }
+    </div>
+  </section>
+
+  <!-- Sección Tabla de Tratamientos -->
+  <section class="proteccion-tabla-tratamientos">
+    <div class="container">
+      <h2 class="proteccion-tabla-tratamientos-title">
+        {lang === "es" ? "Tabla tratamientos" : "Tabela de tratamentos"}
+      </h2>
+      <div
+        class="proteccion-tabla-tratamientos-content"
+        set:html={renderRichText(content.tabla_tratamientos)}
+      />
+    </div>
+  </section>
+
+  <!-- Sección Imagen y Texto -->
+  {
+    (content.seccion_imagen_texto.imagen?.url ||
+      content.seccion_imagen_texto.texto?.length > 0) && (
+      <section class="proteccion-imagen-texto-section">
+        <div class="container">
+          <div class="content-right-card-wrapper">
+            {content.seccion_imagen_texto.imagen?.url && (
+              <div class="content-right-card-image">
+                <picture>
+                  <source
+                    media="(max-width: 767px)"
+                    srcset="/card_background_mobile-proteccion_bayer.jpg"
+                  />
+                  <img
+                    src={content.seccion_imagen_texto.imagen.url}
+                    alt={content.seccion_imagen_texto.imagen.alt || ""}
+                    loading="lazy"
+                  />
+                </picture>
+              </div>
+            )}
+            {content.seccion_imagen_texto.texto?.length > 0 && (
+              <div
+                class="content-right-card-content"
+                set:html={renderRichText(content.seccion_imagen_texto.texto)}
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  /* Hero Section */
+  .proteccion-hero {
+    position: relative;
+    padding: var(--spacing-16) 0;
+    background-color: #ffffff;
+    overflow: hidden;
+    min-width: auto;
+    min-height: 628px;
+  }
+
+  .proteccion-hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 828px;
+    background: linear-gradient(
+      135deg,
+      #009ddb 0%,
+      rgba(171, 226, 22488, 0) 100%
+    );
+    z-index: 0;
+  }
+
+  /* Desktop: usar imagen de fondo en lugar de degradado */
+  @media (min-width: 1024px) {
+    .proteccion-hero-gradient {
+      background: url("/tratamientos_top-background.png") no-repeat center top;
+      background-size: contain;
+      height: 100%;
+    }
+    .proteccion-hero {
+      position: relative;
+      min-width: 500px !important;
+    }
+  }
+
+  .proteccion-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 360px;
+    padding-top: var(--spacing-20);
+    margin-top: var(--spacing-20);
+  }
+
+  .proteccion-hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #ffffff;
+    margin: 0 0 var(--spacing-4) 0;
+    line-height: 2.2rem;
+    letter-spacing: 0.96px;
+  }
+
+  .proteccion-hero-description {
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3rem;
+  }
+
+  .proteccion-hero-description :global(p) {
+    margin: 0;
+  }
+
+  /* Sección Soluciones */
+  .proteccion-soluciones {
+    padding: var(--spacing-16) 0;
+  }
+
+  .proteccion-soluciones-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-12);
+    color: #00527f;
+    text-align: center;
+  }
+
+  .proteccion-soluciones-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+
+  .proteccion-solucion-card {
+    background-color: #edfcff;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .proteccion-solucion-header {
+    background-color: #002f47;
+    border-radius: 1rem 1rem 0 0;
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    min-height: 180px;
+  }
+
+  .proteccion-solucion-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .proteccion-solucion-logo img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: contain;
+    display: block;
+  }
+
+  .proteccion-solucion-texto {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .proteccion-solucion-texto :global(p) {
+    margin-bottom: 0;
+    color: #ffffff;
+  }
+
+  .proteccion-solucion-texto :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .proteccion-solucion-tabla {
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ocultar comentarios HTML */
+  .proteccion-solucion-tabla :global(comment),
+  .proteccion-solucion-tabla :global(<!--) {
+    display: none;
+  }
+
+  /* Desktop: mostrar soluciones en grid de 4 columnas */
+  @media (min-width: 1024px) {
+    .proteccion-soluciones-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-8);
+      align-items: stretch;
+    }
+
+    .proteccion-solucion-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .proteccion-solucion-header {
+      width: 100%;
+      height: 200px;
+      min-height: 200px;
+      max-height: 200px;
+      flex-shrink: 0;
+    }
+
+    .proteccion-solucion-tabla {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .proteccion-solucion-tabla :global(table) {
+      background-color: #edfcff;
+    }
+  }
+
+  /* Sección Tabla de Tratamientos */
+  .proteccion-tabla-tratamientos {
+    padding: var(--spacing-16) 0;
+    /* background-color: var(--color-gray-50); */
+    position: relative;
+    z-index: 0;
+  }
+
+  .proteccion-tabla-tratamientos-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-12);
+    color: #00527f;
+    text-align: center;
+  }
+
+  .proteccion-tabla-tratamientos-content {
+    overflow-x: auto;
+  }
+
+  /* Sección Imagen y Texto - Usa estilos estándar de content-right-card-wrapper */
+  .proteccion-imagen-texto-section {
+    padding: var(--spacing-16) 0;
+  }
+
+  /* Estilos base de content-right-card-wrapper (igual que index.astro) */
+  .proteccion-imagen-texto-section .content-right-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
+    background: linear-gradient(to left, #005475 0%, #009ddb 100%);
+    border-radius: 12px 12px 12px 12px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+  }
+
+  .proteccion-imagen-texto-section .content-right-card-content {
+    text-align: left;
+    padding: var(--spacing-12) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    order: 2;
+  }
+  .content-right-card-content {
+    width: 80%;
+    font-size: 1.2rem;
+  }
+  .proteccion-imagen-texto-section .content-right-card-image {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    order: 1;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .proteccion-imagen-texto-section .content-right-card-image img,
+  .proteccion-imagen-texto-section .content-right-card-image picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Mobile: Content Right Card - Imagen primero, contenido después */
+  @media (max-width: 767px) {
+    .proteccion-imagen-texto-section .content-right-card-image {
+      border-radius: 12px 12px 0 0;
+      min-height: 200px;
+      max-height: 300px;
+    }
+
+    .proteccion-imagen-texto-section .content-right-card-image img,
+    .proteccion-imagen-texto-section .content-right-card-image picture {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .proteccion-imagen-texto-section .content-right-card-content {
+      border-radius: 0 0 12px 12px;
+    }
+  }
+
+  /* Desktop: Content Right Card - 65% imagen / 35% contenido */
+  @media (min-width: 1024px) {
+    .proteccion-imagen-texto-section .content-right-card-wrapper {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      gap: 0;
+      min-height: 400px;
+      border-radius: 60px 12px 60px 12px;
+      background: linear-gradient(to left, #005475 0%, #009ddb 100%);
+    }
+
+    .proteccion-imagen-texto-section .content-right-card-content {
+      padding: var(--spacing-12) var(--spacing-12);
+      order: unset;
+    }
+
+    .proteccion-imagen-texto-section .content-right-card-image {
+      display: block;
+      order: unset;
+    }
+
+    .proteccion-imagen-texto-section .content-right-card-image img,
+    .proteccion-imagen-texto-section .content-right-card-image picture {
+      object-fit: fill;
+    }
+  }
+
+  /* Estilos para texto blanco dentro del contenido */
+  .proteccion-imagen-texto-section .content-right-card-content :global(p),
+  .proteccion-imagen-texto-section .content-right-card-content :global(strong),
+  .proteccion-imagen-texto-section .content-right-card-content :global(em),
+  .proteccion-imagen-texto-section .content-right-card-content :global(span) {
+    color: #ffffff;
+  }
+
+  .proteccion-imagen-texto-section .content-right-card-content :global(strong) {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  /* Estilos para tablas dentro del contenido rich text */
+  .proteccion-solucion-tabla :global(table),
+  .proteccion-tabla-tratamientos-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .proteccion-solucion-tabla :global(table) {
+    height: 100%;
+    flex: 1;
+  }
+
+  /* Asegurar que el fondo de la tabla de tratamientos sea #E8F4F8 */
+  .proteccion-tabla-tratamientos-content :global(table) {
+    background-color: #e8f4f8 !important;
+  }
+
+  /* Primera fila (header) sin thead - usar td con estilos de header */
+  .proteccion-tabla-tratamientos-content :global(table tr:first-child) {
+    background-color: #e8f4f8 !important;
+  }
+
+  .proteccion-tabla-tratamientos-content :global(table tr:first-child td) {
+    color: #0066cc !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #b8d4e3 !important;
+  }
+
+  .proteccion-solucion-tabla :global(table th),
+  .proteccion-tabla-tratamientos-content :global(table th),
+  .proteccion-solucion-tabla :global(table td),
+  .proteccion-tabla-tratamientos-content :global(table td) {
+    padding: var(--spacing-3) var(--spacing-4);
+    text-align: left;
+    vertical-align: top;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Reducir tamaño de texto en tablas en desktop */
+  @media (min-width: 1024px) {
+    .proteccion-solucion-tabla :global(table th),
+    .proteccion-solucion-tabla :global(table td) {
+      font-size: 11px;
+      /* padding: var(--spacing-2) var(--spacing-3); */
+    }
+  }
+
+  .proteccion-solucion-tabla :global(table th) {
+    background-color: var(--color-gray-100);
+    font-weight: 600;
+  }
+
+  /* NO aplicar estilos por defecto a th de tabla de tratamientos - usar solo los inline de Prismic */
+  .proteccion-tabla-tratamientos-content :global(table th) {
+    /* No sobrescribir estilos inline - dejar que Prismic controle el estilo */
+  }
+
+  /* Preservar estilos inline de las tablas de Prismic */
+  .proteccion-solucion-tabla :global(table[style]),
+  .proteccion-tabla-tratamientos-content :global(table[style]) {
+    border-radius: 8px;
+    margin: 0 !important;
+  }
+</style>

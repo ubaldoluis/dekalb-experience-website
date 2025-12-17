@@ -3,7 +3,7 @@
  */
 
 import * as prismic from '@prismicio/client';
-import type { Producto, Articulo, CatalogoPDF, HomeContent, FieldViewContent } from '../types';
+import type { Producto, Articulo, CatalogoPDF, HomeContent, FieldViewContent, ProteccionCultivoContent } from '../types';
 
 const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || '';
 const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || '';
@@ -309,6 +309,204 @@ export async function getFieldViewContent(locale: string = 'es'): Promise<FieldV
     };
   } catch (error) {
     console.error('Error fetching FieldView content:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch ProteccionCultivo content from Prismic
+ */
+export async function getProteccionCultivoContent(locale: string = 'es'): Promise<ProteccionCultivoContent | null> {
+  try {
+    console.log('=== getProteccionCultivoContent called ===');
+    console.log('Locale:', locale);
+    console.log('Client exists:', !!client);
+    console.log('Repository name:', repositoryName);
+    
+    if (!client) {
+      console.error('❌ Prismic client not initialized');
+      console.error('Repository name:', repositoryName);
+      console.error('Access token exists:', !!accessToken);
+      return null;
+    }
+    
+    // Intentar primero con el locale específico, luego sin locale si falla
+    const prismicLocale = locale === 'pt' ? 'pt-pt' : 'es-es';
+    console.log('Attempting to fetch with locale:', prismicLocale);
+    let doc;
+    
+    try {
+      doc = await client.getSingle('proteccion_cultivo', { lang: prismicLocale });
+      console.log('✅ Document fetched successfully with locale');
+    } catch (localeError: any) {
+      console.warn(`⚠️ Failed to fetch with locale ${prismicLocale}:`, localeError?.message || localeError);
+      console.warn('Error details:', {
+        name: localeError?.name,
+        message: localeError?.message,
+        status: localeError?.status,
+        response: localeError?.response,
+      });
+      
+      try {
+        console.log('Attempting to fetch without locale...');
+        doc = await client.getSingle('proteccion_cultivo');
+        console.log('✅ Document fetched successfully without locale');
+      } catch (noLocaleError: any) {
+        console.error('❌ Failed to fetch proteccion_cultivo document:', noLocaleError?.message || noLocaleError);
+        console.error('Error details:', {
+          name: noLocaleError?.name,
+          message: noLocaleError?.message,
+          status: noLocaleError?.status,
+          response: noLocaleError?.response,
+        });
+        
+        // Verificar si el error es 404 (documento no encontrado)
+        if (noLocaleError?.status === 404 || noLocaleError?.message?.includes('404')) {
+          console.error('🔍 Document not found. Please check:');
+          console.error('1. The Custom Type "proteccion_cultivo" exists in Prismic');
+          console.error('2. The document is published (not just saved as draft)');
+          console.error('3. The Custom Type ID matches exactly: "proteccion_cultivo"');
+        }
+        
+        throw noLocaleError;
+      }
+    }
+    
+    if (!doc || !doc.data) {
+      console.warn('Document proteccion_cultivo not found or has no data');
+      return null;
+    }
+    
+    console.log('Prismic doc fetched successfully');
+    console.log('Document ID:', doc.id);
+    console.log('Document type:', doc.type);
+    console.log('Document lang:', doc.lang);
+    console.log('Soluciones raw:', doc.data.soluciones);
+    console.log('Soluciones type:', typeof doc.data.soluciones);
+    console.log('Soluciones is array:', Array.isArray(doc.data.soluciones));
+    console.log('seccion_imagen_texto raw:', doc.data.seccion_imagen_texto);
+    console.log('seccion_imagen_texto type:', typeof doc.data.seccion_imagen_texto);
+    console.log('seccion_imagen_texto is array:', Array.isArray(doc.data.seccion_imagen_texto));
+    if (doc.data.seccion_imagen_texto) {
+      console.log('seccion_imagen_texto content:', JSON.stringify(doc.data.seccion_imagen_texto, null, 2));
+    }
+    
+    // Mapear soluciones - Prismic Groups se devuelven como arrays
+    const solucionesRaw = doc.data.soluciones;
+    
+    if (!solucionesRaw) {
+      console.warn('No soluciones field found in document');
+      // Procesar seccion_imagen_texto incluso si no hay soluciones
+      const seccionImagenTextoRaw = doc.data.seccion_imagen_texto;
+      let seccionImagenTexto = {
+        imagen: undefined as { url: string; alt: string } | undefined,
+        texto: [] as any[],
+      };
+
+      if (seccionImagenTextoRaw) {
+        if (Array.isArray(seccionImagenTextoRaw) && seccionImagenTextoRaw.length > 0) {
+          const seccionData = seccionImagenTextoRaw[0];
+          if (seccionData.imagen?.url) {
+            let imagenUrl = seccionData.imagen.url.split('?')[0];
+            seccionImagenTexto.imagen = {
+              url: imagenUrl,
+              alt: seccionData.imagen.alt || '',
+            };
+          }
+          seccionImagenTexto.texto = seccionData.texto || [];
+        } else if (typeof seccionImagenTextoRaw === 'object' && !Array.isArray(seccionImagenTextoRaw)) {
+          if (seccionImagenTextoRaw.imagen?.url) {
+            let imagenUrl = seccionImagenTextoRaw.imagen.url.split('?')[0];
+            seccionImagenTexto.imagen = {
+              url: imagenUrl,
+              alt: seccionImagenTextoRaw.imagen.alt || '',
+            };
+          }
+          seccionImagenTexto.texto = seccionImagenTextoRaw.texto || [];
+        }
+      }
+
+      return {
+        soluciones: [],
+        tabla_tratamientos: doc.data.tabla_tratamientos || [],
+        seccion_imagen_texto: seccionImagenTexto,
+      };
+    }
+    
+    const soluciones = Array.isArray(solucionesRaw) 
+      ? solucionesRaw.map((solucion: any, index: number) => {
+          console.log(`Processing solucion ${index}:`, solucion);
+          return {
+            logo: solucion.logo && solucion.logo.url
+              ? {
+                  // Remover parámetros de tamaño de Prismic para mantener dimensiones originales
+                  url: (solucion.logo.url || '').replace(/[?&]w=\d+/g, '').replace(/[?&]h=\d+/g, '').replace(/[?&]rect=[^&]*/g, ''),
+                  alt: solucion.logo.alt || '',
+                }
+              : undefined,
+            texto_introductorio: solucion.texto_introductorio || [],
+            tabla: solucion.tabla || [],
+          };
+        })
+      : [];
+
+    console.log(`Mapped ${soluciones.length} soluciones`);
+
+    // Procesar seccion_imagen_texto - Prismic Groups se devuelven como arrays
+    const seccionImagenTextoRaw = doc.data.seccion_imagen_texto;
+    let seccionImagenTexto = {
+      imagen: undefined as { url: string; alt: string } | undefined,
+      texto: [] as any[],
+    };
+
+    if (seccionImagenTextoRaw) {
+      // Si es un array (Group), tomar el primer elemento
+      if (Array.isArray(seccionImagenTextoRaw) && seccionImagenTextoRaw.length > 0) {
+        const seccionData = seccionImagenTextoRaw[0];
+        if (seccionData.imagen?.url) {
+          let imagenUrl = seccionData.imagen.url;
+          // Eliminar parámetros de tamaño de Prismic para mantener dimensiones originales
+          imagenUrl = imagenUrl.split('?')[0];
+          seccionImagenTexto.imagen = {
+            url: imagenUrl,
+            alt: seccionData.imagen.alt || '',
+          };
+        }
+        seccionImagenTexto.texto = seccionData.texto || [];
+      } else if (typeof seccionImagenTextoRaw === 'object' && !Array.isArray(seccionImagenTextoRaw)) {
+        // Si es un objeto directo (no array)
+        if (seccionImagenTextoRaw.imagen?.url) {
+          let imagenUrl = seccionImagenTextoRaw.imagen.url;
+          imagenUrl = imagenUrl.split('?')[0];
+          seccionImagenTexto.imagen = {
+            url: imagenUrl,
+            alt: seccionImagenTextoRaw.imagen.alt || '',
+          };
+        }
+        seccionImagenTexto.texto = seccionImagenTextoRaw.texto || [];
+      }
+    }
+
+    console.log('Processed seccion_imagen_texto:', JSON.stringify(seccionImagenTexto, null, 2));
+
+    return {
+      soluciones: soluciones,
+      tabla_tratamientos: doc.data.tabla_tratamientos || [],
+      seccion_imagen_texto: seccionImagenTexto,
+    };
+  } catch (error) {
+    console.error('Error fetching ProteccionCultivo content:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error name:', error.name);
+      // Verificar si es un error 404 (documento no encontrado)
+      if (error.message.includes('404') || error.message.includes('not found')) {
+        console.error('Document "proteccion_cultivo" not found in Prismic. Please check:');
+        console.error('1. The document exists and is published');
+        console.error('2. The Custom Type ID matches "proteccion_cultivo"');
+        console.error('3. The repository name and access token are correct');
+      }
+    }
     return null;
   }
 }

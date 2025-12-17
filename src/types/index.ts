@@ -125,3 +125,24 @@ export interface FieldViewContent {
   subsections: FieldViewSubsection[];
 }
 
+export interface Solucion {
+  logo?: {
+    url: string;
+    alt?: string;
+  };
+  texto_introductorio: any; // Rich text from Prismic
+  tabla: any; // Rich text from Prismic
+}
+
+export interface ProteccionCultivoContent {
+  soluciones: Solucion[];
+  tabla_tratamientos: any; // Rich text from Prismic
+  seccion_imagen_texto: {
+    imagen?: {
+      url: string;
+      alt?: string;
+    };
+    texto: any; // Rich text from Prismic
+  };
+}
+

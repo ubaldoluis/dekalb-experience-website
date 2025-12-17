@@ -124,7 +124,31 @@ function renderBlock(block: RichTextNode): string {
       return `<li>${renderText(block)}</li>`;
     
     case 'preformatted':
-      return `<pre>${escapeHtml(block.text || '')}</pre>`;
+      // Si el texto preformateado parece ser HTML (contiene tags), renderizarlo como HTML
+      const preText = block.text || '';
+      // Detectar si es HTML (tabla, div, párrafo, heading, thead, tbody, tr, td, th)
+      // También detectar HTML escapado (&lt;table, &lt;div, etc.)
+      const hasHtmlTags = preText.includes('<table') || preText.includes('<div') || preText.includes('<p') || 
+          preText.includes('<h') || preText.includes('<thead') || preText.includes('<tbody') ||
+          preText.includes('<tr') || preText.includes('<td') || preText.includes('<th') ||
+          preText.includes('&lt;table') || preText.includes('&lt;div') || preText.includes('&lt;p') ||
+          preText.includes('&lt;thead') || preText.includes('&lt;tbody') || preText.includes('&lt;tr') ||
+          preText.includes('&lt;td') || preText.includes('&lt;th');
+      
+      if (hasHtmlTags) {
+        // Es HTML, renderizarlo sin escapar pero limpiar comentarios HTML
+        let cleanedHtml = preText.replace(/<!--[\s\S]*?-->/g, '');
+        // Desescapar HTML si está escapado
+        cleanedHtml = cleanedHtml
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&#039;/g, "'");
+        return cleanedHtml;
+      }
+      // Si no es HTML, renderizarlo como código preformateado
+      return `<pre>${escapeHtml(preText)}</pre>`;
     
     case 'image':
       const imgUrl = block.url || '';

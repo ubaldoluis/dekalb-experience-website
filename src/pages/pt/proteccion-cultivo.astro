@@ -1,0 +1,385 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { getProteccionCultivoContent } from "../../utils/prismic";
+import { renderRichText } from "../../utils/prismic-rich-text";
+import * as prismic from "@prismicio/client";
+
+const lang = "pt";
+let proteccionCultivoContent = null;
+
+try {
+  proteccionCultivoContent = await getProteccionCultivoContent(lang);
+} catch (error) {
+  console.error("Error fetching ProteccionCultivo content:", error);
+}
+
+// Fallback content si no hay datos de Prismic
+const defaultContent = {
+  soluciones: [
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+    {
+      logo: undefined,
+      texto_introductorio: [],
+      tabla: [],
+    },
+  ],
+  tabla_tratamientos: [],
+  seccion_imagen_texto: {
+    imagen: undefined,
+    texto: [],
+  },
+};
+
+const content = proteccionCultivoContent || defaultContent;
+
+// Traducciones
+const translations = {
+  es: {
+    soluciones: "Soluciones",
+  },
+  pt: {
+    soluciones: "Soluções",
+  },
+};
+
+const t = translations[lang as keyof typeof translations] || translations.es;
+---
+
+<PageLayout
+  title="Proteção de Cultivo"
+  description="Soluções de proteção para suas culturas"
+  lang={lang}
+>
+  <!-- Sección Soluciones -->
+  <section class="proteccion-soluciones">
+    <div class="container">
+      <h2 class="proteccion-soluciones-title">{t.soluciones}</h2>
+      {content.soluciones && content.soluciones.length > 0 ? (
+        <div class="proteccion-soluciones-grid">
+          {content.soluciones.map((solucion, index) => (
+            <div class="proteccion-solucion-card" key={`solucion-${index}`}>
+              <div class="proteccion-solucion-header">
+                {solucion.logo?.url && (
+                  <div class="proteccion-solucion-logo">
+                    <img
+                      src={solucion.logo.url}
+                      alt={solucion.logo.alt || `Solução ${index + 1}`}
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                {solucion.texto_introductorio && (Array.isArray(solucion.texto_introductorio) ? solucion.texto_introductorio.length > 0 : solucion.texto_introductorio) && (
+                  <div
+                    class="proteccion-solucion-texto"
+                    set:html={renderRichText(solucion.texto_introductorio)}
+                  />
+                )}
+              </div>
+              {solucion.tabla && (Array.isArray(solucion.tabla) ? solucion.tabla.length > 0 : solucion.tabla) && (
+                <div
+                  class="proteccion-solucion-tabla"
+                  set:html={renderRichText(solucion.tabla)}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  </section>
+
+  <!-- Sección Tabla de Tratamientos -->
+  <section class="proteccion-tabla-tratamientos">
+    <div class="container">
+      <h2 class="proteccion-tabla-tratamientos-title">{lang === 'es' ? 'Tabla tratamientos' : 'Tabela de tratamentos'}</h2>
+      <div
+        class="proteccion-tabla-tratamientos-content"
+        set:html={renderRichText(content.tabla_tratamientos)}
+      />
+    </div>
+  </section>
+
+  <!-- Sección Imagen y Texto -->
+  {(content.seccion_imagen_texto.imagen?.url || content.seccion_imagen_texto.texto?.length > 0) && (
+    <section class="proteccion-imagen-texto">
+      <div class="container">
+        <div class="proteccion-imagen-texto-wrapper">
+          {content.seccion_imagen_texto.imagen?.url && (
+            <div class="proteccion-imagen-texto-imagen">
+              <img
+                src={content.seccion_imagen_texto.imagen.url}
+                alt={content.seccion_imagen_texto.imagen.alt || ""}
+                loading="lazy"
+              />
+            </div>
+          )}
+          {content.seccion_imagen_texto.texto?.length > 0 && (
+            <div
+              class="proteccion-imagen-texto-texto"
+              set:html={renderRichText(content.seccion_imagen_texto.texto)}
+            />
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  /* Sección Soluciones */
+  .proteccion-soluciones {
+    padding: var(--spacing-16) 0;
+  }
+
+  .proteccion-soluciones-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-12);
+    color: #00527F;
+    text-align: center;
+  }
+
+  .proteccion-soluciones-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+
+  .proteccion-solucion-card {
+    background-color: #EDFCFF;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .proteccion-solucion-header {
+    background-color: #002F47;
+    border-radius: 1rem 1rem 0 0;
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    min-height: 180px;
+  }
+
+  .proteccion-solucion-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .proteccion-solucion-logo img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: contain;
+    display: block;
+  }
+
+  .proteccion-solucion-texto {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .proteccion-solucion-texto :global(p) {
+    margin-bottom: 0;
+    color: #ffffff;
+  }
+
+  .proteccion-solucion-texto :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .proteccion-solucion-tabla {
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ocultar comentarios HTML */
+  .proteccion-solucion-tabla :global(comment),
+  .proteccion-solucion-tabla :global(<!--) {
+    display: none;
+  }
+
+  /* Desktop: mostrar soluciones en grid de 4 columnas */
+  @media (min-width: 1024px) {
+    .proteccion-soluciones-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-8);
+      align-items: stretch;
+    }
+
+    .proteccion-solucion-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .proteccion-solucion-header {
+      width: 100%;
+      height: 200px;
+      min-height: 200px;
+      max-height: 200px;
+      flex-shrink: 0;
+    }
+
+    .proteccion-solucion-tabla {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .proteccion-solucion-tabla :global(table) {
+      background-color: #EDFCFF;
+    }
+  }
+
+  /* Sección Tabla de Tratamientos */
+  .proteccion-tabla-tratamientos {
+    padding: var(--spacing-16) 0;
+    background-color: var(--color-gray-50);
+  }
+
+  .proteccion-tabla-tratamientos-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-12);
+    color: #00527F;
+    text-align: center;
+  }
+
+  .proteccion-tabla-tratamientos-content {
+    overflow-x: auto;
+  }
+
+  /* Asegurar que el fondo de la tabla de tratamientos sea #E8F4F8 */
+  .proteccion-tabla-tratamientos-content :global(table) {
+    background-color: #E8F4F8 !important;
+  }
+
+  .proteccion-tabla-tratamientos-content :global(thead tr) {
+    background-color: #E8F4F8 !important;
+  }
+
+  .proteccion-tabla-tratamientos-content :global(tbody) {
+    background-color: #E8F4F8 !important;
+  }
+
+  /* Sección Imagen y Texto */
+  .proteccion-imagen-texto {
+    padding: var(--spacing-16) 0;
+  }
+
+  .proteccion-imagen-texto-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+
+  .proteccion-imagen-texto-imagen {
+    width: 100%;
+  }
+
+  .proteccion-imagen-texto-imagen img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .proteccion-imagen-texto-texto {
+    width: 100%;
+  }
+
+  /* Desktop: imagen izquierda, texto derecha */
+  @media (min-width: 1024px) {
+    .proteccion-imagen-texto-wrapper {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--spacing-12);
+    }
+
+    .proteccion-imagen-texto-imagen {
+      flex: 0 0 45%;
+    }
+
+    .proteccion-imagen-texto-texto {
+      flex: 0 0 55%;
+    }
+  }
+
+  /* Estilos para tablas dentro del contenido rich text */
+  .proteccion-solucion-tabla :global(table),
+  .proteccion-tabla-tratamientos-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 !important;
+    border-radius: 0;
+    overflow: hidden;
+    height: 100%;
+    flex: 1;
+  }
+
+  /* Asegurar que el fondo de la tabla sea #EDFCFF para coincidir con la card */
+  .proteccion-solucion-tabla :global(table[style*="background-color"]) {
+    background-color: #EDFCFF !important;
+  }
+
+  .proteccion-solucion-tabla :global(table th),
+  .proteccion-tabla-tratamientos-content :global(table th),
+  .proteccion-solucion-tabla :global(table td),
+  .proteccion-tabla-tratamientos-content :global(table td) {
+    padding: var(--spacing-3) var(--spacing-4);
+    text-align: left;
+    vertical-align: top;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Reducir tamaño de texto en tablas en desktop */
+  @media (min-width: 1024px) {
+    .proteccion-solucion-tabla :global(table th),
+    .proteccion-solucion-tabla :global(table td) {
+      font-size: 11px;
+      padding: var(--spacing-2) var(--spacing-3);
+    }
+  }
+
+  .proteccion-solucion-tabla :global(table th),
+  .proteccion-tabla-tratamientos-content :global(table th) {
+    background-color: var(--color-gray-100);
+    font-weight: 600;
+  }
+
+  /* Preservar estilos inline de las tablas de Prismic */
+  .proteccion-solucion-tabla :global(table[style]),
+  .proteccion-tabla-tratamientos-content :global(table[style]) {
+    border-radius: 8px;
+    margin: 0 !important;
+  }
+</style>
+
