@@ -272,3 +272,32 @@ export interface FieldShieldContent {
   };
   cards_finales: FieldShieldCardFinal[];
 }
+
+export interface SiloextraBloque {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string;
+  descripcion: any;
+}
+
+export interface SiloextraContent {
+  hero: {
+    titulo: string;
+    descripcion: any;
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  introduccion: {
+    titulo: string;
+    texto: any;
+  };
+  bloques: SiloextraBloque[];
+}

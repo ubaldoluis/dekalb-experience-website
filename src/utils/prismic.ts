@@ -998,3 +998,80 @@ export async function getFieldShieldContent(
     return null;
   }
 }
+
+/**
+ * Fetch Siloextra content from Prismic
+ */
+export async function getSiloextraContent(
+  locale: string = "es"
+): Promise<any | null> {
+  try {
+    if (!client) {
+      console.warn("Prismic client not initialized");
+      return null;
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("siloextra", { lang: prismicLocale });
+
+    if (!doc?.data) {
+      return null;
+    }
+
+    // Hero
+    const heroImagenFondoUrl: string = (doc.data.hero_imagen_fondo?.url || "")
+      .split("?")[0]
+      .trim();
+    const heroImagenFondoMobileUrl: string = (
+      doc.data.hero_imagen_fondo_mobile?.url || ""
+    )
+      .split("?")[0]
+      .trim();
+
+    // Bloques
+    const bloquesRaw = doc.data.bloques;
+    const bloques = Array.isArray(bloquesRaw)
+      ? bloquesRaw.map((bloque: any) => {
+          const imagenUrl: string = (bloque.imagen?.url || "")
+            .split("?")[0]
+            .trim();
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: bloque.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: bloque.titulo || "",
+            descripcion: bloque.descripcion || [],
+          };
+        })
+      : [];
+
+    return {
+      hero: {
+        titulo: doc.data.hero_titulo || "",
+        descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
+      },
+      introduccion: {
+        titulo: doc.data.introduccion_titulo || "",
+        texto: doc.data.introduccion_texto || [],
+      },
+      bloques,
+    };
+  } catch (error) {
+    console.error("Error fetching Siloextra content:", error);
+    return null;
+  }
+}
