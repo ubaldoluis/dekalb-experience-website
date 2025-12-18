@@ -19,6 +19,7 @@ const defaultContent = {
     titulo: "FieldShield",
     descripcion: [],
     imagen_fondo: undefined,
+    imagen_fondo_mobile: undefined,
   },
   titulo_intro: "",
   texto_intro: [],
@@ -48,6 +49,17 @@ const content = fieldShieldContent || defaultContent;
         : ""}
     >
     </div>
+    {
+      content.hero.imagen_fondo_mobile?.url && (
+        <div class="fieldshield-hero-mobile-image">
+          <img
+            src={content.hero.imagen_fondo_mobile.url}
+            alt={content.hero.imagen_fondo_mobile.alt || ""}
+            loading="lazy"
+          />
+        </div>
+      )
+    }
     <div class="container">
       <div class="fieldshield-hero-content">
         {
@@ -288,33 +300,53 @@ const content = fieldShieldContent || defaultContent;
   /* Hero - Reutilizando estilos de Acceleron pero con degradado amarillo/naranja */
   .fieldshield-hero {
     position: relative;
-    padding: var(--spacing-16) 0;
-    background-color: #ffffff;
+    padding: 0 0 var(--spacing-16) 0;
+    background: linear-gradient(135deg, #ffcb05 0%, #f5a81c 100%);
+    border-radius: 0 0 60px 60px;
     overflow: hidden;
     min-width: auto;
     min-height: 628px;
   }
 
   .fieldshield-hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 828px;
-    background: linear-gradient(135deg, #f5a81c 0%, rgba(245, 168, 28, 0) 100%);
-    z-index: 0;
+    display: none;
+  }
+
+  .fieldshield-hero-mobile-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: block;
+  }
+
+  .fieldshield-hero-mobile-image img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   @media (min-width: 1024px) {
     .fieldshield-hero-gradient {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
       background-repeat: no-repeat;
       background-position: center top;
       background-size: contain;
-      height: 100%;
+      z-index: 0;
     }
     .fieldshield-hero {
       position: relative;
+      padding: var(--spacing-16) 0;
+      background: linear-gradient(135deg, #f5a81c 0%, #ffcb05 100%);
+      border-radius: 0;
       min-width: 500px !important;
+    }
+    .fieldshield-hero-mobile-image {
+      display: none;
     }
   }
 

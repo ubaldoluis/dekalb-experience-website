@@ -20,6 +20,28 @@
           "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
+      "hero_imagen_fondo": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Desktop)",
+          "constraint": {
+            "width": 1920,
+            "height": 828
+          },
+          "thumbnails": []
+        }
+      },
+      "hero_imagen_fondo_mobile": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Mobile)",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      },
       "introduccion_titulo": {
         "type": "Text",
         "config": {

@@ -42,6 +42,17 @@
           "thumbnails": []
         }
       },
+      "hero_imagen_fondo_mobile": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Mobile)",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      },
       "introduccion_titulo": {
         "type": "Text",
         "config": {
@@ -132,4 +143,3 @@
     }
   }
 }
-

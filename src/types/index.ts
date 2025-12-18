@@ -117,6 +117,14 @@ export interface FieldViewContent {
   hero: {
     titulo: string; // Text simple
     descripcion: any; // Rich text from Prismic
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
+      url: string;
+      alt?: string;
+    };
   };
   introduccion: {
     titulo: string; // Text simple
@@ -135,6 +143,18 @@ export interface Solucion {
 }
 
 export interface ProteccionCultivoContent {
+  hero: {
+    titulo: string; // Text simple
+    descripcion: any; // Rich text from Prismic
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
+      url: string;
+      alt?: string;
+    };
+  };
   soluciones: Solucion[];
   tabla_tratamientos: any; // Rich text from Prismic
   seccion_imagen_texto: {
@@ -164,6 +184,10 @@ export interface AcceleronContent {
     titulo: string; // Text simple
     descripcion: any; // Rich text from Prismic
     imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
       url: string;
       alt?: string;
     };
@@ -219,6 +243,10 @@ export interface FieldShieldContent {
     titulo: string;
     descripcion: any;
     imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
       url: string;
       alt?: string;
     };

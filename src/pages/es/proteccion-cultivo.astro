@@ -27,6 +27,18 @@ const t = translations[lang as keyof typeof translations] || translations.es;
 
 // Fallback content si no hay datos de Prismic
 const defaultContent = {
+  hero: {
+    titulo: "Protección de Cultivo",
+    descripcion: [
+      {
+        type: "paragraph",
+        text: "Soluciones integrales para proteger y optimizar tus cultivos",
+        spans: [],
+      },
+    ],
+    imagen_fondo: undefined,
+    imagen_fondo_mobile: undefined,
+  },
   soluciones: [
     {
       logo: undefined,
@@ -66,13 +78,31 @@ const content = proteccionCultivoContent || defaultContent;
 >
   <!-- Hero Section -->
   <section class="proteccion-hero">
-    <div class="proteccion-hero-gradient"></div>
+    <div
+      class="proteccion-hero-gradient"
+      style={content.hero.imagen_fondo?.url
+        ? `background-image: url("${content.hero.imagen_fondo.url}");`
+        : ""}
+    >
+    </div>
+    {
+      content.hero.imagen_fondo_mobile?.url && (
+        <div class="proteccion-hero-mobile-image">
+          <img
+            src={content.hero.imagen_fondo_mobile.url}
+            alt={content.hero.imagen_fondo_mobile.alt || ""}
+            loading="lazy"
+          />
+        </div>
+      )
+    }
     <div class="container">
       <div class="proteccion-hero-content">
-        <h1 class="proteccion-hero-title">Protección de Cultivo</h1>
-        <div class="proteccion-hero-description">
-          <p>Soluciones integrales para proteger y optimizar tus cultivos</p>
-        </div>
+        <h1 class="proteccion-hero-title">{content.hero.titulo}</h1>
+        <div
+          class="proteccion-hero-description"
+          set:html={renderRichText(content.hero.descripcion)}
+        />
       </div>
     </div>
   </section>
@@ -175,37 +205,56 @@ const content = proteccionCultivoContent || defaultContent;
   /* Hero Section */
   .proteccion-hero {
     position: relative;
-    padding: var(--spacing-16) 0;
-    background-color: #ffffff;
+    /* Mobile: sin espacio arriba, solo abajo */
+    padding: 0 0 var(--spacing-16) 0;
+    /* Degradado mobile */
+    background: linear-gradient(135deg, #009ddb 0%, #abe2f8 100%);
+    border-radius: 0 0 60px 60px;
     overflow: hidden;
     min-width: auto;
     min-height: 628px;
   }
 
   .proteccion-hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 828px;
-    background: linear-gradient(
-      135deg,
-      #009ddb 0%,
-      rgba(171, 226, 22488, 0) 100%
-    );
-    z-index: 0;
+    display: none;
   }
 
-  /* Desktop: usar imagen de fondo en lugar de degradado */
+  .proteccion-hero-mobile-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: block;
+  }
+
+  .proteccion-hero-mobile-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
   @media (min-width: 1024px) {
     .proteccion-hero-gradient {
-      background: url("/tratamientos_top-background.png") no-repeat center top;
-      background-size: contain;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 100%;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: contain;
+      z-index: 0;
     }
     .proteccion-hero {
       position: relative;
+      padding: var(--spacing-16) 0;
+      /* Degradado desktop con colores invertidos respecto a mobile */
+      background: linear-gradient(135deg, #abe2f8 0%, #009ddb 100%);
+      border-radius: 0;
       min-width: 500px !important;
+    }
+    .proteccion-hero-mobile-image {
+      display: none;
     }
   }
 

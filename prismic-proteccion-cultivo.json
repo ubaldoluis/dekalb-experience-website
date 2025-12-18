@@ -5,6 +5,43 @@
   "status": true,
   "json": {
     "Main": {
+      "hero_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título Hero",
+          "placeholder": "Protección de Cultivo"
+        }
+      },
+      "hero_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción Hero",
+          "placeholder": "Soluciones integrales para proteger y optimizar tus cultivos",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "hero_imagen_fondo": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Desktop)",
+          "constraint": {
+            "width": 1920,
+            "height": 828
+          },
+          "thumbnails": []
+        }
+      },
+      "hero_imagen_fondo_mobile": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Mobile)",
+          "constraint": {
+            "width": 585,
+            "height": 500
+          },
+          "thumbnails": []
+        }
+      },
       "soluciones": {
         "type": "Group",
         "config": {
@@ -78,4 +115,3 @@
     }
   }
 }
-

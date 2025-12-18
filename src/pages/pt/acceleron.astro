@@ -20,6 +20,7 @@ const defaultContent = {
     titulo: "Acceleron",
     descripcion: [],
     imagen_fondo: undefined,
+    imagen_fondo_mobile: undefined,
   },
   introduccion: {
     titulo: "",
@@ -45,23 +46,35 @@ const content = acceleronContent || defaultContent;
   <section class="acceleron-hero">
     <div
       class="acceleron-hero-gradient"
-      style={
-        content.hero.imagen_fondo?.url
-          ? `background-image: url("${content.hero.imagen_fondo.url}");`
-          : ""
-      }
-    ></div>
+      style={content.hero.imagen_fondo?.url
+        ? `background-image: url("${content.hero.imagen_fondo.url}");`
+        : ""}
+    >
+    </div>
+    {
+      content.hero.imagen_fondo_mobile?.url && (
+        <div class="acceleron-hero-mobile-image">
+          <img
+            src={content.hero.imagen_fondo_mobile.url}
+            alt={content.hero.imagen_fondo_mobile.alt || ""}
+            loading="lazy"
+          />
+        </div>
+      )
+    }
     <div class="container">
       <div class="acceleron-hero-content">
-        {content.hero.logo?.url && (
-          <div class="acceleron-logo">
-            <img
-              src={content.hero.logo.url}
-              alt={content.hero.logo.alt || "Acceleron"}
-              loading="lazy"
-            />
-          </div>
-        )}
+        {
+          content.hero.logo?.url && (
+            <div class="acceleron-logo">
+              <img
+                src={content.hero.logo.url}
+                alt={content.hero.logo.alt || "Acceleron"}
+                loading="lazy"
+              />
+            </div>
+          )
+        }
         <h1 class="acceleron-hero-title">{content.hero.titulo}</h1>
         <div
           class="acceleron-hero-description"
@@ -72,128 +85,157 @@ const content = acceleronContent || defaultContent;
   </section>
 
   <!-- Introducción Section -->
-  {content.introduccion.titulo && (
-    <section class="acceleron-intro">
-      <div class="container">
-        <div class="acceleron-intro-content">
-          <h2 class="acceleron-intro-title">{content.introduccion.titulo}</h2>
-          <div
-            class="acceleron-intro-text"
-            set:html={renderRichText(content.introduccion.texto)}
-          />
+  {
+    content.introduccion.titulo && (
+      <section class="acceleron-intro">
+        <div class="container">
+          <div class="acceleron-intro-content">
+            <h2 class="acceleron-intro-title">{content.introduccion.titulo}</h2>
+            <div
+              class="acceleron-intro-text"
+              set:html={renderRichText(content.introduccion.texto)}
+            />
+          </div>
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
 
   <!-- Bloques Section -->
-  {content.bloques && content.bloques.length > 0 && (
-    <section class="acceleron-subsections">
-      <div class="container">
-        {content.bloques.map((bloque, index) => (
-          <div class={`acceleron-subsection acceleron-subsection-${index}`}>
-            <div class="acceleron-subsection-image">
-              {bloque.imagen?.url ? (
-                <img
-                  src={bloque.imagen.url}
-                  alt={bloque.imagen.alt || bloque.titulo}
-                  loading="lazy"
-                />
-              ) : (
-                <div class="acceleron-subsection-placeholder">
-                  {bloque.titulo}
-                </div>
-              )}
-            </div>
-            <div class="acceleron-subsection-content">
-              <h3 class="acceleron-subsection-title">{bloque.titulo}</h3>
-              {bloque.descripcion && (
-                <div class="acceleron-subsection-description">
-                  <div set:html={renderRichText(bloque.descripcion)} />
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )}
-
-  <!-- Bloque Final -->
-  {(content.bloque_final.imagen_desktop?.url ||
-    content.bloque_final.imagen_mobile?.url ||
-    content.bloque_final.texto?.length > 0) && (
-    <section class="acceleron-imagen-texto-section">
-      <div class="container">
-        <div class="content-right-card-wrapper">
-          {(content.bloque_final.imagen_desktop?.url ||
-            content.bloque_final.imagen_mobile?.url) && (
-            <div class="content-right-card-image">
-              <picture>
-                {content.bloque_final.imagen_mobile?.url && (
-                  <source
-                    media="(max-width: 767px)"
-                    srcset={content.bloque_final.imagen_mobile.url}
-                  />
-                )}
-                {content.bloque_final.imagen_desktop?.url && (
+  {
+    content.bloques && content.bloques.length > 0 && (
+      <section class="acceleron-subsections">
+        <div class="container">
+          {content.bloques.map((bloque, index) => (
+            <div class={`acceleron-subsection acceleron-subsection-${index}`}>
+              <div class="acceleron-subsection-image">
+                {bloque.imagen?.url ? (
                   <img
-                    src={content.bloque_final.imagen_desktop.url}
-                    alt={
-                      content.bloque_final.imagen_desktop.alt ||
-                      content.bloque_final.imagen_mobile?.alt ||
-                      ""
-                    }
+                    src={bloque.imagen.url}
+                    alt={bloque.imagen.alt || bloque.titulo}
                     loading="lazy"
                   />
+                ) : (
+                  <div class="acceleron-subsection-placeholder">
+                    {bloque.titulo}
+                  </div>
                 )}
-              </picture>
+              </div>
+              <div class="acceleron-subsection-content">
+                <h3 class="acceleron-subsection-title">{bloque.titulo}</h3>
+                {bloque.descripcion && (
+                  <div class="acceleron-subsection-description">
+                    <div set:html={renderRichText(bloque.descripcion)} />
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-          {content.bloque_final.texto?.length > 0 && (
-            <div
-              class="content-right-card-content"
-              set:html={renderRichText(content.bloque_final.texto)}
-            />
-          )}
+          ))}
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    )
+  }
+
+  <!-- Bloque Final -->
+  {
+    (content.bloque_final.imagen_desktop?.url ||
+      content.bloque_final.imagen_mobile?.url ||
+      content.bloque_final.texto?.length > 0) && (
+      <section class="acceleron-imagen-texto-section">
+        <div class="container">
+          <div class="content-right-card-wrapper">
+            {(content.bloque_final.imagen_desktop?.url ||
+              content.bloque_final.imagen_mobile?.url) && (
+              <div class="content-right-card-image">
+                <picture>
+                  {content.bloque_final.imagen_mobile?.url && (
+                    <source
+                      media="(max-width: 767px)"
+                      srcset={content.bloque_final.imagen_mobile.url}
+                    />
+                  )}
+                  {content.bloque_final.imagen_desktop?.url && (
+                    <img
+                      src={content.bloque_final.imagen_desktop.url}
+                      alt={
+                        content.bloque_final.imagen_desktop.alt ||
+                        content.bloque_final.imagen_mobile?.alt ||
+                        ""
+                      }
+                      loading="lazy"
+                    />
+                  )}
+                </picture>
+              </div>
+            )}
+            {content.bloque_final.texto?.length > 0 && (
+              <div
+                class="content-right-card-content"
+                set:html={renderRichText(content.bloque_final.texto)}
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
 </PageLayout>
 
 <style>
-  /* Hero Section - Reutilizando estilos de fieldview */
+  /* Hero Section - patrón con imagen mobile */
   .acceleron-hero {
     position: relative;
-    padding: var(--spacing-16) 0;
-    background-color: #ffffff;
+    /* Mobile: sin espacio arriba, solo abajo */
+    padding: 0 0 var(--spacing-16) 0;
+    /* Degradado mobile */
+    background: linear-gradient(135deg, #287032 0%, #a6ce39 100%);
+    border-radius: 0 0 60px 60px;
     overflow: hidden;
     min-width: auto;
     min-height: 628px;
   }
 
   .acceleron-hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 828px;
-    background: linear-gradient(135deg, #287032 0%, rgba(40, 112, 50, 0) 100%);
-    z-index: 0;
+    display: none;
+  }
+
+  .acceleron-hero-mobile-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: block;
+  }
+
+  .acceleron-hero-mobile-image img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   /* Desktop: usar imagen de fondo en lugar de degradado */
   @media (min-width: 1024px) {
     .acceleron-hero-gradient {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
       background-repeat: no-repeat;
       background-position: center top;
       background-size: contain;
-      height: 100%;
+      z-index: 0;
     }
     .acceleron-hero {
       position: relative;
+      padding: var(--spacing-16) 0;
+      /* Degradado desktop con colores invertidos respecto a mobile */
+      background: linear-gradient(135deg, #a6ce39 0%, #287032 100%);
+      border-radius: 0;
       min-width: 500px !important;
+    }
+    .acceleron-hero-mobile-image {
+      display: none;
     }
   }
 
@@ -507,4 +549,3 @@ const content = acceleronContent || defaultContent;
     font-weight: 700;
   }
 </style>
-

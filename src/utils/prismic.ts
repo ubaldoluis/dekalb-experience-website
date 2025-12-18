@@ -315,6 +315,16 @@ export async function getFieldViewContent(
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
     const doc = await client.getSingle("fieldview", { lang: prismicLocale });
 
+    // Procesar hero imagen de fondo (desktop y mobile) siguiendo el patrón de FieldShield
+    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
+    if (heroImagenFondoUrl) {
+      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+    }
+    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
+    if (heroImagenFondoMobileUrl) {
+      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
+    }
+
     // Mapear tabs de Yield Kit
     const yieldKitTabs =
       doc.data.yield_kit_tabs?.map((tab: any, index: number) => {
@@ -332,6 +342,18 @@ export async function getFieldViewContent(
       hero: {
         titulo: doc.data.hero_titulo || "Siembra datos y cosecha decisiones",
         descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
       },
       introduccion: {
         titulo: doc.data.introduccion_titulo || "",
@@ -486,6 +508,16 @@ export async function getProteccionCultivoContent(
       );
     }
 
+    // Procesar hero (título, descripción e imágenes de fondo)
+    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
+    if (heroImagenFondoUrl) {
+      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+    }
+    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
+    if (heroImagenFondoMobileUrl) {
+      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
+    }
+
     // Mapear soluciones - Prismic Groups se devuelven como arrays
     const solucionesRaw = doc.data.soluciones;
 
@@ -528,6 +560,22 @@ export async function getProteccionCultivoContent(
       }
 
       return {
+        hero: {
+          titulo: doc.data.hero_titulo || "Protección de Cultivo",
+          descripcion: doc.data.hero_descripcion || [],
+          imagen_fondo: heroImagenFondoUrl
+            ? {
+                url: heroImagenFondoUrl,
+                alt: doc.data.hero_imagen_fondo?.alt || "",
+              }
+            : undefined,
+          imagen_fondo_mobile: heroImagenFondoMobileUrl
+            ? {
+                url: heroImagenFondoMobileUrl,
+                alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+              }
+            : undefined,
+        },
         soluciones: [],
         tabla_tratamientos: doc.data.tabla_tratamientos || [],
         seccion_imagen_texto: seccionImagenTexto,
@@ -604,6 +652,22 @@ export async function getProteccionCultivoContent(
     );
 
     return {
+      hero: {
+        titulo: doc.data.hero_titulo || "Protección de Cultivo",
+        descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
+      },
       soluciones: soluciones,
       tabla_tratamientos: doc.data.tabla_tratamientos || [],
       seccion_imagen_texto: seccionImagenTexto,
@@ -686,10 +750,14 @@ export async function getAcceleronContent(
       heroLogoUrl = heroLogoUrl.split("?")[0];
     }
 
-    // Procesar hero imagen fondo
+    // Procesar hero imagen fondo (desktop y mobile)
     let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
     if (heroImagenFondoUrl) {
       heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+    }
+    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
+    if (heroImagenFondoMobileUrl) {
+      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
     }
 
     // Mapear bloques
@@ -744,6 +812,12 @@ export async function getAcceleronContent(
               alt: doc.data.hero_imagen_fondo?.alt || "",
             }
           : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
       },
       introduccion: {
         titulo: doc.data.introduccion_titulo || "",
@@ -792,6 +866,9 @@ export async function getFieldShieldContent(
     let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
     if (heroImagenFondoUrl)
       heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
+    if (heroImagenFondoMobileUrl)
+      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
 
     // Mapear módulos
     const modulosRaw = doc.data.modulos;
@@ -884,6 +961,12 @@ export async function getFieldShieldContent(
           ? {
               url: heroImagenFondoUrl,
               alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
             }
           : undefined,
       },

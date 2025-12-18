@@ -30,7 +30,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-family-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
@@ -87,8 +92,132 @@ img {
 }
 
 /* Lists */
-ul, ol {
+/* Reset list styles for navigation and UI elements */
+ul,
+ol {
   list-style: none;
+}
+
+/* Restore list styles for content lists (from Prismic rich text) */
+/* Target lists within content areas - using specific class selectors and generic content divs */
+.rich-text-content ul,
+.rich-text-content ol,
+.fieldview-intro-text ul,
+.fieldview-intro-text ol,
+.fieldview-subsection-description ul,
+.fieldview-subsection-description ol,
+.acceleron-hero-descripcion ul,
+.acceleron-hero-descripcion ol,
+.acceleron-intro-text ul,
+.acceleron-intro-text ol,
+.acceleron-subsection-content ul,
+.acceleron-subsection-content ol,
+.content-right-card-content ul,
+.content-right-card-content ol,
+.content-left-card-content ul,
+.content-left-card-content ol,
+.proteccion-tabla-tratamientos-content ul,
+.proteccion-tabla-tratamientos-content ol,
+.yield-kit-content-inner ul,
+.yield-kit-content-inner ol,
+/* Generic content divs - only apply to ul/ol without classes to avoid affecting navigation */
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class]),
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ol:not([class]),
+section>ul:not([class]),
+section>ol:not([class]),
+article>ul:not([class]),
+article>ol:not([class]) {
+  list-style-position: outside;
+  padding-left: 1.5rem;
+  margin-bottom: var(--spacing-4);
+  margin-top: var(--spacing-2);
+}
+
+/* Unordered lists (bullets) - disc style */
+.rich-text-content ul,
+.fieldview-intro-text ul,
+.fieldview-subsection-description ul,
+.acceleron-hero-descripcion ul,
+.acceleron-intro-text ul,
+.acceleron-subsection-content ul,
+.content-right-card-content ul,
+.content-left-card-content ul,
+.proteccion-tabla-tratamientos-content ul,
+.yield-kit-content-inner ul,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class]),
+section>ul:not([class]),
+article>ul:not([class]) {
+  list-style-type: disc;
+}
+
+/* Ordered lists (numbers) */
+.rich-text-content ol,
+.fieldview-intro-text ol,
+.fieldview-subsection-description ol,
+.acceleron-hero-descripcion ol,
+.acceleron-intro-text ol,
+.acceleron-subsection-content ol,
+.content-right-card-content ol,
+.content-left-card-content ol,
+.proteccion-tabla-tratamientos-content ol,
+.yield-kit-content-inner ol,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ol:not([class]),
+section>ol:not([class]),
+article>ol:not([class]) {
+  list-style-type: decimal;
+}
+
+/* List items spacing */
+.rich-text-content li,
+.fieldview-intro-text li,
+.fieldview-subsection-description li,
+.acceleron-hero-descripcion li,
+.acceleron-intro-text li,
+.acceleron-subsection-content li,
+.content-right-card-content li,
+.content-left-card-content li,
+.proteccion-tabla-tratamientos-content li,
+.yield-kit-content-inner li,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class])>li,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ol:not([class])>li,
+section>ul:not([class])>li,
+section>ol:not([class])>li,
+article>ul:not([class])>li,
+article>ol:not([class])>li {
+  margin-bottom: var(--spacing-2);
+  line-height: var(--line-height-relaxed);
+  padding-left: 0.25rem;
+}
+
+/* Nested lists */
+.rich-text-content ul ul,
+.rich-text-content ol ol,
+.rich-text-content ul ol,
+.rich-text-content ol ul,
+.fieldview-intro-text ul ul,
+.fieldview-intro-text ol ol,
+.fieldview-subsection-description ul ul,
+.fieldview-subsection-description ol ol,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class]) ul,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ol:not([class]) ol {
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  padding-left: 1.5rem;
+}
+
+/* Nested unordered lists - different bullet styles for hierarchy */
+.rich-text-content ul ul,
+.fieldview-intro-text ul ul,
+.fieldview-subsection-description ul ul,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class]) ul {
+  list-style-type: circle;
+}
+
+.rich-text-content ul ul ul,
+.fieldview-intro-text ul ul ul,
+.fieldview-subsection-description ul ul ul,
+div:not(.filter-dropdown-content):not(.modal-content):not(.skip-link)>ul:not([class]) ul ul {
+  list-style-type: square;
 }
 
 /* Buttons */
@@ -181,17 +310,50 @@ select:focus {
   text-align: right;
 }
 
-.mt-0 { margin-top: 0; }
-.mt-1 { margin-top: var(--spacing-1); }
-.mt-2 { margin-top: var(--spacing-2); }
-.mt-4 { margin-top: var(--spacing-4); }
-.mt-6 { margin-top: var(--spacing-6); }
-.mt-8 { margin-top: var(--spacing-8); }
+.mt-0 {
+  margin-top: 0;
+}
 
-.mb-0 { margin-bottom: 0; }
-.mb-1 { margin-bottom: var(--spacing-1); }
-.mb-2 { margin-bottom: var(--spacing-2); }
-.mb-4 { margin-bottom: var(--spacing-4); }
-.mb-6 { margin-bottom: var(--spacing-6); }
-.mb-8 { margin-bottom: var(--spacing-8); }
+.mt-1 {
+  margin-top: var(--spacing-1);
+}
 
+.mt-2 {
+  margin-top: var(--spacing-2);
+}
+
+.mt-4 {
+  margin-top: var(--spacing-4);
+}
+
+.mt-6 {
+  margin-top: var(--spacing-6);
+}
+
+.mt-8 {
+  margin-top: var(--spacing-8);
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-1 {
+  margin-bottom: var(--spacing-1);
+}
+
+.mb-2 {
+  margin-bottom: var(--spacing-2);
+}
+
+.mb-4 {
+  margin-bottom: var(--spacing-4);
+}
+
+.mb-6 {
+  margin-bottom: var(--spacing-6);
+}
+
+.mb-8 {
+  margin-bottom: var(--spacing-8);
+}

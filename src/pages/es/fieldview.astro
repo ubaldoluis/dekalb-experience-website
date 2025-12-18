@@ -25,6 +25,8 @@ const defaultContent = {
         spans: [],
       },
     ],
+    imagen_fondo: undefined,
+    imagen_fondo_mobile: undefined,
   },
   introduccion: {
     titulo:
@@ -109,7 +111,24 @@ const content = fieldViewContent || defaultContent;
 >
   <!-- Hero Section -->
   <section class="fieldview-hero">
-    <div class="fieldview-hero-gradient"></div>
+    <div
+      class="fieldview-hero-gradient"
+      style={content.hero.imagen_fondo?.url
+        ? `background-image: url("${content.hero.imagen_fondo.url}");`
+        : ""}
+    >
+    </div>
+    {
+      content.hero.imagen_fondo_mobile?.url && (
+        <div class="fieldview-hero-mobile-image">
+          <img
+            src={content.hero.imagen_fondo_mobile.url}
+            alt={content.hero.imagen_fondo_mobile.alt || ""}
+            loading="lazy"
+          />
+        </div>
+      )
+    }
     <div class="container">
       <div class="fieldview-hero-content">
         <div class="fieldview-logo">
@@ -186,33 +205,56 @@ const content = fieldViewContent || defaultContent;
   /* Hero Section */
   .fieldview-hero {
     position: relative;
-    padding: var(--spacing-16) 0;
-    background-color: #ffffff;
+    /* Mobile: sin espacio arriba, solo abajo */
+    padding: 0 0 var(--spacing-16) 0;
+    /* Degradado mobile */
+    background: linear-gradient(135deg, #ffcb05 0%, #f5a81c 100%);
+    border-radius: 0 0 60px 60px;
     overflow: hidden;
     min-width: auto;
     min-height: 628px;
   }
 
   .fieldview-hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 828px;
-    background: linear-gradient(135deg, #f5a81c 0%, rgba(245, 168, 28, 0) 100%);
-    z-index: 0;
+    display: none;
   }
 
-  /* Desktop: usar imagen de fondo en lugar de degradado */
+  .fieldview-hero-mobile-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: block;
+  }
+
+  .fieldview-hero-mobile-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
   @media (min-width: 1024px) {
     .fieldview-hero-gradient {
-      background: url("/fieldview_top-background.png") no-repeat center top;
-      background-size: contain;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 100%;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: contain;
+      z-index: 0;
     }
     .fieldview-hero {
       position: relative;
+      padding: var(--spacing-16) 0;
+      /* Degradado desktop con colores invertidos respecto a mobile */
+      background: linear-gradient(135deg, #f5a81c 0%, #ffcb05 100%);
+      border-radius: 0;
       min-width: 500px !important;
+    }
+    .fieldview-hero-mobile-image {
+      display: none;
     }
   }
 
