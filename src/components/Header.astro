@@ -22,6 +22,12 @@ const translations = {
       fieldview: "Fieldview",
       proteccion: "Protección de cultivo",
     },
+    maizItems: {
+      acceleron: "Acceleron",
+      fieldshield: "Fieldshield",
+      siloextra: "Siloextra",
+      preceon: "Preceon",
+    },
     recursosItems: {
       noticias: "Noticias",
       dekalbInforma: "DEKALB informa",
@@ -40,6 +46,12 @@ const translations = {
       fieldview: "Fieldview",
       proteccion: "Proteção de cultivo",
     },
+    maizItems: {
+      acceleron: "Acceleron",
+      fieldshield: "Fieldshield",
+      siloextra: "Siloextra",
+      preceon: "Preceon",
+    },
     recursosItems: {
       noticias: "Notícias",
       dekalbInforma: "DEKALB informa",
@@ -57,17 +69,27 @@ const navItems = [
     path: "/#productos",
     type: "link",
   },
-  {
-    label: t.preceon,
-    path: "/preceon",
-    type: "link",
-  },
+  // {
+  //   label: t.preceon,
+  //   path: "/preceon",
+  //   type: "link",
+  // },
   {
     label: t.soluciones,
     type: "dropdown",
     id: "soluciones-dropdown",
     items: [
-      { label: t.solucionesItems.maiz, path: "/maiz" },
+      {
+        label: t.solucionesItems.maiz,
+        type: "dropdown",
+        id: "maiz-dropdown",
+        items: [
+          { label: t.maizItems.acceleron, path: "/acceleron" },
+          { label: t.maizItems.fieldshield, path: "/fieldshield" },
+          { label: t.maizItems.siloextra, path: "/siloextra" },
+          { label: t.maizItems.preceon, path: "/preceon" },
+        ],
+      },
       { label: t.solucionesItems.colza, path: "/colza" },
       { label: t.solucionesItems.fieldview, path: "/fieldview" },
       { label: t.solucionesItems.proteccion, path: "/proteccion-cultivo" },
@@ -109,6 +131,24 @@ function isPathActive(path: string, currentPath: string): boolean {
     return false; // Hash links are not active by pathname
   }
   return currentPath === path || currentPath.startsWith(path);
+}
+
+// Helper function to check if any nested item is active
+function hasActiveNestedItem(
+  items: any[],
+  currentPath: string,
+  lang: Idioma
+): boolean {
+  return items.some((item) => {
+    if (item.type === "dropdown") {
+      return hasActiveNestedItem(item.items, currentPath, lang);
+    }
+    if (item.path) {
+      const subPath = getLocalizedPath(item.path, lang);
+      return isPathActive(subPath, currentPath);
+    }
+    return false;
+  });
 }
 ---
 
@@ -185,10 +225,11 @@ function isPathActive(path: string, currentPath: string): boolean {
                 </li>
               );
             } else if (item.type === "dropdown") {
-              const hasActiveChild = item.items.some((subItem) => {
-                const subPath = getLocalizedPath(subItem.path, lang);
-                return isPathActive(subPath, currentPath);
-              });
+              const hasActiveChild = hasActiveNestedItem(
+                item.items,
+                currentPath,
+                lang
+              );
               return (
                 <li class="nav-item-dropdown">
                   <button
@@ -224,21 +265,89 @@ function isPathActive(path: string, currentPath: string): boolean {
                     data-dropdown-menu={item.id}
                   >
                     {item.items.map((subItem) => {
-                      const subPath = getLocalizedPath(subItem.path, lang);
-                      const isActive = isPathActive(subPath, currentPath);
-                      return (
-                        <li>
-                          <a
-                            href={subPath}
-                            class:list={[
-                              "dropdown-item",
-                              { "dropdown-item-active": isActive },
-                            ]}
-                          >
-                            {subItem.label}
-                          </a>
-                        </li>
-                      );
+                      if (subItem.type === "dropdown") {
+                        const hasActiveNested = hasActiveNestedItem(
+                          subItem.items,
+                          currentPath,
+                          lang
+                        );
+                        return (
+                          <li class="dropdown-item-nested">
+                            <button
+                              class:list={[
+                                "dropdown-item",
+                                "dropdown-item-nested-trigger",
+                                { "dropdown-item-active": hasActiveNested },
+                              ]}
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              data-dropdown={subItem.id}
+                            >
+                              {subItem.label}
+                              <svg
+                                class="dropdown-arrow dropdown-arrow-nested"
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.5 5L6.5 8L9.5 5"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </button>
+                            <ul
+                              class="dropdown-menu dropdown-menu-nested"
+                              data-dropdown-menu={subItem.id}
+                            >
+                              {subItem.items.map((nestedItem) => {
+                                const nestedPath = getLocalizedPath(
+                                  nestedItem.path,
+                                  lang
+                                );
+                                const isActive = isPathActive(
+                                  nestedPath,
+                                  currentPath
+                                );
+                                return (
+                                  <li>
+                                    <a
+                                      href={nestedPath}
+                                      class:list={[
+                                        "dropdown-item",
+                                        { "dropdown-item-active": isActive },
+                                      ]}
+                                    >
+                                      {nestedItem.label}
+                                    </a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </li>
+                        );
+                      } else {
+                        const subPath = getLocalizedPath(subItem.path, lang);
+                        const isActive = isPathActive(subPath, currentPath);
+                        return (
+                          <li>
+                            <a
+                              href={subPath}
+                              class:list={[
+                                "dropdown-item",
+                                { "dropdown-item-active": isActive },
+                              ]}
+                            >
+                              {subItem.label}
+                            </a>
+                          </li>
+                        );
+                      }
                     })}
                   </ul>
                 </li>
@@ -314,17 +423,28 @@ function isPathActive(path: string, currentPath: string): boolean {
       trigger.addEventListener("click", (e) => {
         e.stopPropagation();
         const isExpanded = trigger.getAttribute("aria-expanded") === "true";
+        const isNested = trigger.closest(".dropdown-menu") !== null;
 
-        // Close all other dropdowns
+        // Close all other dropdowns at the same level
         dropdownTriggers.forEach((otherTrigger) => {
-          if (otherTrigger !== trigger) {
-            otherTrigger.setAttribute("aria-expanded", "false");
-            const otherId = otherTrigger.getAttribute("data-dropdown");
-            const otherMenu = document.querySelector(
-              `[data-dropdown-menu="${otherId}"]`
-            ) as HTMLElement;
-            if (otherMenu) {
-              otherMenu.classList.remove("dropdown-menu-open");
+          const otherIsNested = otherTrigger.closest(".dropdown-menu") !== null;
+          if (otherTrigger !== trigger && otherIsNested === isNested) {
+            // Only close siblings, not parent/child dropdowns
+            const otherParent = otherTrigger.closest(
+              ".nav-item-dropdown, .dropdown-item-nested"
+            );
+            const currentParent = trigger.closest(
+              ".nav-item-dropdown, .dropdown-item-nested"
+            );
+            if (otherParent === currentParent) {
+              otherTrigger.setAttribute("aria-expanded", "false");
+              const otherId = otherTrigger.getAttribute("data-dropdown");
+              const otherMenu = document.querySelector(
+                `[data-dropdown-menu="${otherId}"]`
+              ) as HTMLElement;
+              if (otherMenu) {
+                otherMenu.classList.remove("dropdown-menu-open");
+              }
             }
           }
         });
@@ -599,6 +719,43 @@ function isPathActive(path: string, currentPath: string): boolean {
     background-color: var(--color-gray-50);
   }
 
+  /* Nested dropdown styles */
+  .dropdown-item-nested {
+    position: relative;
+  }
+
+  .dropdown-item-nested-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+  }
+
+  .dropdown-arrow-nested {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .dropdown-item-nested-trigger[aria-expanded="true"] .dropdown-arrow-nested {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu-nested {
+    position: absolute;
+    top: 0;
+    left: calc(100% + 8px);
+    min-width: 200px;
+    z-index: 1001;
+  }
+
+  /* Adjust nested dropdown position on right edge */
+  .dropdown-item-nested:last-child .dropdown-menu-nested,
+  .dropdown-item-nested:nth-last-child(2) .dropdown-menu-nested {
+    left: auto;
+    right: calc(100% + 8px);
+  }
+
   /* Language selector */
   .nav-item-lang {
     margin-left: var(--spacing-2);
@@ -688,6 +845,34 @@ function isPathActive(path: string, currentPath: string): boolean {
     }
 
     .dropdown-menu-open {
+      max-height: 300px;
+    }
+
+    /* Nested dropdown styles for mobile */
+    .dropdown-item-nested {
+      width: 100%;
+    }
+
+    .dropdown-item-nested-trigger {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .dropdown-menu-nested {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      padding: var(--spacing-2) 0 var(--spacing-2) var(--spacing-4);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-base);
+      left: auto;
+      right: auto;
+    }
+
+    .dropdown-menu-nested.dropdown-menu-open {
       max-height: 300px;
     }
 
