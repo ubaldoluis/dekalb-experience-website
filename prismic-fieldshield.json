@@ -1,0 +1,245 @@
+{
+  "id": "fieldshield",
+  "label": "FieldShield",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "hero_logo": {
+        "type": "Image",
+        "config": {
+          "label": "Logo del Hero",
+          "constraint": {
+            "width": 300,
+            "height": 150
+          },
+          "thumbnails": []
+        }
+      },
+      "hero_titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título del Hero",
+          "placeholder": "Título principal del hero"
+        }
+      },
+      "hero_descripcion": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción del Hero",
+          "placeholder": "Texto descriptivo del hero",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "hero_imagen_fondo": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen de Fondo del Hero (Desktop)",
+          "constraint": {
+            "width": 1920,
+            "height": 828
+          },
+          "thumbnails": []
+        }
+      },
+      "titulo_intro": {
+        "type": "Text",
+        "config": {
+          "label": "Título Introductorio (Azul)",
+          "placeholder": "Título en color azul"
+        }
+      },
+      "texto_intro": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Texto Introductorio",
+          "placeholder": "Texto descriptivo que admite HTML",
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "modulos": {
+        "type": "Group",
+        "config": {
+          "label": "Módulos de Contenido",
+          "fields": {
+            "imagen": {
+              "type": "Image",
+              "config": {
+                "label": "Imagen",
+                "constraint": {
+                  "width": 585,
+                  "height": 500
+                },
+                "thumbnails": []
+              }
+            },
+            "titulo": {
+              "type": "Text",
+              "config": {
+                "label": "Título",
+                "placeholder": "Título del módulo"
+              }
+            },
+            "descripcion": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Descripción",
+                "placeholder": "Texto descriptivo del módulo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "soluciones_fieldshield": {
+        "type": "Group",
+        "config": {
+          "label": "Soluciones FieldShield",
+          "fields": {
+            "titulo": {
+              "type": "Text",
+              "config": {
+                "label": "Título",
+                "placeholder": "Soluciones FieldShield"
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "Texto descriptivo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "cards_textos_plus": {
+        "type": "Group",
+        "config": {
+          "label": "Cards con Textos unidos por '+'",
+          "fields": {
+            "titulo": {
+              "type": "Text",
+              "config": {
+                "label": "Título",
+                "placeholder": "Título de la card"
+              }
+            },
+            "descripcion": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Descripción",
+                "placeholder": "Texto explicativo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "cards_gris": {
+        "type": "Group",
+        "config": {
+          "label": "Cards con Degradado Gris",
+          "fields": {
+            "imagen": {
+              "type": "Image",
+              "config": {
+                "label": "Imagen/Icono",
+                "constraint": {
+                  "width": 104,
+                  "height": 104
+                },
+                "thumbnails": []
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "Texto descriptivo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "seleccion_hibridos": {
+        "type": "Group",
+        "config": {
+          "label": "Selección de Híbridos FieldShield",
+          "fields": {
+            "titulo": {
+              "type": "Text",
+              "config": {
+                "label": "Título",
+                "placeholder": "Selección de híbridos FieldShield"
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "Texto descriptivo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "bloque_degradado": {
+        "type": "Group",
+        "config": {
+          "label": "Bloque con Degradado Gris-Azul",
+          "fields": {
+            "imagen": {
+              "type": "Image",
+              "config": {
+                "label": "Imagen Centrada",
+                "constraint": {
+                  "width": 514,
+                  "height": 343
+                },
+                "thumbnails": []
+              }
+            }
+          }
+        }
+      },
+      "cards_finales": {
+        "type": "Group",
+        "config": {
+          "label": "Cards Finales",
+          "fields": {
+            "imagen": {
+              "type": "Image",
+              "config": {
+                "label": "Imagen/Icono",
+                "constraint": {
+                  "width": 104,
+                  "height": 104
+                },
+                "thumbnails": []
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "Texto descriptivo",
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            },
+            "tabs_labels": {
+              "type": "Text",
+              "config": {
+                "label": "Etiquetas de Tabs (separadas por comas)",
+                "placeholder": "Tab 1, Tab 2, Tab 3"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { getFieldShieldContent } from "../../utils/prismic";
 import { renderRichText } from "../../utils/prismic-rich-text";
 import * as prismic from "@prismicio/client";
 
-const lang = "es";
+const lang = "pt";
 let fieldShieldContent = null;
 
 try {
@@ -43,24 +43,23 @@ const content = fieldShieldContent || defaultContent;
   <section class="fieldshield-hero">
     <div
       class="fieldshield-hero-gradient"
-      style={content.hero.imagen_fondo?.url
-        ? `background-image: url("${content.hero.imagen_fondo.url}");`
-        : ""}
-    >
-    </div>
+      style={
+        content.hero.imagen_fondo?.url
+          ? `background-image: url("${content.hero.imagen_fondo.url}");`
+          : ""
+      }
+    ></div>
     <div class="container">
       <div class="fieldshield-hero-content">
-        {
-          content.hero.logo?.url && (
-            <div class="fieldshield-logo">
-              <img
-                src={content.hero.logo.url}
-                alt={content.hero.logo.alt || "FieldShield"}
-                loading="lazy"
-              />
-            </div>
-          )
-        }
+        {content.hero.logo?.url && (
+          <div class="fieldshield-logo">
+            <img
+              src={content.hero.logo.url}
+              alt={content.hero.logo.alt || "FieldShield"}
+              loading="lazy"
+            />
+          </div>
+        )}
         <h1 class="fieldshield-hero-title">{content.hero.titulo}</h1>
         <div
           class="fieldshield-hero-description"
@@ -71,217 +70,197 @@ const content = fieldShieldContent || defaultContent;
   </section>
 
   <!-- Título Intro + Texto -->
-  {
-    content.titulo_intro && (
-      <section class="fieldshield-titulo-intro">
-        <div class="container">
-          <div class="fieldshield-titulo-intro-content">
-            <h2 class="fieldshield-titulo-intro-title">
-              {content.titulo_intro}
-            </h2>
-            <div
-              class="fieldshield-titulo-intro-text"
-              set:html={renderRichText(content.texto_intro)}
-            />
-          </div>
+  {content.titulo_intro && (
+    <section class="fieldshield-titulo-intro">
+      <div class="container">
+        <div class="fieldshield-titulo-intro-content">
+          <h2 class="fieldshield-titulo-intro-title">
+            {content.titulo_intro}
+          </h2>
+          <div
+            class="fieldshield-titulo-intro-text"
+            set:html={renderRichText(content.texto_intro)}
+          />
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <!-- Módulos Section -->
-  {
-    content.modulos && content.modulos.length > 0 && (
-      <section class="fieldshield-modulos">
-        <div class="container">
-          {content.modulos.map((modulo, index) => (
-            <div class={`fieldshield-modulo fieldshield-modulo-${index}`}>
-              <div class="fieldshield-modulo-image">
-                {modulo.imagen?.url ? (
+  {content.modulos && content.modulos.length > 0 && (
+    <section class="fieldshield-modulos">
+      <div class="container">
+        {content.modulos.map((modulo, index) => (
+          <div class={`fieldshield-modulo fieldshield-modulo-${index}`}>
+            <div class="fieldshield-modulo-image">
+              {modulo.imagen?.url ? (
+                <img
+                  src={modulo.imagen.url}
+                  alt={modulo.imagen.alt || modulo.titulo}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="fieldshield-modulo-placeholder">{modulo.titulo}</div>
+              )}
+            </div>
+            <div class="fieldshield-modulo-content">
+              <h3 class="fieldshield-modulo-title">{modulo.titulo}</h3>
+              {modulo.descripcion && (
+                <div class="fieldshield-modulo-description">
+                  <div set:html={renderRichText(modulo.descripcion)} />
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Soluciones FieldShield -->
+  {content.soluciones_fieldshield.titulo && (
+    <section class="fieldshield-soluciones">
+      <div class="container">
+        <div class="fieldshield-soluciones-content">
+          <h2 class="fieldshield-soluciones-title">
+            {content.soluciones_fieldshield.titulo}
+          </h2>
+          <div
+            class="fieldshield-soluciones-text"
+            set:html={renderRichText(content.soluciones_fieldshield.texto)}
+          />
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Cards con Textos unidos por '+' -->
+  {content.cards_textos_plus && content.cards_textos_plus.length > 0 && (
+    <section class="fieldshield-cards-plus">
+      <div class="container">
+        <div class="fieldshield-cards-plus-grid">
+          {content.cards_textos_plus.map((card, index) => (
+            <>
+              <div class="fieldshield-card-plus">
+                <h3 class="fieldshield-card-plus-title">{card.titulo}</h3>
+                <div
+                  class="fieldshield-card-plus-desc"
+                  set:html={renderRichText(card.descripcion)}
+                />
+              </div>
+              {index < content.cards_textos_plus.length - 1 && (
+                <div class="fieldshield-card-plus-separator">
                   <img
-                    src={modulo.imagen.url}
-                    alt={modulo.imagen.alt || modulo.titulo}
+                    src="/separador_fieldshield.svg"
+                    alt="+"
+                    width="32"
+                    height="32"
+                  />
+                </div>
+              )}
+            </>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Cards con Degradado Gris -->
+  {content.cards_gris && content.cards_gris.length > 0 && (
+    <section class="fieldshield-cards-gris">
+      <div class="container">
+        <div class="fieldshield-cards-gris-grid">
+          {content.cards_gris.map((card) => (
+            <div class="fieldshield-card-gris">
+              {card.imagen?.url && (
+                <div class="fieldshield-card-gris-image">
+                  <img
+                    src={card.imagen.url}
+                    alt={card.imagen.alt || ""}
                     loading="lazy"
                   />
-                ) : (
-                  <div class="fieldshield-modulo-placeholder">
-                    {modulo.titulo}
-                  </div>
-                )}
-              </div>
-              <div class="fieldshield-modulo-content">
-                <h3 class="fieldshield-modulo-title">{modulo.titulo}</h3>
-                {modulo.descripcion && (
-                  <div class="fieldshield-modulo-description">
-                    <div set:html={renderRichText(modulo.descripcion)} />
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+              <div
+                class="fieldshield-card-gris-text"
+                set:html={renderRichText(card.texto)}
+              />
             </div>
           ))}
         </div>
-      </section>
-    )
-  }
-
-  <!-- Soluciones FieldShield -->
-  {
-    content.soluciones_fieldshield.titulo && (
-      <section class="fieldshield-soluciones">
-        <div class="container">
-          <div class="fieldshield-soluciones-content">
-            <h2 class="fieldshield-soluciones-title">
-              {content.soluciones_fieldshield.titulo}
-            </h2>
-            <div
-              class="fieldshield-soluciones-text"
-              set:html={renderRichText(content.soluciones_fieldshield.texto)}
-            />
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- Cards con Textos unidos por '+' -->
-  {
-    content.cards_textos_plus && content.cards_textos_plus.length > 0 && (
-      <section class="fieldshield-cards-plus">
-        <div class="container">
-          <div class="fieldshield-cards-plus-grid">
-            {content.cards_textos_plus.map((card, index) => (
-              <>
-                <div class="fieldshield-card-plus">
-                  <h3 class="fieldshield-card-plus-title">{card.titulo}</h3>
-                  <div
-                    class="fieldshield-card-plus-desc"
-                    set:html={renderRichText(card.descripcion)}
-                  />
-                </div>
-                {index < content.cards_textos_plus.length - 1 && (
-                  <div class="fieldshield-card-plus-separator">
-                    <img
-                      src="/separador_fieldshield.svg"
-                      alt="+"
-                      width="32"
-                      height="32"
-                    />
-                  </div>
-                )}
-              </>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- Cards con Degradado Gris -->
-  {
-    content.cards_gris && content.cards_gris.length > 0 && (
-      <section class="fieldshield-cards-gris">
-        <div class="container">
-          <div class="fieldshield-cards-gris-grid">
-            {content.cards_gris.map((card) => (
-              <div class="fieldshield-card-gris">
-                {card.imagen?.url && (
-                  <div class="fieldshield-card-gris-image">
-                    <img
-                      src={card.imagen.url}
-                      alt={card.imagen.alt || ""}
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div
-                  class="fieldshield-card-gris-text"
-                  set:html={renderRichText(card.texto)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <!-- Selección de Híbridos -->
-  {
-    content.seleccion_hibridos.titulo && (
-      <section class="fieldshield-seleccion">
-        <div class="container">
-          <div class="fieldshield-seleccion-content">
-            <h2 class="fieldshield-seleccion-title">
-              {content.seleccion_hibridos.titulo}
-            </h2>
-            <div
-              class="fieldshield-seleccion-text"
-              set:html={renderRichText(content.seleccion_hibridos.texto)}
-            />
-          </div>
+  {content.seleccion_hibridos.titulo && (
+    <section class="fieldshield-seleccion">
+      <div class="container">
+        <div class="fieldshield-seleccion-content">
+          <h2 class="fieldshield-seleccion-title">
+            {content.seleccion_hibridos.titulo}
+          </h2>
+          <div
+            class="fieldshield-seleccion-text"
+            set:html={renderRichText(content.seleccion_hibridos.texto)}
+          />
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <!-- Bloque Degradado -->
-  {
-    content.bloque_degradado.imagen?.url && (
-      <section class="fieldshield-bloque-degradado">
-        <div class="container">
-          <div class="fieldshield-bloque-degradado-content">
-            <img
-              src={content.bloque_degradado.imagen.url}
-              alt={content.bloque_degradado.imagen.alt || ""}
-              loading="lazy"
-            />
-          </div>
+  {content.bloque_degradado.imagen?.url && (
+    <section class="fieldshield-bloque-degradado">
+      <div class="container">
+        <div class="fieldshield-bloque-degradado-content">
+          <img
+            src={content.bloque_degradado.imagen.url}
+            alt={content.bloque_degradado.imagen.alt || ""}
+            loading="lazy"
+          />
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 
   <!-- Cards Finales -->
-  {
-    content.cards_finales && content.cards_finales.length > 0 && (
-      <section class="fieldshield-cards-finales">
-        <div class="container">
-          <div class="fieldshield-cards-finales-grid">
-            {content.cards_finales.map((card, index) => (
+  {content.cards_finales && content.cards_finales.length > 0 && (
+    <section class="fieldshield-cards-finales">
+      <div class="container">
+        <div class="fieldshield-cards-finales-grid">
+          {content.cards_finales.map((card, index) => (
+            <div
+              class={`fieldshield-card-final ${
+                card.tabs ? "fieldshield-card-final-with-tabs" : ""
+              }`}
+            >
+              {card.imagen?.url && (
+                <div class="fieldshield-card-final-image">
+                  <img
+                    src={card.imagen.url}
+                    alt={card.imagen.alt || ""}
+                    loading="lazy"
+                  />
+                </div>
+              )}
               <div
-                class={`fieldshield-card-final ${
-                  card.tabs ? "fieldshield-card-final-with-tabs" : ""
-                }`}
-              >
-                {card.imagen?.url && (
-                  <div class="fieldshield-card-final-image">
-                    <img
-                      src={card.imagen.url}
-                      alt={card.imagen.alt || ""}
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div
-                  class="fieldshield-card-final-text"
-                  set:html={renderRichText(card.texto)}
-                />
-                {card.tabs && card.tabs.length > 0 && (
-                  <div class="fieldshield-card-final-tabs">
-                    {card.tabs.map((tab) => (
-                      <span class="fieldshield-card-final-tab">
-                        {tab.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                class="fieldshield-card-final-text"
+                set:html={renderRichText(card.texto)}
+              />
+              {card.tabs && card.tabs.length > 0 && (
+                <div class="fieldshield-card-final-tabs">
+                  {card.tabs.map((tab) => (
+                    <span class="fieldshield-card-final-tab">{tab.label}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
 </PageLayout>
 
 <style>
@@ -355,7 +334,7 @@ const content = fieldShieldContent || defaultContent;
 
   /* Título Intro Azul */
   .fieldshield-titulo-intro {
-    padding: var(--spacing-16) 0 0 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -473,9 +452,8 @@ const content = fieldShieldContent || defaultContent;
 
   /* Soluciones FieldShield */
   .fieldshield-soluciones {
-    /* padding: var(--spacing-16) 0; */
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
-    margin-bottom: 0px;
   }
 
   .fieldshield-soluciones-content {
@@ -505,7 +483,7 @@ const content = fieldShieldContent || defaultContent;
 
   /* Cards con Textos unidos por '+' */
   .fieldshield-cards-plus {
-    padding: var(--spacing-8) 0 0 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -584,7 +562,7 @@ const content = fieldShieldContent || defaultContent;
 
   /* Cards con Degradado Gris */
   .fieldshield-cards-gris {
-    padding: var(--spacing-8) 0 var(--spacing-4) 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -686,7 +664,7 @@ const content = fieldShieldContent || defaultContent;
 
   /* Cards Finales */
   .fieldshield-cards-finales {
-    padding: var(--spacing-8) 0 var(--spacing-16) 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -799,3 +777,4 @@ const content = fieldShieldContent || defaultContent;
     }
   }
 </style>
+

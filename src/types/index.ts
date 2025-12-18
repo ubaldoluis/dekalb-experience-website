@@ -185,3 +185,62 @@ export interface AcceleronContent {
     texto: any; // Rich text from Prismic
   };
 }
+
+export interface FieldShieldCardPlus {
+  titulo: string;
+  descripcion: any; // Rich text from Prismic
+}
+
+export interface FieldShieldCardGris {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  texto: any; // Rich text from Prismic
+}
+
+export interface FieldShieldCardFinal {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  texto: any; // Rich text from Prismic
+  tabs?: Array<{
+    label: string;
+  }>;
+}
+
+export interface FieldShieldContent {
+  hero: {
+    logo?: {
+      url: string;
+      alt?: string;
+    };
+    titulo: string;
+    descripcion: any;
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  titulo_intro: string;
+  texto_intro: any;
+  modulos: AcceleronBloque[];
+  soluciones_fieldshield: {
+    titulo: string;
+    texto: any;
+  };
+  cards_textos_plus: FieldShieldCardPlus[];
+  cards_gris: FieldShieldCardGris[];
+  seleccion_hibridos: {
+    titulo: string;
+    texto: any;
+  };
+  bloque_degradado: {
+    imagen?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  cards_finales: FieldShieldCardFinal[];
+}

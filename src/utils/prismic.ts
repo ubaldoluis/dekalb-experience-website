@@ -11,6 +11,7 @@ import type {
   FieldViewContent,
   ProteccionCultivoContent,
   AcceleronContent,
+  FieldShieldContent,
 } from "../types";
 
 import { logger } from "./logger";
@@ -767,6 +768,150 @@ export async function getAcceleronContent(
     };
   } catch (error) {
     console.error("Error fetching Acceleron content:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetch FieldShield content from Prismic
+ */
+export async function getFieldShieldContent(
+  locale: string = "es"
+): Promise<FieldShieldContent | null> {
+  try {
+    if (!client) {
+      console.warn("Prismic client not initialized");
+      return null;
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("fieldshield", { lang: prismicLocale });
+
+    // Procesar hero
+    let heroLogoUrl = doc.data.hero_logo?.url || "";
+    if (heroLogoUrl) heroLogoUrl = heroLogoUrl.split("?")[0];
+    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
+    if (heroImagenFondoUrl)
+      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+
+    // Mapear módulos
+    const modulosRaw = doc.data.modulos;
+    const modulos = Array.isArray(modulosRaw)
+      ? modulosRaw.map((modulo: any) => {
+          let imagenUrl = modulo.imagen?.url || "";
+          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          return {
+            imagen: imagenUrl
+              ? { url: imagenUrl, alt: modulo.imagen?.alt || "" }
+              : undefined,
+            titulo: modulo.titulo || "",
+            descripcion: modulo.descripcion || [],
+          };
+        })
+      : [];
+
+    // Procesar soluciones_fieldshield
+    const solucionesRaw = Array.isArray(doc.data.soluciones_fieldshield)
+      ? doc.data.soluciones_fieldshield[0]
+      : doc.data.soluciones_fieldshield;
+
+    // Mapear cards_textos_plus
+    const cardsPlusRaw = doc.data.cards_textos_plus;
+    const cardsPlus = Array.isArray(cardsPlusRaw)
+      ? cardsPlusRaw.map((card: any) => ({
+          titulo: card.titulo || "",
+          descripcion: card.descripcion || [],
+        }))
+      : [];
+
+    // Mapear cards_gris
+    const cardsGrisRaw = doc.data.cards_gris;
+    const cardsGris = Array.isArray(cardsGrisRaw)
+      ? cardsGrisRaw.map((card: any) => {
+          let imagenUrl = card.imagen?.url || "";
+          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          return {
+            imagen: imagenUrl
+              ? { url: imagenUrl, alt: card.imagen?.alt || "" }
+              : undefined,
+            texto: card.texto || [],
+          };
+        })
+      : [];
+
+    // Procesar seleccion_hibridos
+    const seleccionRaw = Array.isArray(doc.data.seleccion_hibridos)
+      ? doc.data.seleccion_hibridos[0]
+      : doc.data.seleccion_hibridos;
+
+    // Procesar bloque_degradado
+    const bloqueDegradadoRaw = Array.isArray(doc.data.bloque_degradado)
+      ? doc.data.bloque_degradado[0]
+      : doc.data.bloque_degradado;
+    let bloqueImagenUrl = bloqueDegradadoRaw?.imagen?.url || "";
+    if (bloqueImagenUrl) bloqueImagenUrl = bloqueImagenUrl.split("?")[0];
+
+    // Mapear cards_finales
+    const cardsFinalesRaw = doc.data.cards_finales;
+    const cardsFinales = Array.isArray(cardsFinalesRaw)
+      ? cardsFinalesRaw.map((card: any) => {
+          let imagenUrl = card.imagen?.url || "";
+          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          const tabsLabelsStr = card.tabs_labels || "";
+          const tabs = tabsLabelsStr
+            ? tabsLabelsStr
+                .split(",")
+                .map((label: string) => ({ label: label.trim() }))
+                .filter((tab: { label: string }) => tab.label.length > 0)
+            : [];
+          return {
+            imagen: imagenUrl
+              ? { url: imagenUrl, alt: card.imagen?.alt || "" }
+              : undefined,
+            texto: card.texto || [],
+            tabs: tabs.length > 0 ? tabs : undefined,
+          };
+        })
+      : [];
+
+    return {
+      hero: {
+        logo: heroLogoUrl
+          ? { url: heroLogoUrl, alt: doc.data.hero_logo?.alt || "" }
+          : undefined,
+        titulo: doc.data.hero_titulo || "",
+        descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+      },
+      titulo_intro: doc.data.titulo_intro || "",
+      texto_intro: doc.data.texto_intro || [],
+      modulos: modulos,
+      soluciones_fieldshield: {
+        titulo: solucionesRaw?.titulo || "",
+        texto: solucionesRaw?.texto || [],
+      },
+      cards_textos_plus: cardsPlus,
+      cards_gris: cardsGris,
+      seleccion_hibridos: {
+        titulo: seleccionRaw?.titulo || "",
+        texto: seleccionRaw?.texto || [],
+      },
+      bloque_degradado: {
+        imagen: bloqueImagenUrl
+          ? {
+              url: bloqueImagenUrl,
+              alt: bloqueDegradadoRaw?.imagen?.alt || "",
+            }
+          : undefined,
+      },
+      cards_finales: cardsFinales,
+    };
+  } catch (error) {
+    console.error("Error fetching FieldShield content:", error);
     return null;
   }
 }
