@@ -12,6 +12,7 @@ import type {
   ProteccionCultivoContent,
   AcceleronContent,
   FieldShieldContent,
+  PreceonContent,
 } from "../types";
 
 import { logger } from "./logger";
@@ -1072,6 +1073,141 @@ export async function getSiloextraContent(
     };
   } catch (error) {
     console.error("Error fetching Siloextra content:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetch Preceon content from Prismic
+ */
+export async function getPreceonContent(
+  locale: string = "es"
+): Promise<PreceonContent | null> {
+  try {
+    if (!client) {
+      console.warn("Prismic client not initialized");
+      return null;
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("preceon", { lang: prismicLocale });
+
+    if (!doc?.data) {
+      return null;
+    }
+
+    // Hero
+    let heroLogoUrl: string = (doc.data.hero_logo?.url || "")
+      .split("?")[0]
+      .trim();
+    let heroImagenFondoUrl: string = (doc.data.hero_imagen_fondo?.url || "")
+      .split("?")[0]
+      .trim();
+    let heroImagenFondoMobileUrl: string = (
+      doc.data.hero_imagen_fondo_mobile?.url || ""
+    )
+      .split("?")[0]
+      .trim();
+
+    // Elementos grid
+    const elementosGridRaw = doc.data.elementos_grid;
+    const elementosGrid = Array.isArray(elementosGridRaw)
+      ? elementosGridRaw.map((elemento: any) => {
+          const imagenUrl: string = (elemento.imagen?.url || "")
+            .split("?")[0]
+            .trim();
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: elemento.imagen?.alt || "",
+                }
+              : undefined,
+            texto: elemento.texto || [],
+          };
+        })
+      : [];
+
+    // Elementos destacados
+    const elementosDestacadosRaw = doc.data.elementos_destacados;
+    const elementosDestacados = Array.isArray(elementosDestacadosRaw)
+      ? elementosDestacadosRaw.map((elemento: any) => ({
+          titulo: elemento.titulo || "",
+          texto: elemento.texto || [],
+        }))
+      : [];
+
+    // Imágenes degradado
+    const imagenesDegradadoRaw = doc.data.imagenes_degradado;
+    const imagenesDegradado = Array.isArray(imagenesDegradadoRaw)
+      ? imagenesDegradadoRaw.map((item: any) => {
+          const imagenUrl: string = (item.imagen?.url || "")
+            .split("?")[0]
+            .trim();
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: item.imagen?.alt || "",
+                }
+              : undefined,
+            texto: item.texto || [],
+          };
+        })
+      : [];
+
+    // Bloque final
+    const bloqueFinalRaw = Array.isArray(doc.data.bloque_final)
+      ? doc.data.bloque_final[0]
+      : doc.data.bloque_final;
+    const bloqueFinalImagenUrl: string = (bloqueFinalRaw?.imagen?.url || "")
+      .split("?")[0]
+      .trim();
+
+    return {
+      hero: {
+        logo: heroLogoUrl
+          ? {
+              url: heroLogoUrl,
+              alt: doc.data.hero_logo?.alt || "",
+            }
+          : undefined,
+        titulo: doc.data.hero_titulo || "",
+        descripcion: doc.data.hero_descripcion || [],
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
+      },
+      titulo_intro: doc.data.titulo_intro || "",
+      texto_intro: doc.data.texto_intro || [],
+      elementos_grid: elementosGrid,
+      produccion: {
+        titulo: doc.data.produccion_titulo || "",
+        texto: doc.data.produccion_texto || [],
+      },
+      elementos_destacados: elementosDestacados,
+      imagenes_degradado: imagenesDegradado,
+      bloque_final: {
+        imagen: bloqueFinalImagenUrl
+          ? {
+              url: bloqueFinalImagenUrl,
+              alt: bloqueFinalRaw?.imagen?.alt || "",
+            }
+          : undefined,
+        titulo: bloqueFinalRaw?.titulo || "",
+        descripcion: bloqueFinalRaw?.descripcion || [],
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching Preceon content:", error);
     return null;
   }
 }

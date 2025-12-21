@@ -301,3 +301,62 @@ export interface SiloextraContent {
   };
   bloques: SiloextraBloque[];
 }
+
+export interface PreceonElementoGrid {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  texto: any;
+}
+
+export interface PreceonElementoDestacado {
+  titulo: string;
+  texto: any;
+}
+
+export interface PreceonImagenDegradado {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  texto: any;
+}
+
+export interface PreceonBloqueFinal {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string;
+  descripcion: any;
+}
+
+export interface PreceonContent {
+  hero: {
+    logo?: {
+      url: string;
+      alt?: string;
+    };
+    titulo: string;
+    descripcion: any;
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  titulo_intro: string;
+  texto_intro: any;
+  elementos_grid: PreceonElementoGrid[];
+  produccion: {
+    titulo: string;
+    texto: any;
+  };
+  elementos_destacados: PreceonElementoDestacado[];
+  imagenes_degradado: PreceonImagenDegradado[];
+  bloque_final: PreceonBloqueFinal;
+}
