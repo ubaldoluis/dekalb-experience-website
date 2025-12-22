@@ -34,10 +34,26 @@ const {
               {product.imagen_saco?.url && (
                 <div class="product-image-wrapper">
                   <img
-                    src={product.imagen_saco.url}
+                    src={(() => {
+                      // Modify Prismic URL to load image at container size (415x415) to prevent layout shift
+                      let imageUrl = product.imagen_saco.url;
+                      const urlParts = imageUrl.split("?");
+                      const baseUrl = urlParts[0];
+                      const existingParams = urlParts[1]
+                        ? urlParts[1].split("&")
+                        : [];
+                      const filteredParams = existingParams.filter(
+                        (param) =>
+                          !param.startsWith("w=") && !param.startsWith("h=")
+                      );
+                      filteredParams.push("w=415", "h=415", "fit=crop");
+                      return `${baseUrl}?${filteredParams.join("&")}`;
+                    })()}
                     alt={product.imagen_saco.alt || product.nombre}
                     class="product-image"
                     loading="lazy"
+                    width="415"
+                    height="415"
                   />
                   {product.codigo && (
                     <div class="product-code-layer">
@@ -110,141 +126,250 @@ const {
   let scrollPosition = 0;
 
   function updateCarousel(newProducts, isFiltered = false) {
-    console.log(
-      "🔄 [Carousel] Updating with products:",
-      newProducts.length,
-      "isFiltered:",
-      isFiltered
-    );
-    currentProducts = newProducts;
+    try {
+      console.log(
+        "🔄 [Carousel] Updating with products:",
+        newProducts.length,
+        "isFiltered:",
+        isFiltered
+      );
 
-    const carouselElement = document.getElementById(CAROUSEL_ID);
-    const trackElement = document.getElementById(`${CAROUSEL_ID}-track`);
-
-    if (!carouselElement || !trackElement) {
-      console.error("❌ [Carousel] Carousel elements not found");
-      return;
-    }
-
-    // Update data attribute
-    carouselElement.dataset.products = JSON.stringify(newProducts);
-
-    // ✅ SECURITY: Clear and rebuild HTML using DOM methods instead of innerHTML
-    // Clear existing content
-    trackElement.innerHTML = "";
-
-    // Helper function to escape HTML
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // Build DOM elements safely
-    newProducts.forEach((product) => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.setAttribute("data-product-id", product.id);
-
-      if (product.imagen_saco?.url) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "product-image-wrapper";
-        wrapper.style.position = "relative";
-
-        const img = document.createElement("img");
-        img.src = product.imagen_saco.url; // URL validated by Prismic
-        img.alt = product.imagen_saco.alt || product.nombre || "";
-        img.className = "product-image";
-        img.loading = "lazy";
-
-        wrapper.appendChild(img);
-
-        if (product.codigo) {
-          const codeLayer = document.createElement("div");
-          codeLayer.className = "product-code-layer";
-          codeLayer.style.position = "absolute";
-          codeLayer.style.top = "20%";
-          codeLayer.style.left = "25%";
-          codeLayer.style.backgroundImage = "url('/layer_filter.png')";
-          codeLayer.style.backgroundRepeat = "no-repeat";
-          codeLayer.style.backgroundPosition = "center";
-          codeLayer.style.backgroundSize = "100% 100%";
-          codeLayer.style.width = "140px";
-          codeLayer.style.height = "48px";
-          codeLayer.style.zIndex = "1";
-          codeLayer.style.display = "flex";
-          codeLayer.style.alignItems = "center";
-          codeLayer.style.justifyContent = "center";
-          codeLayer.style.pointerEvents = "none";
-
-          const codeText = document.createElement("span");
-          codeText.className = "product-code-text";
-          codeText.textContent = product.codigo;
-          codeText.style.color = "#ffffff";
-          codeText.style.fontWeight = "700";
-          codeLayer.appendChild(codeText);
-          wrapper.appendChild(codeLayer);
-        }
-
-        card.appendChild(wrapper);
+      if (!Array.isArray(newProducts)) {
+        console.error(
+          "❌ [Carousel] newProducts is not an array:",
+          newProducts
+        );
+        return;
       }
 
-      trackElement.appendChild(card);
-    });
+      currentProducts = newProducts;
 
-    // Apply mobile/desktop specific styles after HTML update
-    const isMobile = window.innerWidth <= 767;
-    if (isMobile) {
-      // Mobile: ensure slider behavior is maintained - force styles immediately
-      trackElement.style.display = "flex";
-      trackElement.style.flexDirection = "row";
-      trackElement.style.width = "100%";
-      trackElement.style.overflowX = "auto";
-      trackElement.style.overflowY = "hidden";
-      trackElement.style.gridTemplateColumns = "none";
+      const carouselElement = document.getElementById(CAROUSEL_ID);
+      const trackElement = document.getElementById(`${CAROUSEL_ID}-track`);
 
-      // Force card widths to ensure only one is visible
-      const cards = trackElement.querySelectorAll(".product-card");
-      const cardWidth = `calc(100vw - var(--spacing-8))`;
-      cards.forEach((card) => {
-        if (card instanceof HTMLElement) {
-          card.style.flexShrink = "0";
-          card.style.width = cardWidth;
-          card.style.minWidth = cardWidth;
-          card.style.maxWidth = cardWidth;
-        }
-      });
-    }
+      if (!carouselElement || !trackElement) {
+        console.error("❌ [Carousel] Carousel elements not found:", {
+          carouselId: CAROUSEL_ID,
+          carouselElement: !!carouselElement,
+          trackElement: !!trackElement,
+        });
+        return;
+      }
 
-    // Center filtered results only if filters are active
-    if (isFiltered) {
-      // Wait for DOM to update before calculating scroll position
-      setTimeout(() => {
-        centerFilteredResults(trackElement, newProducts.length);
-      }, 50);
-    } else {
-      // Reset styles when showing all products - ensure flex layout for desktop
-      setTimeout(() => {
-        if (!isMobile) {
-          trackElement.style.paddingLeft = "";
-          trackElement.style.paddingRight = "";
-          trackElement.style.display = "flex";
-          trackElement.style.flexDirection = "row";
-          trackElement.style.justifyContent = "";
-        }
-        trackElement.scrollLeft = 0;
-        scrollPosition = 0;
-      }, 50);
-    }
+      // Update data attribute
+      carouselElement.dataset.products = JSON.stringify(newProducts);
 
-    // Update controls visibility (show if more than 1 product)
-    const controls = carouselElement.querySelector(".carousel-controls");
-    if (controls) {
+      // Calculate container size BEFORE clearing content
+      // We need to know the actual rendered size to load images at the correct size
+      // This prevents layout shift by matching image size to container size from the start
       const isMobile = window.innerWidth <= 767;
-      controls.style.display = newProducts.length > 1 ? "flex" : "none";
-    }
+      const isDesktop = window.innerWidth >= 1024;
+      let containerSize = 415; // Default fallback
 
-    console.log("✅ [Carousel] Updated with", newProducts.length, "products");
+      // Try to get actual size from existing cards before clearing
+      // This is the most accurate way to get the real container size
+      const existingCard = trackElement.querySelector(".product-card");
+      if (existingCard) {
+        const cardWidth = existingCard.offsetWidth;
+        if (cardWidth > 0) {
+          // Image container is slightly smaller due to padding (var(--spacing-4) = 16px on each side = 32px total)
+          containerSize = Math.max(280, Math.floor(cardWidth - 32));
+          console.log(
+            "📐 [Carousel] Using existing card size:",
+            cardWidth,
+            "px → container:",
+            containerSize,
+            "px"
+          );
+        }
+      } else {
+        // Fallback: calculate based on viewport/layout if no existing cards
+        if (isMobile) {
+          containerSize = Math.floor(window.innerWidth - 32);
+        } else if (isDesktop) {
+          const trackWidth =
+            trackElement.clientWidth ||
+            trackElement.offsetWidth ||
+            window.innerWidth;
+          containerSize = Math.max(280, Math.floor(trackWidth / 3 - 32));
+        } else {
+          // Tablet: 2 columns
+          const trackWidth =
+            trackElement.clientWidth ||
+            trackElement.offsetWidth ||
+            window.innerWidth;
+          containerSize = Math.max(280, Math.floor(trackWidth / 2 - 32));
+        }
+        console.log(
+          "📐 [Carousel] Calculated container size (fallback):",
+          containerSize,
+          "px"
+        );
+      }
+
+      // ✅ SECURITY: Clear and rebuild HTML using DOM methods instead of innerHTML
+      // Clear existing content
+      trackElement.innerHTML = "";
+
+      // Helper function to escape HTML
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Build DOM elements safely
+      newProducts.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.setAttribute("data-product-id", product.id);
+        // Apply inline styles immediately to prevent layout shift
+        card.style.background = "transparent";
+        card.style.borderRadius = "0";
+        card.style.overflow = "visible";
+        card.style.boxShadow = "none";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.height = "100%";
+        card.style.minWidth = "280px";
+
+        if (product.imagen_saco?.url) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "product-image-wrapper";
+          wrapper.style.position = "relative";
+          wrapper.style.width = "100%";
+          wrapper.style.aspectRatio = "1";
+          wrapper.style.overflow = "visible";
+          wrapper.style.backgroundColor = "transparent";
+          wrapper.style.display = "flex";
+          wrapper.style.alignItems = "center";
+          wrapper.style.justifyContent = "center";
+
+          const img = document.createElement("img");
+          // Modify Prismic URL to load image at calculated container size to prevent layout shift
+          let imageUrl = product.imagen_saco.url;
+          // Remove existing size parameters and add correct size
+          const urlParts = imageUrl.split("?");
+          const baseUrl = urlParts[0];
+          const existingParams = urlParts[1] ? urlParts[1].split("&") : [];
+          // Filter out existing w and h parameters
+          const filteredParams = existingParams.filter(
+            (param) => !param.startsWith("w=") && !param.startsWith("h=")
+          );
+          // Add correct size parameters matching calculated container size
+          filteredParams.push(
+            `w=${containerSize}`,
+            `h=${containerSize}`,
+            "fit=crop"
+          );
+          imageUrl = `${baseUrl}?${filteredParams.join("&")}`;
+
+          img.src = imageUrl;
+          img.alt = product.imagen_saco.alt || product.nombre || "";
+          img.className = "product-image";
+          img.loading = "lazy";
+          // Set intrinsic dimensions to match calculated container size
+          // This reserves the correct space before image loads, preventing layout shift
+          img.width = containerSize;
+          img.height = containerSize;
+          // Apply inline styles immediately to prevent flash of unstyled content
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = "contain";
+          img.style.padding = "var(--spacing-4)";
+
+          wrapper.appendChild(img);
+
+          if (product.codigo) {
+            const codeLayer = document.createElement("div");
+            codeLayer.className = "product-code-layer";
+            codeLayer.style.position = "absolute";
+            codeLayer.style.top = "20%";
+            codeLayer.style.left = "25%";
+            codeLayer.style.backgroundImage = "url('/layer_filter.png')";
+            codeLayer.style.backgroundRepeat = "no-repeat";
+            codeLayer.style.backgroundPosition = "center";
+            codeLayer.style.backgroundSize = "100% 100%";
+            codeLayer.style.width = "140px";
+            codeLayer.style.height = "48px";
+            codeLayer.style.zIndex = "1";
+            codeLayer.style.display = "flex";
+            codeLayer.style.alignItems = "center";
+            codeLayer.style.justifyContent = "center";
+            codeLayer.style.pointerEvents = "none";
+
+            const codeText = document.createElement("span");
+            codeText.className = "product-code-text";
+            codeText.textContent = product.codigo;
+            codeText.style.color = "#ffffff";
+            codeText.style.fontWeight = "700";
+            codeLayer.appendChild(codeText);
+            wrapper.appendChild(codeLayer);
+          }
+
+          card.appendChild(wrapper);
+        }
+
+        trackElement.appendChild(card);
+      });
+
+      // Apply mobile/desktop specific styles after HTML update
+      // isMobile and isDesktop already declared above
+      if (isMobile) {
+        // Mobile: ensure slider behavior is maintained - force styles immediately
+        trackElement.style.display = "flex";
+        trackElement.style.flexDirection = "row";
+        trackElement.style.width = "100%";
+        trackElement.style.overflowX = "auto";
+        trackElement.style.overflowY = "hidden";
+        trackElement.style.gridTemplateColumns = "none";
+
+        // Force card widths to ensure only one is visible
+        const cards = trackElement.querySelectorAll(".product-card");
+        const cardWidth = `calc(100vw - var(--spacing-8))`;
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) {
+            card.style.flexShrink = "0";
+            card.style.width = cardWidth;
+            card.style.minWidth = cardWidth;
+            card.style.maxWidth = cardWidth;
+          }
+        });
+      }
+
+      // Center filtered results only if filters are active
+      if (isFiltered) {
+        // Wait for DOM to update before calculating scroll position
+        setTimeout(() => {
+          centerFilteredResults(trackElement, newProducts.length);
+        }, 50);
+      } else {
+        // Reset styles when showing all products - ensure flex layout for desktop
+        setTimeout(() => {
+          if (!isMobile) {
+            trackElement.style.paddingLeft = "";
+            trackElement.style.paddingRight = "";
+            trackElement.style.display = "flex";
+            trackElement.style.flexDirection = "row";
+            trackElement.style.justifyContent = "";
+          }
+          trackElement.scrollLeft = 0;
+          scrollPosition = 0;
+        }, 50);
+      }
+
+      // Update controls visibility (show if more than 1 product)
+      const controls = carouselElement.querySelector(".carousel-controls");
+      if (controls) {
+        // isMobile already declared above
+        controls.style.display = newProducts.length > 1 ? "flex" : "none";
+      }
+
+      console.log("✅ [Carousel] Updated with", newProducts.length, "products");
+    } catch (error) {
+      console.error("❌ [Carousel] Error updating carousel:", error);
+      console.error("Error stack:", error.stack);
+    }
   }
 
   // Center filtered results in the carousel
@@ -395,28 +520,40 @@ const {
     console.log("✅ [Carousel] Initialized");
   });
 
-  // Listen for product updates - only update if this carousel is visible
+  // Listen for product updates - update carousel when products change
   document.addEventListener("updateProducts", (e) => {
-    console.log("🔄 [Carousel] Received updateProducts event:", e.detail);
+    console.log("🔄 [Carousel] Received updateProducts event:", {
+      carouselId: CAROUSEL_ID,
+      detail: e.detail,
+      hasProducts: !!(e.detail && e.detail.products),
+      productsCount: e.detail?.products?.length || 0,
+    });
+
     const carouselElement = document.getElementById(CAROUSEL_ID);
-    if (!carouselElement) return;
+    if (!carouselElement) {
+      console.error("❌ [Carousel] Carousel element not found:", CAROUSEL_ID);
+      return;
+    }
 
-    // Check if this carousel is visible
-    const rect = carouselElement.getBoundingClientRect();
-    const isVisible =
-      rect.width > 0 &&
-      rect.height > 0 &&
-      window.getComputedStyle(carouselElement).display !== "none";
-
-    if (isVisible && e.detail && e.detail.products) {
-      console.log("🔄 [Carousel] Updating visible carousel:", CAROUSEL_ID);
+    // Always update if we have products, regardless of visibility
+    // The visibility check was too strict and preventing updates
+    if (e.detail && e.detail.products && Array.isArray(e.detail.products)) {
+      console.log(
+        "🔄 [Carousel] Updating carousel:",
+        CAROUSEL_ID,
+        "with",
+        e.detail.products.length,
+        "products"
+      );
       const isFiltered = e.detail.isFiltered || false;
       updateCarousel(e.detail.products, isFiltered);
     } else {
-      console.log(
-        "⚠️ [Carousel] Carousel not visible, skipping update:",
-        CAROUSEL_ID
-      );
+      console.error("❌ [Carousel] Invalid event detail:", {
+        hasDetail: !!e.detail,
+        hasProducts: !!(e.detail && e.detail.products),
+        isArray: Array.isArray(e.detail?.products),
+        detail: e.detail,
+      });
     }
   });
 
@@ -456,12 +593,14 @@ const {
   .product-carousel-container {
     position: relative;
     padding: var(--spacing-4) 0;
+    min-height: 400px;
   }
 
   @media (min-width: 1024px) {
     .product-carousel-container {
       overflow: hidden;
       width: 100%;
+      min-height: 450px;
     }
   }
 
@@ -470,6 +609,7 @@ const {
       overflow: hidden;
       width: 100%;
       max-width: 100%;
+      min-height: 400px;
     }
   }
 
@@ -483,6 +623,7 @@ const {
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
     padding: var(--spacing-2) 0;
+    min-height: 350px;
   }
 
   .product-carousel-track::-webkit-scrollbar {
