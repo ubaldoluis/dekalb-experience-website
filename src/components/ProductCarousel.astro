@@ -39,6 +39,11 @@ const {
                     class="product-image"
                     loading="lazy"
                   />
+                  {product.codigo && (
+                    <div class="product-code-layer">
+                      <span class="product-code-text">{product.codigo}</span>
+                    </div>
+                  )}
                 </div>
               )}
               {/* <div class="product-info">
@@ -144,6 +149,7 @@ const {
       if (product.imagen_saco?.url) {
         const wrapper = document.createElement("div");
         wrapper.className = "product-image-wrapper";
+        wrapper.style.position = "relative";
 
         const img = document.createElement("img");
         img.src = product.imagen_saco.url; // URL validated by Prismic
@@ -152,6 +158,34 @@ const {
         img.loading = "lazy";
 
         wrapper.appendChild(img);
+
+        if (product.codigo) {
+          const codeLayer = document.createElement("div");
+          codeLayer.className = "product-code-layer";
+          codeLayer.style.position = "absolute";
+          codeLayer.style.top = "20%";
+          codeLayer.style.left = "25%";
+          codeLayer.style.backgroundImage = "url('/layer_filter.png')";
+          codeLayer.style.backgroundRepeat = "no-repeat";
+          codeLayer.style.backgroundPosition = "center";
+          codeLayer.style.backgroundSize = "100% 100%";
+          codeLayer.style.width = "140px";
+          codeLayer.style.height = "48px";
+          codeLayer.style.zIndex = "1";
+          codeLayer.style.display = "flex";
+          codeLayer.style.alignItems = "center";
+          codeLayer.style.justifyContent = "center";
+          codeLayer.style.pointerEvents = "none";
+
+          const codeText = document.createElement("span");
+          codeText.className = "product-code-text";
+          codeText.textContent = product.codigo;
+          codeText.style.color = "#ffffff";
+          codeText.style.fontWeight = "700";
+          codeLayer.appendChild(codeText);
+          wrapper.appendChild(codeLayer);
+        }
+
         card.appendChild(wrapper);
       }
 
@@ -523,6 +557,7 @@ const {
     .product-image-wrapper {
       background: transparent;
       overflow: visible;
+      position: relative;
     }
 
     .product-image {
@@ -565,6 +600,7 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
 
   .product-image {
@@ -572,6 +608,35 @@ const {
     height: 100%;
     object-fit: contain;
     padding: var(--spacing-4);
+  }
+
+  .product-code-layer {
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    transform: translate(0, 0);
+    background-image: url("/layer_filter.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    border-radius: 8px;
+    padding: var(--spacing-2) var(--spacing-4);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 48px;
+    pointer-events: none;
+  }
+
+  .product-code-text {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #ffffff !important;
+    line-height: 1.2;
+    white-space: nowrap;
   }
 
   .product-info {
