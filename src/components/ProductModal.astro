@@ -105,20 +105,25 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
 ---
 
 <dialog class="product-modal" id="product-modal" aria-labelledby="modal-title" aria-modal="true">
-  <div class="modal-backdrop" id="modal-backdrop"></div>
-  
   <div class="modal-content" id="modal-content-container">
   {product ? (
     <>
       <!-- Left Column: Image -->
       <div class="modal-image-section">
-        <button class="modal-close-btn" id="modal-close" aria-label={t.close}>
+        <a 
+          href="#"
+          class="modal-close-btn" 
+          id="modal-close" 
+          aria-label={t.close}
+          role="button"
+          onclick="event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); const modal = document.getElementById('product-modal'); if (modal && window.__modalCloseHandler) { window.__modalCloseHandler.setClosing(true); modal.close(); document.body.style.overflow = ''; setTimeout(() => { window.__modalCloseHandler.setClosing(false); }, 100); } return false;"
+        >
           <div class="modal-close-circle">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-        </button>
+        </a>
         {product.imagen_saco?.url && (
           <div class="modal-image-wrapper">
             <img
@@ -260,10 +265,13 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
 </dialog>
 
 <script define:vars={{ lang }}>
+  // Track the last click target to determine if close was intentional
+  let lastClickTarget = null;
+  let isClosingIntentionally = false;
+  
   // Wait for DOM to be ready
   function initModal() {
     const modal = document.getElementById('product-modal');
-    const backdrop = document.getElementById('modal-backdrop');
     const closeBtn = document.getElementById('modal-close');
     
     if (!modal) {
@@ -274,6 +282,13 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     // Store current language globally
     window.__currentLang = lang;
     console.log('✅ [Modal] Initialized with lang:', lang);
+    
+    // Track all clicks globally to know what was clicked
+    document.addEventListener('click', (e) => {
+      if (modal && modal.open) {
+        lastClickTarget = e.target;
+      }
+    }, true);
 
   function updateModalContent(product) {
     if (!product || !modal) {
@@ -376,13 +391,20 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     // Build HTML content
     let html = `
       <div class="modal-image-section">
-        <button class="modal-close-btn" id="modal-close" aria-label="${lang === 'es' ? 'Cerrar' : 'Fechar'}">
+        <a 
+          href="#"
+          class="modal-close-btn" 
+          id="modal-close" 
+          aria-label="${lang === 'es' ? 'Cerrar' : 'Fechar'}"
+          role="button"
+          onclick="event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); const modal = document.getElementById('product-modal'); if (modal && window.__modalCloseHandler) { window.__modalCloseHandler.setClosing(true); modal.close(); document.body.style.overflow = ''; setTimeout(() => { window.__modalCloseHandler.setClosing(false); }, 100); } return false;"
+        >
           <div class="modal-close-circle">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-        </button>
+        </a>
         ${(product.imagen_saco && product.imagen_saco.url) ? `
           <div class="modal-image-wrapper">
             <img
@@ -471,6 +493,110 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
 
     modalContent.innerHTML = html;
 
+    // Set up close button FIRST, before any other listeners
+    const newCloseBtn = modalContent.querySelector('#modal-close');
+    if (newCloseBtn) {
+      console.log('🔴 [Modal] Setting up close button:', newCloseBtn);
+      
+      // Force z-index to be highest and ensure it's clickable
+      newCloseBtn.style.zIndex = '10000';
+      newCloseBtn.style.position = 'absolute';
+      newCloseBtn.style.pointerEvents = 'auto';
+      
+      // CRITICAL: Add listener in capture phase FIRST with highest priority
+      // This MUST execute before any other listeners that might block it
+      // Use a flag to prevent multiple executions
+      let isHandlingClose = false;
+      const forceCloseHandler = (e) => {
+        if (isHandlingClose) {
+          e.stopImmediatePropagation();
+          e.stopPropagation();
+          e.preventDefault();
+          return false;
+        }
+        isHandlingClose = true;
+        
+        console.log('🔴🔴🔴 [Modal] Close button CAPTURE handler executed');
+        e.stopImmediatePropagation(); // Stop ALL other listeners
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // EXACT copy of backdrop click behavior - set BOTH flags
+        // Set the closure variable directly AND through the handler
+        isClosingIntentionally = true;
+        if (window.__modalCloseHandler) {
+          window.__modalCloseHandler.setClosing(true);
+        }
+        
+        // Call closeModal() which is the same function backdrop uses
+        const modal = document.getElementById('product-modal');
+        if (modal) {
+          modal.close();
+          document.body.style.overflow = '';
+        }
+        
+        // Reset flags after delay, exactly like backdrop click
+        setTimeout(() => {
+          isHandlingClose = false;
+          isClosingIntentionally = false;
+          if (window.__modalCloseHandler) {
+            window.__modalCloseHandler.setClosing(false);
+          }
+        }, 200);
+        
+        return false;
+      };
+      
+      // Add in capture phase FIRST - this executes BEFORE any other listeners
+      newCloseBtn.addEventListener('click', forceCloseHandler, true);
+      
+      // Also add in bubbling phase as backup
+      newCloseBtn.addEventListener('click', forceCloseHandler, false);
+      
+      // Also add mousedown as backup (fires before click)
+      newCloseBtn.addEventListener('mousedown', forceCloseHandler, true);
+      
+      // Also set onclick attribute as additional fallback
+      newCloseBtn.setAttribute('onclick', `
+        console.log('🔴🔴🔴 [Modal] onclick inline executed');
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        const modal = document.getElementById('product-modal');
+        if (modal && window.__modalCloseHandler) {
+          window.__modalCloseHandler.setClosing(true);
+          modal.close();
+          document.body.style.overflow = '';
+          setTimeout(() => {
+            window.__modalCloseHandler.setClosing(false);
+          }, 100);
+        }
+        return false;
+      `);
+    }
+
+    // CRITICAL: Prevent clicks inside modal content from propagating to dialog
+    // BUT do this AFTER setting up the close button
+    const newModalContent = modalContent.querySelector('.modal-content');
+    if (newModalContent) {
+      // Only prevent if NOT clicking on close button
+      const preventHandler = (e) => {
+        const closeBtnEl = newModalContent.querySelector('#modal-close');
+        // CRITICAL: Check if click originated from or is on close button
+        if (closeBtnEl && (
+          closeBtnEl === e.target || 
+          closeBtnEl.contains(e.target) ||
+          e.target.closest('#modal-close')
+        )) {
+          return; // Don't prevent - let close button handle it
+        }
+        e.stopPropagation();
+      };
+      
+      // Use bubbling phase (not capture) so close button handler executes first
+      newModalContent.addEventListener('click', preventHandler, false);
+    }
+
     // Center content vertically if it's shorter than container
     const scrollContent = modalContent.querySelector('.modal-scroll-content');
     if (scrollContent) {
@@ -493,26 +619,39 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
       }, 200);
     }
 
-    // Re-attach close button listener
-    const newCloseBtn = modalContent.querySelector('#modal-close');
-    if (newCloseBtn) {
-      newCloseBtn.addEventListener('click', closeModal);
-    }
+    // Close button is already set up above (line 493), no need to set it up again here
   }
 
   function openModal() {
     if (modal) {
       modal.showModal();
       document.body.style.overflow = 'hidden';
+      
+      // Ensure click prevention is active after opening modal
+      setTimeout(() => {
+        const modalContentEl = modal.querySelector('.modal-content');
+        if (modalContentEl) {
+          // Use capture phase to prevent events from reaching dialog
+          modalContentEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }, true);
+          
+          modalContentEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+        }
+      }, 0);
     }
   }
 
   function closeModal() {
+    const modal = document.getElementById('product-modal');
     if (modal) {
       modal.close();
       document.body.style.overflow = '';
     }
-    }
+  }
 
     // Listen for product click events
     document.addEventListener('productClick', (e) => {
@@ -541,38 +680,184 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
       }
     });
 
-    // Close button
+    // Close button - handle clicks to close the modal
+    // Set up FIRST before any other listeners
     if (closeBtn) {
-      closeBtn.addEventListener('click', closeModal);
-    }
-
-    // Backdrop click
-    if (backdrop) {
-      backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop) {
-          closeModal();
+      console.log('🔴 [Modal] Setting up static close button:', closeBtn);
+      
+      // Force z-index to be highest and ensure it's clickable
+      closeBtn.style.zIndex = '10000';
+      closeBtn.style.position = 'absolute';
+      closeBtn.style.pointerEvents = 'auto';
+      
+      // CRITICAL: Add listener in capture phase FIRST with highest priority
+      const forceCloseHandler = (e) => {
+        console.log('🔴🔴🔴 [Modal] Static close button CAPTURE handler executed');
+        e.stopImmediatePropagation(); // Stop ALL other listeners
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // EXACT copy of backdrop click behavior (lines 713-717)
+        isClosingIntentionally = true;
+        closeModal();
+        setTimeout(() => {
+          isClosingIntentionally = false;
+        }, 100);
+        
+        return false;
+      };
+      
+      // Add in capture phase FIRST - this executes BEFORE any other listeners
+      closeBtn.addEventListener('click', forceCloseHandler, true);
+      
+      // Also add in bubbling phase as backup
+      closeBtn.addEventListener('click', forceCloseHandler, false);
+      
+      // Also add mousedown as backup (fires before click)
+      closeBtn.addEventListener('mousedown', forceCloseHandler, true);
+      
+      // Also set onclick attribute as additional fallback
+      closeBtn.setAttribute('onclick', `
+        console.log('🔴🔴🔴 [Modal] Static onclick inline executed');
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        const modal = document.getElementById('product-modal');
+        if (modal && window.__modalCloseHandler) {
+          window.__modalCloseHandler.setClosing(true);
+          modal.close();
+          document.body.style.overflow = '';
+          setTimeout(() => {
+            window.__modalCloseHandler.setClosing(false);
+          }, 100);
         }
-      });
+        return false;
+      `);
     }
 
-    // Escape key
+    // Handle clicks on dialog - close only if clicking on backdrop (dialog itself), not on content
     if (modal) {
+      modal.addEventListener('click', (e) => {
+        const modalContentEl = modal.querySelector('.modal-content');
+        const closeBtnEl = modal.querySelector('#modal-close');
+        
+        // CRITICAL: Check for close button FIRST, before checking modal-content
+        // The close button is inside modal-content, so we need to check it first
+        if (closeBtnEl && (
+          closeBtnEl === e.target || 
+          closeBtnEl.contains(e.target) ||
+          e.target.closest('#modal-close')
+        )) {
+          // If click is on close button, handle it exactly like backdrop click
+          console.log('🔴 [Modal] Dialog click detected on close button, closing...');
+          isClosingIntentionally = true;
+          closeModal();
+          setTimeout(() => {
+            isClosingIntentionally = false;
+          }, 100);
+          return;
+        }
+        
+        // If click is inside modal-content (but not on close button), prevent closing
+        if (modalContentEl && (modalContentEl === e.target || modalContentEl.contains(e.target))) {
+          e.stopPropagation();
+          return;
+        }
+        
+        // If click is directly on the dialog element (backdrop area), close
+        if (e.target === modal) {
+          isClosingIntentionally = true;
+          closeModal();
+          setTimeout(() => { isClosingIntentionally = false; }, 100);
+        }
+      }, false); // Use bubbling phase so close button handler fires first
+    }
+
+    // Intercept dialog close event and reopen if click was inside content
+    if (modal) {
+      modal.addEventListener('close', () => {
+        // If we're closing intentionally (button, escape, backdrop), allow it
+        if (isClosingIntentionally) {
+          return;
+        }
+        
+        const modalContentEl = modal.querySelector('.modal-content');
+        
+        // If the last click was inside modal-content, reopen the modal
+        if (lastClickTarget && modalContentEl && modalContentEl.contains(lastClickTarget)) {
+          // Reopen immediately
+          setTimeout(() => {
+            if (modal) {
+              modal.showModal();
+            }
+          }, 0);
+          return;
+        }
+        
+        // If click was on close button, allow close (should be handled by isClosingIntentionally)
+        if (lastClickTarget && lastClickTarget.closest('#modal-close')) {
+          return;
+        }
+        
+        // If click was on dialog backdrop, allow close (should be handled by isClosingIntentionally)
+        if (lastClickTarget === modal) {
+          return;
+        }
+        
+        // Otherwise, reopen (click was probably inside content)
+        setTimeout(() => {
+          if (modal) {
+            modal.showModal();
+          }
+        }, 0);
+      });
+      
+      // Escape key - always allow close
       modal.addEventListener('cancel', (e) => {
         e.preventDefault();
+        isClosingIntentionally = true;
         closeModal();
+        setTimeout(() => { isClosingIntentionally = false; }, 100);
       });
+    }
 
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeModal();
+    // Prevent clicks inside modal content from propagating to dialog
+    // BUT exclude the close button - use bubbling phase only
+    const modalContentContainer = document.getElementById('modal-content-container');
+    if (modalContentContainer) {
+      const preventHandler = (e) => {
+        const closeBtnEl = modalContentContainer.querySelector('#modal-close');
+        // CRITICAL: Check if click is on close button
+        if (closeBtnEl && (
+          closeBtnEl === e.target || 
+          closeBtnEl.contains(e.target) ||
+          e.target.closest('#modal-close')
+        )) {
+          return; // Don't prevent - let close button handle it
         }
-      });
+        e.stopPropagation();
+      };
+      
+      // Use bubbling phase (not capture) so close button handler executes first
+      modalContentContainer.addEventListener('click', preventHandler, false);
     }
 
     // Export functions for external use
     window.openProductModal = openModal;
     window.closeProductModal = closeModal;
     window.updateProductModal = updateModalContent;
+    
+    // Global function to force close modal (for onclick handlers)
+    window.forceCloseProductModal = function() {
+      console.log('🔴🔴🔴 [Modal] forceCloseProductModal called');
+      const modal = document.getElementById('product-modal');
+      console.log('🔴 Modal element:', modal);
+      if (modal) {
+        console.log('🔴 Closing modal...');
+        modal.close();
+        document.body.style.overflow = '';
+      }
+    };
   }
 
   // Initialize when DOM is ready
@@ -581,6 +866,9 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
   } else {
     initModal();
   }
+  
+  // Removed global listener - it was causing interference
+  // The button's own listeners should handle it correctly
 </script>
 
 <style is:global>
@@ -605,14 +893,7 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     background: rgba(48, 48, 48, 0.6);
   }
 
-  .modal-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(48, 48, 48, 0.6);
-  }
+  /* Removed .modal-backdrop - using dialog::backdrop instead */
 
   .modal-content {
     position: relative;
@@ -625,7 +906,8 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     overflow: hidden;
     display: flex;
     flex-direction: row;
-    z-index: 1;
+    z-index: 10;
+    pointer-events: auto;
   }
 
   /* Left Column: Image Section */
@@ -635,7 +917,7 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     min-width: 500px;
     max-width: 500px;
     background: linear-gradient(180deg, #e7e7e7 0%, #ffffff 100%);
-    border-radius: 36px 0 0 36px;
+    border-radius: 0 36px 0 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -647,11 +929,18 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     position: absolute;
     top: 20px;
     left: 20px;
-    z-index: 10;
+    z-index: 10000 !important; /* Higher than modal-content to ensure it's on top */
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
+    text-decoration: none;
+    display: inline-block;
+    pointer-events: auto !important;
+  }
+  
+  .modal-close-btn * {
+    pointer-events: none; /* Let clicks on children bubble to link */
   }
 
   .modal-close-circle {

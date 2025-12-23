@@ -19,17 +19,6 @@
           "placeholder": "Ej: DKC3045"
         }
       },
-      "imagen_saco": {
-        "type": "Image",
-        "config": {
-          "label": "Imagen del Saco",
-          "constraint": {
-            "width": 800,
-            "height": 800
-          },
-          "thumbnails": []
-        }
-      },
       "claim": {
         "type": "Text",
         "config": {
@@ -41,10 +30,7 @@
         "type": "Select",
         "config": {
           "label": "Tipo de Semilla",
-          "options": [
-            "maiz",
-            "colza"
-          ],
+          "options": ["maiz", "colza"],
           "default_value": "maiz"
         }
       },
@@ -52,11 +38,7 @@
         "type": "Select",
         "config": {
           "label": "Uso (solo si Maíz)",
-          "options": [
-            "grano",
-            "silo",
-            "preceon"
-          ]
+          "options": ["grano", "silo", "preceon"]
         }
       },
       "zona": {
@@ -69,6 +51,26 @@
             "noroeste",
             "portugal"
           ]
+        }
+      },
+      "zonas": {
+        "type": "Group",
+        "config": {
+          "label": "Zonas (multi)",
+          "fields": {
+            "zona": {
+              "type": "Select",
+              "config": {
+                "label": "Zona",
+                "options": [
+                  "ebro",
+                  "centro-sur-extremadura-andalucia",
+                  "noroeste",
+                  "portugal"
+                ]
+              }
+            }
+          }
         }
       },
       "categoria": {
@@ -89,11 +91,7 @@
         "type": "Select",
         "config": {
           "label": "Protección de Cultivo",
-          "options": [
-            "herbicida",
-            "insecticida",
-            "bioestimulante"
-          ]
+          "options": ["herbicida", "insecticida", "bioestimulante"]
         }
       },
       "beneficios": {
@@ -110,6 +108,106 @@
           "placeholder": "Recomendaciones para el uso del producto"
         }
       },
+      "ciclo_rm": {
+        "type": "Text",
+        "config": {
+          "label": "CICLO / RM",
+          "placeholder": "Ej: 700/118"
+        }
+      },
+      "descripcion_popup": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Descripción para popup",
+          "placeholder": "Texto descriptivo breve para el popup",
+          "single": "paragraph,preformatted"
+        }
+      },
+      "tipo_grano": {
+        "type": "Text",
+        "config": {
+          "label": "Tipo de grano",
+          "placeholder": "Ej: Dentado"
+        }
+      },
+      "altura_planta_texto": {
+        "type": "Text",
+        "config": {
+          "label": "Altura de planta (solo Colza)",
+          "placeholder": "Ej: Media"
+        }
+      },
+      "floracion_texto": {
+        "type": "Text",
+        "config": {
+          "label": "Floración",
+          "placeholder": "Ej: Media"
+        }
+      },
+      "madurez_texto": {
+        "type": "Text",
+        "config": {
+          "label": "Madurez (solo Colza)",
+          "placeholder": "Ej: Media"
+        }
+      },
+      "insercion_mazorca": {
+        "type": "Text",
+        "config": {
+          "label": "Inserción de mazorca",
+          "placeholder": "Ej: Media"
+        }
+      },
+      "caracteristicas": {
+        "type": "Group",
+        "config": {
+          "label": "Características (0-10)",
+          "fields": {
+            "clave": {
+              "type": "Select",
+              "config": {
+                "label": "Clave",
+                "options": [
+                  "potencial_produccion",
+                  "adaptabilidad",
+                  "resistencia_caida",
+                  "tolerancia_virus",
+                  "stay_green",
+                  "respuesta_alta_densidad",
+                  "calidad_grano",
+                  "contenido_aceite",
+                  "tolerancia_dehiscencia",
+                  "sanidad",
+                  "tolerancia_sequia",
+                  "implantacion"
+                ]
+              }
+            },
+            "valor": {
+              "type": "Number",
+              "config": {
+                "label": "Valor (0-10, admite decimales)",
+                "placeholder": "Ej: 8.5"
+              }
+            },
+            "label_custom": {
+              "type": "Text",
+              "config": {
+                "label": "Etiqueta personalizada (opcional)",
+                "placeholder": "Si quieres sobreescribir la etiqueta por defecto"
+              }
+            }
+          }
+        }
+      },
+      "saco_ref": {
+        "type": "Link",
+        "config": {
+          "label": "Saco (referencia)",
+          "select": "document",
+          "customtypes": ["saco"]
+        }
+      },
       "orden": {
         "type": "Number",
         "config": {
@@ -120,4 +218,3 @@
     }
   }
 }
-

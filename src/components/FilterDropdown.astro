@@ -424,9 +424,14 @@ const isSeedActive = selectedSeed !== null;
       );
     }
     if (currentFilterState.zona) {
-      filtered = filtered.filter(
-        (p) => p.zona?.toLowerCase() === currentFilterState.zona
-      );
+      filtered = filtered.filter((p) => {
+        const zones = Array.isArray(p.zona)
+          ? p.zona.map((z) => z?.toLowerCase())
+          : p.zona
+            ? [p.zona.toLowerCase()]
+            : [];
+        return zones.includes(currentFilterState.zona);
+      });
     }
     // Protección siempre "todos" - no se filtra por protección
 

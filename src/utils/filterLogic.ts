@@ -37,9 +37,14 @@ export function filterProducts(products: Producto[], filterState: FilterState): 
     }
 
     if (filterState.zona) {
-      filtered = filtered.filter(
-        (product) => product.zona === filterState.zona
-      );
+      filtered = filtered.filter((product) => {
+        const zones = Array.isArray(product.zona)
+          ? product.zona
+          : product.zona
+          ? [product.zona]
+          : [];
+        return zones.includes(filterState.zona as ZonaGeografica);
+      });
     }
   }
 

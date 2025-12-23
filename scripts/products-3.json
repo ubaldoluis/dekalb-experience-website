@@ -1,0 +1,73 @@
+[
+  {
+    "nombre": "DKC6812",
+    "codigo": "DKC6812",
+    "claim": "Híbrido muy productivo, buena resistencia a la caída; genética que se adapta a densidad variable",
+    "ciclo_rm": "700/118",
+    "tipo_semilla": "maiz",
+    "uso": "grano",
+    "categoria": "maiz-grano",
+    "zonas": ["ebro", "centro-sur-extremadura-andalucia", "noroeste", "portugal"],
+    "tipo_grano": "DENTADO",
+    "floracion_texto": "MEDIA",
+    "insercion_mazorca": "MEDIA",
+    "caracteristicas": [
+      { "clave": "potencial_produccion", "valor": 9 },
+      { "clave": "adaptabilidad", "valor": 9 },
+      { "clave": "resistencia_caida", "valor": 8 },
+      { "clave": "tolerancia_virus", "valor": 8 },
+      { "clave": "stay_green", "valor": 9 },
+      { "clave": "respuesta_alta_densidad", "valor": 8 },
+      { "clave": "calidad_grano", "valor": 7 }
+    ],
+    "saco_ref_id": "aUhtihIAACEA2YPm",
+    "orden": 1
+  },
+  {
+    "nombre": "DKC6836SC",
+    "codigo": "DKC6836SC",
+    "claim": "Preceon: el híbrido de otra dimensión con mejor calidad de grano",
+    "ciclo_rm": "700/118",
+    "tipo_semilla": "maiz",
+    "uso": "preceon",
+    "categoria": "preceon",
+    "zonas": ["ebro", "centro-sur-extremadura-andalucia", "noroeste", "portugal"],
+    "tipo_grano": "DENTADO",
+    "floracion_texto": "TEMPRANA",
+    "insercion_mazorca": "BAJA",
+    "caracteristicas": [
+      { "clave": "potencial_produccion", "valor": 10 },
+      { "clave": "adaptabilidad", "valor": 8 },
+      { "clave": "resistencia_caida", "valor": 10 },
+      { "clave": "tolerancia_virus", "valor": 9 },
+      { "clave": "stay_green", "valor": 10 },
+      { "clave": "respuesta_alta_densidad", "valor": 10 },
+      { "clave": "calidad_grano", "valor": 9 }
+    ],
+    "saco_ref_id": "aUhtpBIAACIA2YQT",
+    "orden": 2
+  },
+  {
+    "nombre": "DK EXCITED",
+    "codigo": "DK EXCITED",
+    "claim": "Alto potencial productivo capaz de sacar todo el potencial de tu campo.",
+    "tipo_semilla": "colza",
+    "categoria": "colza",
+    "zonas": ["ebro", "centro-sur-extremadura-andalucia", "noroeste", "portugal"],
+    "altura_planta_texto": "MEDIA",
+    "floracion_texto": "MEDIA-TEMPRANA",
+    "madurez_texto": "MEDIA",
+    "caracteristicas": [
+      { "clave": "potencial_produccion", "valor": 10 },
+      { "clave": "contenido_aceite", "valor": 9 },
+      { "clave": "tolerancia_dehiscencia", "valor": 10 },
+      { "clave": "sanidad", "valor": 10 },
+      { "clave": "adaptabilidad", "valor": 9 },
+      { "clave": "tolerancia_sequia", "valor": 8 },
+      { "clave": "implantacion", "valor": 9 }
+    ],
+    "saco_ref_id": "aUhs8hIAACEA2YMH",
+    "orden": 3
+  }
+]
+
