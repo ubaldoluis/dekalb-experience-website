@@ -46,6 +46,7 @@ export async function getAllProducts(
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
     const documents = await client.getAllByType("producto", {
       lang: prismicLocale,
+      fetchLinks: ["saco.imagen", "saco.nombre"],
       orderings: {
         field: "my.producto.orden",
         direction: "asc",
@@ -56,13 +57,34 @@ export async function getAllProducts(
       id: doc.id,
       nombre: doc.data.nombre || "",
       codigo: doc.data.codigo || "",
-      imagen_saco: doc.data.imagen_saco
+      imagen_saco: doc.data.saco_ref?.data?.imagen?.url
         ? {
-            url: doc.data.imagen_saco.url || "",
-            alt: doc.data.imagen_saco.alt || "",
+            url: doc.data.saco_ref.data.imagen.url || "",
+            alt:
+              doc.data.saco_ref.data.imagen.alt ||
+              doc.data.saco_ref.data.nombre ||
+              doc.data.nombre ||
+              "",
           }
         : undefined,
       claim: doc.data.claim || undefined,
+      ciclo_rm: doc.data.ciclo_rm || undefined,
+      descripcion_popup:
+        prismic.asText(doc.data.descripcion_popup) || undefined,
+      tipo_grano: doc.data.tipo_grano || undefined,
+      altura_planta_texto: doc.data.altura_planta_texto || undefined,
+      floracion_texto: doc.data.floracion_texto || undefined,
+      madurez_texto: doc.data.madurez_texto || undefined,
+      insercion_mazorca: doc.data.insercion_mazorca || undefined,
+      caracteristicas: Array.isArray(doc.data.caracteristicas)
+        ? doc.data.caracteristicas
+            .map((c: any) => ({
+              clave: c?.clave,
+              valor: typeof c?.valor === "number" ? c.valor : Number(c?.valor),
+              label_custom: c?.label_custom || undefined,
+            }))
+            .filter((c: any) => !!c.clave && !Number.isNaN(c.valor))
+        : [],
       tipo_semilla:
         ((typeof doc.data.tipo_semilla === "string"
           ? doc.data.tipo_semilla.toLowerCase()
@@ -71,10 +93,14 @@ export async function getAllProducts(
         typeof doc.data.uso === "string"
           ? (doc.data.uso.toLowerCase() as "grano" | "silo" | "preceon")
           : (doc.data.uso as "grano" | "silo" | "preceon" | undefined),
-      zona:
-        typeof doc.data.zona === "string"
-          ? doc.data.zona.toLowerCase()
-          : (doc.data.zona as any),
+      zona: Array.isArray(doc.data.zonas)
+        ? doc.data.zonas
+            .map((z: any) => z?.zona)
+            .filter(Boolean)
+            .map((z: string) => z.toLowerCase())
+        : typeof doc.data.zona === "string"
+        ? doc.data.zona.toLowerCase()
+        : (doc.data.zona as any),
       categoria: (doc.data.categoria as any) || "maiz-grano",
       proteccion:
         ((typeof doc.data.proteccion === "string"
@@ -122,19 +148,43 @@ export async function getProductById(
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
-    const doc = await client.getByID(id, { lang: prismicLocale });
+    const doc = await client.getByID(id, {
+      lang: prismicLocale,
+      fetchLinks: ["saco.imagen", "saco.nombre"],
+    });
 
     return {
       id: doc.id,
       nombre: doc.data.nombre || "",
       codigo: doc.data.codigo || "",
-      imagen_saco: doc.data.imagen_saco
+      imagen_saco: doc.data.saco_ref?.data?.imagen?.url
         ? {
-            url: doc.data.imagen_saco.url || "",
-            alt: doc.data.imagen_saco.alt || "",
+            url: doc.data.saco_ref.data.imagen.url || "",
+            alt:
+              doc.data.saco_ref.data.imagen.alt ||
+              doc.data.saco_ref.data.nombre ||
+              doc.data.nombre ||
+              "",
           }
         : undefined,
       claim: doc.data.claim || undefined,
+      ciclo_rm: doc.data.ciclo_rm || undefined,
+      descripcion_popup:
+        prismic.asText(doc.data.descripcion_popup) || undefined,
+      tipo_grano: doc.data.tipo_grano || undefined,
+      altura_planta_texto: doc.data.altura_planta_texto || undefined,
+      floracion_texto: doc.data.floracion_texto || undefined,
+      madurez_texto: doc.data.madurez_texto || undefined,
+      insercion_mazorca: doc.data.insercion_mazorca || undefined,
+      caracteristicas: Array.isArray(doc.data.caracteristicas)
+        ? doc.data.caracteristicas
+            .map((c: any) => ({
+              clave: c?.clave,
+              valor: typeof c?.valor === "number" ? c.valor : Number(c?.valor),
+              label_custom: c?.label_custom || undefined,
+            }))
+            .filter((c: any) => !!c.clave && !Number.isNaN(c.valor))
+        : [],
       tipo_semilla:
         ((typeof doc.data.tipo_semilla === "string"
           ? doc.data.tipo_semilla.toLowerCase()
@@ -143,10 +193,14 @@ export async function getProductById(
         typeof doc.data.uso === "string"
           ? (doc.data.uso.toLowerCase() as "grano" | "silo" | "preceon")
           : (doc.data.uso as "grano" | "silo" | "preceon" | undefined),
-      zona:
-        typeof doc.data.zona === "string"
-          ? doc.data.zona.toLowerCase()
-          : (doc.data.zona as any),
+      zona: Array.isArray(doc.data.zonas)
+        ? doc.data.zonas
+            .map((z: any) => z?.zona)
+            .filter(Boolean)
+            .map((z: string) => z.toLowerCase())
+        : typeof doc.data.zona === "string"
+        ? doc.data.zona.toLowerCase()
+        : (doc.data.zona as any),
       categoria: (doc.data.categoria as any) || "maiz-grano",
       proteccion:
         ((typeof doc.data.proteccion === "string"

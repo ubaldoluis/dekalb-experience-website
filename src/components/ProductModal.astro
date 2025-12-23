@@ -11,99 +11,494 @@ const { product = null, lang = 'es' } = Astro.props;
 const translations = {
   es: {
     close: 'Cerrar',
-    category: 'Categoría',
-    benefits: 'Beneficios',
-    recommendations: 'Recomendaciones de uso',
+    description: 'DESCRIPCIÓN',
+    characteristics: 'CARACTERÍSTICAS',
+    recommendations: 'Recomendaciones',
+    pdfGuide: 'Guía en PDF',
+    cycle: 'CICLO/RM',
+    grainType: 'Tipo de Grano',
+    flowering: 'Floración',
+    earInsertion: 'Inserción de mazorca',
+    productionPotential: 'Potencial de producción',
+    adaptability: 'Adaptabilidad',
+    fallResistance: 'Resistencia a la caída',
+    virusTolerance: 'Tolerancia a virus',
+    stayGreen: 'Stay-green',
+    highDensityResponse: 'Respuesta a alta densidad',
+    grainQuality: 'Calidad de grano',
   },
   pt: {
     close: 'Fechar',
-    category: 'Categoria',
-    benefits: 'Benefícios',
-    recommendations: 'Recomendações de uso',
+    description: 'DESCRIÇÃO',
+    characteristics: 'CARACTERÍSTICAS',
+    recommendations: 'Recomendações',
+    pdfGuide: 'Guia em PDF',
+    cycle: 'CICLO/RM',
+    grainType: 'Tipo de Grão',
+    flowering: 'Floração',
+    earInsertion: 'Inserção de espiga',
+    productionPotential: 'Potencial de produção',
+    adaptability: 'Adaptabilidade',
+    fallResistance: 'Resistência ao acamamento',
+    virusTolerance: 'Tolerância a vírus',
+    stayGreen: 'Stay-green',
+    highDensityResponse: 'Resposta a alta densidade',
+    grainQuality: 'Qualidade do grão',
   },
 };
 
 const t = translations[lang];
 
-const categoryLabels: Record<string, { es: string; pt: string }> = {
-  'maiz-grano': { es: 'Maíz Grano', pt: 'Milho Grão' },
-  'silo': { es: 'Silo', pt: 'Silagem' },
-  'preceon': { es: 'Preceon', pt: 'Preceon' },
-  'colza': { es: 'Colza', pt: 'Colza' },
-  'fitosanitario': { es: 'Fitosanitario', pt: 'Fitosanitário' },
+const featureLabels = {
+  potencial_produccion: { es: 'Potencial de producción', pt: 'Potencial de produção' },
+  adaptabilidad: { es: 'Adaptabilidad', pt: 'Adaptabilidade' },
+  resistencia_caida: { es: 'Resistencia a la caída', pt: 'Resistência ao acamamento' },
+  tolerancia_virus: { es: 'Tolerancia a virus', pt: 'Tolerância a vírus' },
+  stay_green: { es: 'Stay-green', pt: 'Stay-green' },
+  respuesta_alta_densidad: { es: 'Respuesta a alta densidad', pt: 'Resposta a alta densidade' },
+  calidad_grano: { es: 'Calidad de grano', pt: 'Qualidade do grão' },
+  contenido_aceite: { es: 'Contenido de aceite', pt: 'Teor de óleo' },
+  tolerancia_dehiscencia: { es: 'Tolerancia a dehiscencia', pt: 'Tolerância à deiscência' },
+  sanidad: { es: 'Sanidad', pt: 'Sanidade' },
+  tolerancia_sequia: { es: 'Tolerancia a la sequía', pt: 'Tolerância à seca' },
+  implantacion: { es: 'Implantación', pt: 'Implantação' },
 };
+
+const featureOrderBySeed = {
+  maiz: [
+    'potencial_produccion',
+    'adaptabilidad',
+    'resistencia_caida',
+    'tolerancia_virus',
+    'stay_green',
+    'respuesta_alta_densidad',
+    'calidad_grano',
+  ],
+  colza: [
+    'potencial_produccion',
+    'contenido_aceite',
+    'tolerancia_dehiscencia',
+    'sanidad',
+    'adaptabilidad',
+    'tolerancia_sequia',
+    'implantacion',
+  ],
+};
+
+const orderedFeatures = (product && product.caracteristicas && product.tipo_semilla && featureOrderBySeed[product.tipo_semilla])
+  ? featureOrderBySeed[product.tipo_semilla].map((k) => {
+      return product.caracteristicas.find((c) => c.clave === k);
+    }).filter(Boolean)
+  : [];
+
+// Parse ciclo_rm to extract cycle and rm values
+const parseCicloRM = (cicloRM) => {
+  if (!cicloRM) return { cycle: '', rm: '' };
+  const parts = cicloRM.split('/');
+  return {
+    cycle: (parts[0] && parts[0].trim()) || '',
+    rm: (parts[1] && parts[1].trim()) || '',
+  };
+};
+
+const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' };
 ---
 
 <dialog class="product-modal" id="product-modal" aria-labelledby="modal-title" aria-modal="true">
   <div class="modal-backdrop" id="modal-backdrop"></div>
-  <div class="modal-content">
-    <button class="modal-close" id="modal-close" aria-label={t.close}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-
-    {product ? (
-      <div class="modal-body">
-        <div class="modal-image-section">
-          {product.imagen_saco?.url && (
+  
+  <div class="modal-content" id="modal-content-container">
+  {product ? (
+    <>
+      <!-- Left Column: Image -->
+      <div class="modal-image-section">
+        <button class="modal-close-btn" id="modal-close" aria-label={t.close}>
+          <div class="modal-close-circle">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </button>
+        {product.imagen_saco?.url && (
+          <div class="modal-image-wrapper">
             <img
               src={product.imagen_saco.url}
               alt={product.imagen_saco.alt || product.nombre}
               class="modal-product-image"
               loading="lazy"
             />
-          )}
-        </div>
+          </div>
+        )}
+      </div>
 
-        <div class="modal-info-section">
-          <h2 id="modal-title" class="modal-title">{product.nombre}</h2>
-          
-          {product.claim && (
-            <p class="modal-claim">{product.claim}</p>
-          )}
-
-          {product.categoria && (
-            <div class="modal-meta">
-              <span class="badge badge-primary">
-                {categoryLabels[product.categoria]?.[lang] || product.categoria}
-              </span>
-            </div>
-          )}
-
-          {product.beneficios && product.beneficios.length > 0 && (
-            <div class="modal-section">
-              <h3 class="modal-section-title">{t.beneficios}</h3>
-              <ul class="modal-benefits-list">
-                {product.beneficios.map((benefit) => (
-                  <li>{benefit}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {product.recomendaciones_uso && (
-            <div class="modal-section">
-              <h3 class="modal-section-title">{t.recommendations}</h3>
-              <div class="modal-recommendations">
-                {product.recomendaciones_uso}
+      <!-- Right Column: Content -->
+      <div class="modal-info-section">
+        <div class="modal-scroll-content">
+          <!-- Header: Title and CICLO/RM -->
+          <div class="modal-header">
+            <h2 id="modal-title" class="modal-title">{product.nombre}</h2>
+            {product.ciclo_rm && (
+              <div class="modal-ciclo-rm">
+                <div class="ciclo-rm-container">
+                  <div class="ciclo-rm-left">
+                    <span class="ciclo-rm-label">{t.cycle}</span>
+                  </div>
+                  <div class="ciclo-rm-right">
+                    <span class="ciclo-rm-value">{cicloRM.cycle}/{cicloRM.rm}</span>
+                  </div>
+                </div>
               </div>
+            )}
+          </div>
+
+          <!-- Description Section -->
+          {product.descripcion_popup && (
+            <div class="modal-section">
+              <h3 class="modal-section-title">{t.description}</h3>
+              <p class="modal-description-text">{product.descripcion_popup}</p>
             </div>
           )}
+
+          <!-- Separator Line -->
+          {(product.descripcion_popup || product.ciclo_rm) && (
+            <div class="modal-separator"></div>
+          )}
+
+          <!-- Characteristics Section -->
+          {(product.tipo_grano || product.floracion_texto || product.insercion_mazorca || orderedFeatures.length > 0) && (
+            <div class="modal-section">
+              <h3 class="modal-section-title">{t.characteristics}</h3>
+              
+              <!-- Basic Details (Maíz) -->
+              {product.tipo_semilla === 'maiz' && (
+                <div class="modal-characteristics-list">
+                  {product.tipo_grano && typeof product.tipo_grano === 'string' && product.tipo_grano.trim() && (
+                    <div class="modal-characteristic-item">
+                      <span class="characteristic-label">{t.grainType}</span>
+                    </div>
+                  )}
+                  {product.floracion_texto && typeof product.floracion_texto === 'string' && product.floracion_texto.trim() && (
+                    <div class="modal-characteristic-item">
+                      <span class="characteristic-label">{t.flowering}</span>
+                    </div>
+                  )}
+                  {product.insercion_mazorca && typeof product.insercion_mazorca === 'string' && product.insercion_mazorca.trim() && (
+                    <div class="modal-characteristic-item">
+                      <span class="characteristic-label">{t.earInsertion}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <!-- Features with Progress Bars -->
+              {orderedFeatures.length > 0 && (
+                <div class="modal-features-list">
+                  {orderedFeatures.map((feat) => {
+                    const label =
+                      feat.label_custom ||
+                      featureLabels[feat.clave]?.[lang] ||
+                      feat.clave;
+                    const value = Math.max(0, Math.min(10, Number(feat.valor) || 0));
+                    const percent = (value / 10) * 100;
+                    return (
+                      <div class="modal-feature-item">
+                        <span class="feature-label">{label}</span>
+                        <div class="feature-progress-container">
+                          <div class="feature-progress-bar">
+                            <div 
+                              class="feature-progress-fill" 
+                              style={{ width: `${percent}%` }}
+                            ></div>
+                          </div>
+                          <span class="feature-value">{value}/10</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          <!-- Separator Line -->
+          {product.recomendaciones_uso && (
+            <div class="modal-separator"></div>
+          )}
+
+          <!-- Recommendations Section -->
+          {product.recomendaciones_uso && (
+            <div class="modal-recommendations-section">
+              <h3 class="modal-recommendations-title">{t.recommendations}</h3>
+              <p class="modal-recommendations-text">{product.recomendaciones_uso}</p>
+            </div>
+          )}
+
+          <!-- Separator Line -->
+          <div class="modal-separator"></div>
+
+          <!-- PDF Guide Button -->
+          <a 
+            href={product.guia_pdf?.url || '#'} 
+            class="modal-pdf-button"
+            target={product.guia_pdf?.url ? "_blank" : undefined}
+            rel={product.guia_pdf?.url ? "noopener noreferrer" : undefined}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{t.pdfGuide}</span>
+          </a>
         </div>
       </div>
-    ) : (
-      <div class="modal-body">
-        <p>{lang === 'es' ? 'Cargando producto...' : 'Carregando produto...'}</p>
-      </div>
-    )}
+    </>
+  ) : (
+    <div class="modal-loading">
+      <p>{lang === 'es' ? 'Cargando producto...' : 'Carregando produto...'}</p>
+    </div>
+  )}
   </div>
 </dialog>
 
-<script>
-  const modal = document.getElementById('product-modal') as HTMLDialogElement;
-  const backdrop = document.getElementById('modal-backdrop');
-  const closeBtn = document.getElementById('modal-close');
+<script define:vars={{ lang }}>
+  // Wait for DOM to be ready
+  function initModal() {
+    const modal = document.getElementById('product-modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const closeBtn = document.getElementById('modal-close');
+    
+    if (!modal) {
+      console.error('❌ [Modal] Modal element not found');
+      return;
+    }
+    
+    // Store current language globally
+    window.__currentLang = lang;
+    console.log('✅ [Modal] Initialized with lang:', lang);
+
+  function updateModalContent(product) {
+    if (!product || !modal) {
+      console.error('❌ [Modal] Missing product or modal:', { product: !!product, modal: !!modal });
+      return;
+    }
+
+    console.log('🔍 [Modal] Updating with product:', {
+      nombre: product.nombre,
+      id: product.id,
+      ciclo_rm: product.ciclo_rm
+    });
+
+    const modalContent = document.getElementById('modal-content-container');
+    if (!modalContent) {
+      console.error('❌ [Modal] Modal content container not found');
+      return;
+    }
+
+    // Parse ciclo_rm
+    const parseCicloRM = (cicloRM) => {
+      if (!cicloRM) return { cycle: '', rm: '' };
+      const parts = cicloRM.split('/');
+      return {
+        cycle: (parts[0] && parts[0].trim()) || '',
+        rm: (parts[1] && parts[1].trim()) || '',
+      };
+    };
+
+    const cicloRM = parseCicloRM(product.ciclo_rm);
+
+    // Helper function to check if a value exists and is not empty
+    const hasValue = (val) => {
+      return val && typeof val === 'string' && val.trim().length > 0;
+    };
+
+    // Feature labels mapping
+    const featureLabels = {
+      potencial_produccion: { es: 'Potencial de producción', pt: 'Potencial de produção' },
+      adaptabilidad: { es: 'Adaptabilidad', pt: 'Adaptabilidade' },
+      resistencia_caida: { es: 'Resistencia a la caída', pt: 'Resistência ao acamamento' },
+      tolerancia_virus: { es: 'Tolerancia a virus', pt: 'Tolerância a vírus' },
+      stay_green: { es: 'Stay-green', pt: 'Stay-green' },
+      respuesta_alta_densidad: { es: 'Respuesta a alta densidad', pt: 'Resposta a alta densidade' },
+      calidad_grano: { es: 'Calidad de grano', pt: 'Qualidade do grão' },
+    };
+
+    const featureOrderBySeed = {
+      maiz: [
+        'potencial_produccion',
+        'adaptabilidad',
+        'resistencia_caida',
+        'tolerancia_virus',
+        'stay_green',
+        'respuesta_alta_densidad',
+        'calidad_grano',
+      ],
+      colza: [
+        'potencial_produccion',
+        'contenido_aceite',
+        'tolerancia_dehiscencia',
+        'sanidad',
+        'adaptabilidad',
+        'tolerancia_sequia',
+        'implantacion',
+      ],
+    };
+
+    const orderedFeatures = (product.caracteristicas && product.tipo_semilla && featureOrderBySeed[product.tipo_semilla])
+      ? featureOrderBySeed[product.tipo_semilla].map((k) => {
+          return product.caracteristicas.find((c) => c.clave === k);
+        }).filter(Boolean)
+      : [];
+
+    const currentLang = window.__currentLang || lang || 'es';
+    const translations = {
+      es: {
+        description: 'DESCRIPCIÓN',
+        characteristics: 'CARACTERÍSTICAS',
+        recommendations: 'Recomendaciones',
+        pdfGuide: 'Guía en PDF',
+        cycle: 'CICLO/RM',
+        grainType: 'Tipo de Grano',
+        flowering: 'Floración',
+        earInsertion: 'Inserción de mazorca',
+      },
+      pt: {
+        description: 'DESCRIÇÃO',
+        characteristics: 'CARACTERÍSTICAS',
+        recommendations: 'Recomendações',
+        pdfGuide: 'Guia em PDF',
+        cycle: 'CICLO/RM',
+        grainType: 'Tipo de Grão',
+        flowering: 'Floração',
+        earInsertion: 'Inserção de espiga',
+      },
+    };
+    const t = translations[currentLang] || translations.es;
+
+    // Build HTML content
+    let html = `
+      <div class="modal-image-section">
+        <button class="modal-close-btn" id="modal-close" aria-label="${lang === 'es' ? 'Cerrar' : 'Fechar'}">
+          <div class="modal-close-circle">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </button>
+        ${(product.imagen_saco && product.imagen_saco.url) ? `
+          <div class="modal-image-wrapper">
+            <img
+              src="${product.imagen_saco.url}"
+              alt="${product.imagen_saco.alt || product.nombre}"
+              class="modal-product-image"
+              loading="lazy"
+            />
+          </div>
+        ` : ''}
+      </div>
+      <div class="modal-info-section">
+        <div class="modal-scroll-content">
+          <div class="modal-header">
+            <h2 id="modal-title" class="modal-title">${product.nombre || product.id || 'Producto sin nombre'}</h2>
+            ${product.ciclo_rm ? `
+              <div class="modal-ciclo-rm">
+                <div class="ciclo-rm-container">
+                  <div class="ciclo-rm-left">
+                    <span class="ciclo-rm-label">${t.cycle}</span>
+                  </div>
+                  <div class="ciclo-rm-right">
+                    <span class="ciclo-rm-value">${cicloRM.cycle}/${cicloRM.rm}</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+          ${product.descripcion_popup ? `
+            <div class="modal-section">
+              <h3 class="modal-section-title">${t.description}</h3>
+              <p class="modal-description-text">${product.descripcion_popup}</p>
+            </div>
+          ` : ''}
+          ${(product.descripcion_popup || product.ciclo_rm) ? '<div class="modal-separator"></div>' : ''}
+          ${(product.tipo_grano || product.floracion_texto || product.insercion_mazorca || orderedFeatures.length > 0) ? `
+            <div class="modal-section">
+              <h3 class="modal-section-title">${t.characteristics}</h3>
+              ${product.tipo_semilla === 'maiz' && (hasValue(product.tipo_grano) || hasValue(product.floracion_texto) || hasValue(product.insercion_mazorca)) ? `
+                <div class="modal-characteristics-list">
+                  ${hasValue(product.tipo_grano) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.grainType}</span></div>` : ''}
+                  ${hasValue(product.floracion_texto) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.flowering}</span></div>` : ''}
+                  ${hasValue(product.insercion_mazorca) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.earInsertion}</span></div>` : ''}
+                </div>
+              ` : ''}
+              ${orderedFeatures.length > 0 ? `
+                <div class="modal-features-list">
+                  ${orderedFeatures.map((feat) => {
+                    const featLabel = featureLabels[feat.clave];
+                    const label = feat.label_custom || (featLabel && featLabel[currentLang]) || feat.clave;
+                    const value = Math.max(0, Math.min(10, Number(feat.valor) || 0));
+                    const percent = (value / 10) * 100;
+                    return `
+                      <div class="modal-feature-item">
+                        <span class="feature-label">${label}</span>
+                        <div class="feature-progress-container">
+                          <div class="feature-progress-bar">
+                            <div class="feature-progress-fill" style="width: ${percent}%"></div>
+                          </div>
+                          <span class="feature-value">${value}/10</span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
+          ${product.recomendaciones_uso ? '<div class="modal-separator"></div>' : ''}
+          ${product.recomendaciones_uso ? `
+            <div class="modal-recommendations-section">
+              <h3 class="modal-recommendations-title">${t.recommendations}</h3>
+              <p class="modal-recommendations-text">${product.recomendaciones_uso}</p>
+            </div>
+          ` : ''}
+          <div class="modal-separator"></div>
+          <a href="${(product.guia_pdf && product.guia_pdf.url) ? product.guia_pdf.url : '#'}" class="modal-pdf-button" ${(product.guia_pdf && product.guia_pdf.url) ? 'target="_blank" rel="noopener noreferrer"' : ''}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>${t.pdfGuide}</span>
+          </a>
+        </div>
+      </div>
+    `;
+
+    modalContent.innerHTML = html;
+
+    // Center content vertically if it's shorter than container
+    const scrollContent = modalContent.querySelector('.modal-scroll-content');
+    if (scrollContent) {
+      // Wait for content to render and images to load
+      setTimeout(() => {
+        const scrollHeight = scrollContent.scrollHeight;
+        const clientHeight = scrollContent.clientHeight;
+        console.log('📏 [Modal] Scroll check:', { 
+          scrollHeight, 
+          clientHeight, 
+          canScroll: scrollHeight > clientHeight,
+          computedHeight: window.getComputedStyle(scrollContent).height,
+          parentHeight: scrollContent.parentElement?.clientHeight
+        });
+        if (scrollHeight < clientHeight) {
+          scrollContent.style.justifyContent = 'center';
+        } else {
+          scrollContent.style.justifyContent = 'flex-start';
+        }
+      }, 200);
+    }
+
+    // Re-attach close button listener
+    const newCloseBtn = modalContent.querySelector('#modal-close');
+    if (newCloseBtn) {
+      newCloseBtn.addEventListener('click', closeModal);
+    }
+  }
 
   function openModal() {
     if (modal) {
@@ -117,50 +512,78 @@ const categoryLabels: Record<string, { es: string; pt: string }> = {
       modal.close();
       document.body.style.overflow = '';
     }
-  }
+    }
 
-  // Listen for product click events
-  document.addEventListener('productClick', ((e: CustomEvent<{ productId: string }>) => {
-    const productId = e.detail.productId;
-    // Fetch product data and update modal
-    // For now, we'll open the modal and let the parent component handle data
-    openModal();
-  }) as EventListener);
+    // Listen for product click events
+    document.addEventListener('productClick', (e) => {
+      const customEvent = e;
+      const productId = (customEvent.detail && customEvent.detail.productId) || null;
+      
+      if (!productId) {
+        console.error('❌ [Modal] No productId in event:', customEvent);
+        return;
+      }
 
-  // Close button
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-  }
-
-  // Backdrop click
-  if (backdrop) {
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        closeModal();
+      console.log('🔄 [Modal] Product clicked:', productId);
+      
+      const allProducts = window.__allProducts || [];
+      console.log('📦 [Modal] All products available:', allProducts.length);
+      
+      const product = allProducts.find((p) => p.id === productId);
+      
+      if (product) {
+        console.log('✅ [Modal] Product found, updating modal:', product.nombre);
+        updateModalContent(product);
+        openModal();
+      } else {
+        console.error('❌ [Modal] Product not found:', productId);
+        console.log('Available product IDs:', allProducts.map(function(p) { return p.id; }));
       }
     });
-  }
 
-  // Escape key
-  if (modal) {
-    modal.addEventListener('cancel', (e) => {
-      e.preventDefault();
-      closeModal();
-    });
+    // Close button
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
+    // Backdrop click
+    if (backdrop) {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          closeModal();
+        }
+      });
+    }
+
+    // Escape key
+    if (modal) {
+      modal.addEventListener('cancel', (e) => {
+        e.preventDefault();
         closeModal();
-      }
-    });
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+
+    // Export functions for external use
+    window.openProductModal = openModal;
+    window.closeProductModal = closeModal;
+    window.updateProductModal = updateModalContent;
   }
 
-  // Export functions for external use
-  (window as any).openProductModal = openModal;
-  (window as any).closeProductModal = closeModal;
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initModal);
+  } else {
+    initModal();
+  }
 </script>
 
-<style>
+<style is:global>
   .product-modal {
     position: fixed;
     top: 0;
@@ -175,12 +598,11 @@ const categoryLabels: Record<string, { es: string; pt: string }> = {
     padding: 0;
     border: none;
     background: transparent;
-    z-index: var(--z-index-modal);
+    z-index: 9999;
   }
 
   .product-modal::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(48, 48, 48, 0.6);
   }
 
   .modal-backdrop {
@@ -189,151 +611,432 @@ const categoryLabels: Record<string, { es: string; pt: string }> = {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(48, 48, 48, 0.6);
   }
 
   .modal-content {
     position: relative;
-    background: var(--color-white);
-    width: 90%;
-    max-width: 600px;
+    background: #ffffff;
+    width: 1196px;
+    max-width: 90vw;
     max-height: 90vh;
     margin: 5vh auto;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     z-index: 1;
   }
 
-  .modal-close {
-    position: absolute;
-    top: var(--spacing-4);
-    right: var(--spacing-4);
-    z-index: 10;
-    background: var(--color-white);
-    border: 2px solid var(--color-gray-300);
-    border-radius: var(--radius-full);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    color: var(--color-gray-700);
-  }
-
-  .modal-close:hover {
-    background: var(--color-gray-100);
-    border-color: var(--color-dekalb-primary);
-    color: var(--color-dekalb-primary);
-  }
-
-  .modal-close:focus {
-    outline: 2px solid var(--color-dekalb-primary);
-    outline-offset: 2px;
-  }
-
-  .modal-body {
-    padding: var(--spacing-6);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-6);
-  }
-
+  /* Left Column: Image Section */
   .modal-image-section {
-    width: 100%;
-    aspect-ratio: 1;
-    background-color: var(--color-gray-100);
-    border-radius: var(--radius-md);
+    position: relative;
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
+    background: linear-gradient(180deg, #e7e7e7 0%, #ffffff 100%);
+    border-radius: 36px 0 0 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 48px 32px;
     overflow: hidden;
+  }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .modal-close-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(220, 220, 220, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #313639;
+    transition: all 0.2s ease;
+  }
+
+  .modal-close-btn:hover .modal-close-circle {
+    background: rgba(220, 220, 220, 0.8);
+  }
+
+  .modal-image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .modal-product-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: var(--spacing-4);
+    max-width: 400px;
+    max-height: 500px;
   }
 
+  /* Right Column: Content Section */
   .modal-info-section {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-4);
+    overflow: hidden;
+    min-height: 0;
+    max-height: 90vh;
+  }
+
+  .modal-scroll-content {
+    padding: 48px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 90vh;
+    display: flex !important;
+    flex-direction: column !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header */
+  .modal-header {
+    margin-bottom: 0;
   }
 
   .modal-title {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-gray-900);
-    margin: 0;
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 32px !important;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: 0.64px;
+    color: #009DDB !important;
+    margin: 0 0 1rem 0;
   }
 
-  .modal-claim {
-    font-size: var(--font-size-lg);
-    color: var(--color-gray-700);
-    margin: 0;
+  /* CICLO/RM Toggle */
+  .modal-ciclo-rm {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
   }
 
-  .modal-meta {
+  .ciclo-rm-container {
     display: flex;
-    gap: var(--spacing-2);
+    width: 346px;
+    height: 56px;
+    border-radius: 100px;
+    border: 1px solid #009DDB;
+    overflow: hidden;
+    background: #ffffff;
   }
 
+  .ciclo-rm-left {
+    flex: 1;
+    background: #009DDB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .ciclo-rm-label {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+  }
+
+  .ciclo-rm-right {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .ciclo-rm-value {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0.4px;
+    color: #009DDB !important;
+  }
+
+  /* Sections */
   .modal-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-3);
+    margin-bottom: 0;
   }
 
   .modal-section-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-900);
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0;
+    color: #00527f;
+    margin: 0 0 1rem 0;
+  }
+
+  .modal-description-text {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20.8px;
+    letter-spacing: 0;
+    color: #313639;
     margin: 0;
   }
 
-  .modal-benefits-list {
-    list-style: disc;
-    padding-left: var(--spacing-6);
+  /* Separator */
+  .modal-separator {
+    width: 100%;
+    height: 1px;
+    background: #e9e7e4;
+    margin: 1.2rem 0;
+  }
+
+  /* Characteristics List */
+  .modal-characteristics-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2);
-    color: var(--color-gray-700);
+    gap: 0;
+    margin-bottom: 0;
   }
 
-  .modal-recommendations {
-    color: var(--color-gray-700);
-    line-height: var(--line-height-relaxed);
+  .modal-characteristic-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
   }
 
-  /* Mobile: Full screen with different background */
+  .modal-characteristic-item:last-child {
+    margin-bottom: 1rem;
+  }
+
+  .characteristic-label {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18.2px;
+    letter-spacing: 0;
+    color: #313639;
+  }
+
+  /* Features List with Progress Bars */
+  .modal-features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0;
+  }
+
+  .modal-feature-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .modal-feature-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .feature-label {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18.2px;
+    letter-spacing: 0;
+    color: #313639;
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+
+  .feature-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .feature-progress-bar {
+    position: relative;
+    flex: 1;
+    height: 19px;
+    background: #d9d9d9;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .feature-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    /* Use gradient image - fallback to CSS gradient if image not available */
+    background-image: url('/gradiente-barras.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* Fallback gradient if image not found */
+    background-color: transparent;
+    border-radius: 100px;
+    min-width: 0;
+  }
+
+  /* Fallback gradient when image is not available */
+  .feature-progress-fill:not([style*="background-image"]) {
+    background: linear-gradient(90deg, #f2d400 0%, #a8d600 50%, #009ddb 100%);
+  }
+
+  .feature-value {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 300;
+    line-height: 10px;
+    letter-spacing: 0;
+    color: #000000;
+    white-space: nowrap;
+    min-width: 30px;
+    text-align: right;
+  }
+
+  /* Recommendations Section */
+  .modal-recommendations-section {
+    background: rgba(233, 231, 228, 0.5);
+    border-radius: 12px;
+    padding: 24px 16px;
+    margin-bottom: 0;
+  }
+
+  .modal-recommendations-title {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    letter-spacing: 0;
+    color: #00527f;
+    margin: 0 0 16px 0;
+  }
+
+  .modal-recommendations-text {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20.8px;
+    letter-spacing: 0;
+    color: #313639;
+    margin: 0;
+  }
+
+  /* PDF Button */
+  .modal-pdf-button {
+    width: 254px;
+    height: 48px;
+    border-radius: 26px;
+    background: linear-gradient(90deg, #009ddb 30%, #005475 100%);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #ffffff;
+    padding: 0;
+    text-decoration: none;
+  }
+
+  .modal-pdf-button:hover {
+    opacity: 0.9;
+  }
+
+  .modal-pdf-button:not([href]) {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .modal-pdf-button svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    flex-shrink: 0;
+  }
+
+  .modal-loading {
+    padding: 48px;
+    text-align: center;
+    color: #313639;
+  }
+
+  /* Mobile Styles */
   @media (max-width: 767px) {
     .modal-content {
       width: 100%;
       max-width: 100%;
-      height: 100%;
-      max-height: 100%;
+      max-height: 100vh;
       margin: 0;
       border-radius: 0;
-      background: var(--color-gray-50); /* Different background for mobile */
+      flex-direction: column;
     }
 
-    .modal-body {
-      padding: var(--spacing-4);
+    .modal-image-section {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+      border-radius: 0;
+      padding: 32px 24px;
+      min-height: 300px;
+      max-height: 40vh;
     }
 
-    .modal-close {
-      top: var(--spacing-2);
-      right: var(--spacing-2);
+    .modal-info-section {
+      max-height: 60vh;
+    }
+
+    .modal-scroll-content {
+      padding: 24px;
+      max-height: 60vh;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      line-height: 28px;
+    }
+
+    .ciclo-rm-container {
+      width: 100%;
+      max-width: 346px;
+    }
+
+    .modal-close-btn {
+      top: 16px;
+      left: 16px;
+    }
+
+    .modal-close-circle {
+      width: 40px;
+      height: 40px;
     }
   }
 </style>
-

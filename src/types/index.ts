@@ -28,6 +28,26 @@ export type CategoriaProducto =
   | "colza"
   | "fitosanitario";
 
+export type ClaveCaracteristica =
+  | "potencial_produccion"
+  | "adaptabilidad"
+  | "resistencia_caida"
+  | "tolerancia_virus"
+  | "stay_green"
+  | "respuesta_alta_densidad"
+  | "calidad_grano"
+  | "contenido_aceite"
+  | "tolerancia_dehiscencia"
+  | "sanidad"
+  | "tolerancia_sequia"
+  | "implantacion";
+
+export interface CaracteristicaProducto {
+  clave: ClaveCaracteristica;
+  valor: number;
+  label_custom?: string;
+}
+
 export interface FilterState {
   tipoSemilla?: TipoSemilla;
   uso?: UsoMaiz;
@@ -46,12 +66,23 @@ export interface Producto {
   claim?: string;
   tipo_semilla: TipoSemilla;
   uso?: UsoMaiz;
-  zona?: ZonaGeografica;
+  zona?: ZonaGeografica | ZonaGeografica[];
   categoria: CategoriaProducto;
   proteccion: ProteccionCultivo;
   beneficios?: string[];
   recomendaciones_uso?: string;
+  ciclo_rm?: string;
+  descripcion_popup?: string;
+  tipo_grano?: string;
+  altura_planta_texto?: string;
+  floracion_texto?: string;
+  madurez_texto?: string;
+  insercion_mazorca?: string;
+  caracteristicas?: CaracteristicaProducto[];
   orden?: number;
+  guia_pdf?: {
+    url: string;
+  };
 }
 
 export interface Articulo {
