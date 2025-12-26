@@ -335,6 +335,27 @@ const {
             card.style.maxWidth = cardWidth;
           }
         });
+      } else if (isDesktop) {
+        // Desktop: ensure flex layout with 3 visible cards per row
+        trackElement.style.display = "flex";
+        trackElement.style.flexDirection = "row";
+        trackElement.style.width = "100%";
+        trackElement.style.overflowX = "auto";
+        trackElement.style.overflowY = "hidden";
+        trackElement.style.gridTemplateColumns = "none";
+        trackElement.style.padding = "var(--spacing-4)";
+
+        // Apply desktop card sizing to show only 3 visible cards
+        const cards = trackElement.querySelectorAll(".product-card");
+        const cardFlexBasis = "calc(33.333% - var(--spacing-4))";
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) {
+            card.style.flex = `0 0 ${cardFlexBasis}`;
+            card.style.minWidth = cardFlexBasis;
+            card.style.maxWidth = cardFlexBasis;
+            card.style.flexShrink = "0";
+          }
+        });
       }
 
       // Center filtered results only if filters are active
@@ -346,11 +367,33 @@ const {
       } else {
         // Reset styles when showing all products - ensure flex layout for desktop
         setTimeout(() => {
-          if (!isMobile) {
-            trackElement.style.paddingLeft = "";
-            trackElement.style.paddingRight = "";
+          if (isDesktop) {
+            // Desktop: maintain flex layout with 3 visible cards
             trackElement.style.display = "flex";
             trackElement.style.flexDirection = "row";
+            trackElement.style.gridTemplateColumns = "none";
+            trackElement.style.padding = "var(--spacing-4)";
+            trackElement.style.paddingLeft = "";
+            trackElement.style.paddingRight = "";
+            trackElement.style.justifyContent = "";
+
+            // Ensure cards have correct flex sizing
+            const cards = trackElement.querySelectorAll(".product-card");
+            const cardFlexBasis = "calc(33.333% - var(--spacing-4))";
+            cards.forEach((card) => {
+              if (card instanceof HTMLElement) {
+                card.style.flex = `0 0 ${cardFlexBasis}`;
+                card.style.minWidth = cardFlexBasis;
+                card.style.maxWidth = cardFlexBasis;
+                card.style.flexShrink = "0";
+              }
+            });
+          } else if (!isMobile) {
+            // Tablet: maintain grid layout
+            trackElement.style.paddingLeft = "";
+            trackElement.style.paddingRight = "";
+            trackElement.style.display = "";
+            trackElement.style.flexDirection = "";
             trackElement.style.justifyContent = "";
           }
           trackElement.scrollLeft = 0;
@@ -401,28 +444,30 @@ const {
       let targetScrollPosition = 0;
 
       if (isDesktop) {
-        // Desktop: 3 columns visible in grid
-        // Each column takes up (trackWidth / 3) space
-        const columnWidth = trackWidth / 3;
+        // Desktop: maintain flex layout with 3 visible cards per row
+        // Ensure flex layout is maintained (not grid)
+        trackElement.style.display = "flex";
+        trackElement.style.flexDirection = "row";
+        trackElement.style.justifyContent = "";
+        trackElement.style.gridTemplateColumns = "none";
+        trackElement.style.padding = "var(--spacing-4)";
+        trackElement.style.paddingLeft = "";
+        trackElement.style.paddingRight = "";
 
-        if (productCount === 1) {
-          // Center the single product in the middle column (position 2 of 3)
-          // Switch to flexbox temporarily to center properly
-          trackElement.style.display = "flex";
-          trackElement.style.justifyContent = "center";
-          trackElement.style.paddingLeft = `${columnWidth}px`;
-          trackElement.style.paddingRight = `${columnWidth}px`;
-          targetScrollPosition = 0;
-        } else {
-          // Multiple products: start from center position (position 2) and extend right
-          // Position the first product in the center column using padding
-          trackElement.style.display = "grid";
-          trackElement.style.justifyContent = "";
-          const paddingNeeded = columnWidth;
-          trackElement.style.paddingLeft = `${Math.max(0, paddingNeeded)}px`;
-          trackElement.style.paddingRight = "";
-          targetScrollPosition = 0;
-        }
+        // Ensure cards have correct flex sizing for 3 per row
+        const cards = trackElement.querySelectorAll(".product-card");
+        const cardFlexBasis = "calc(33.333% - var(--spacing-4))";
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) {
+            card.style.flex = `0 0 ${cardFlexBasis}`;
+            card.style.minWidth = cardFlexBasis;
+            card.style.maxWidth = cardFlexBasis;
+            card.style.flexShrink = "0";
+          }
+        });
+
+        // Reset scroll to start
+        targetScrollPosition = 0;
       } else {
         // Mobile: maintain slider behavior - ensure flex layout is maintained
         // Don't reset display to avoid falling back to grid layout

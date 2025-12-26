@@ -47,13 +47,16 @@ export async function getAllProducts(
     const documents = await client.getAllByType("producto", {
       lang: prismicLocale,
       fetchLinks: ["saco.imagen", "saco.nombre"],
-      orderings: {
-        field: "my.producto.orden",
-        direction: "asc",
-      },
+      orderings: [
+        {
+          field: "my.producto.orden",
+          direction: "asc",
+        },
+      ],
     });
 
-    return documents.map((doc) => ({
+    // Map documents to products
+    const products = documents.map((doc) => ({
       id: doc.id,
       nombre: doc.data.nombre || "",
       codigo: doc.data.codigo || "",
@@ -127,8 +130,17 @@ export async function getAllProducts(
           ? doc.data.recomendaciones_uso
           : prismic.asText(doc.data.recomendaciones_uso) || ""
         : undefined,
-      orden: doc.data.orden || undefined,
+      orden: typeof doc.data.orden === "number" ? doc.data.orden : undefined,
     }));
+
+    // Sort by orden field (ascending), products without orden go to the end
+    products.sort((a, b) => {
+      const ordenA = a.orden ?? 999999;
+      const ordenB = b.orden ?? 999999;
+      return ordenA - ordenB;
+    });
+
+    return products;
   } catch (error) {
     logger.error("Error fetching products:", error);
     return [];
