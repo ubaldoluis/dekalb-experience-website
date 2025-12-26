@@ -74,11 +74,11 @@ export async function getAllProducts(
       ciclo_rm: doc.data.ciclo_rm || undefined,
       descripcion_popup:
         prismic.asText(doc.data.descripcion_popup) || undefined,
-      tipo_grano: doc.data.tipo_grano || undefined,
-      altura_planta_texto: doc.data.altura_planta_texto || undefined,
-      floracion_texto: doc.data.floracion_texto || undefined,
-      madurez_texto: doc.data.madurez_texto || undefined,
-      insercion_mazorca: doc.data.insercion_mazorca || undefined,
+      tipo_grano: (doc.data.tipo_grano && typeof doc.data.tipo_grano === 'string' && doc.data.tipo_grano.trim()) ? doc.data.tipo_grano.trim() : undefined,
+      altura_planta_texto: (doc.data.altura_planta_texto && typeof doc.data.altura_planta_texto === 'string' && doc.data.altura_planta_texto.trim()) ? doc.data.altura_planta_texto.trim() : undefined,
+      floracion_texto: (doc.data.floracion_texto && typeof doc.data.floracion_texto === 'string' && doc.data.floracion_texto.trim()) ? doc.data.floracion_texto.trim() : undefined,
+      madurez_texto: (doc.data.madurez_texto && typeof doc.data.madurez_texto === 'string' && doc.data.madurez_texto.trim()) ? doc.data.madurez_texto.trim() : undefined,
+      insercion_mazorca: (doc.data.insercion_mazorca && typeof doc.data.insercion_mazorca === 'string' && doc.data.insercion_mazorca.trim()) ? doc.data.insercion_mazorca.trim() : undefined,
       caracteristicas: Array.isArray(doc.data.caracteristicas)
         ? doc.data.caracteristicas
             .map((c: any) => ({
@@ -183,11 +183,11 @@ export async function getProductById(
       ciclo_rm: doc.data.ciclo_rm || undefined,
       descripcion_popup:
         prismic.asText(doc.data.descripcion_popup) || undefined,
-      tipo_grano: doc.data.tipo_grano || undefined,
-      altura_planta_texto: doc.data.altura_planta_texto || undefined,
-      floracion_texto: doc.data.floracion_texto || undefined,
-      madurez_texto: doc.data.madurez_texto || undefined,
-      insercion_mazorca: doc.data.insercion_mazorca || undefined,
+      tipo_grano: (doc.data.tipo_grano && typeof doc.data.tipo_grano === 'string' && doc.data.tipo_grano.trim()) ? doc.data.tipo_grano.trim() : undefined,
+      altura_planta_texto: (doc.data.altura_planta_texto && typeof doc.data.altura_planta_texto === 'string' && doc.data.altura_planta_texto.trim()) ? doc.data.altura_planta_texto.trim() : undefined,
+      floracion_texto: (doc.data.floracion_texto && typeof doc.data.floracion_texto === 'string' && doc.data.floracion_texto.trim()) ? doc.data.floracion_texto.trim() : undefined,
+      madurez_texto: (doc.data.madurez_texto && typeof doc.data.madurez_texto === 'string' && doc.data.madurez_texto.trim()) ? doc.data.madurez_texto.trim() : undefined,
+      insercion_mazorca: (doc.data.insercion_mazorca && typeof doc.data.insercion_mazorca === 'string' && doc.data.insercion_mazorca.trim()) ? doc.data.insercion_mazorca.trim() : undefined,
       caracteristicas: Array.isArray(doc.data.caracteristicas)
         ? doc.data.caracteristicas
             .map((c: any) => ({

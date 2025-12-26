@@ -102,6 +102,35 @@ const parseCicloRM = (cicloRM) => {
 };
 
 const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' };
+
+// Helper function to check if a value exists and is not empty
+// More robust validation to handle all edge cases
+function hasValue(val) {
+  // Check for null, undefined, or falsy values
+  if (val === null || val === undefined || val === false) return false;
+  
+  // If it's not a string, convert it to string first
+  const strVal = typeof val === 'string' ? val : String(val);
+  
+  // Check if trimmed string has content
+  const trimmed = strVal.trim();
+  if (trimmed.length === 0) return false;
+  
+  // Additional check: if it's just whitespace or special characters
+  if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return false;
+  
+  return true;
+}
+
+// Check if product has any basic characteristics with values
+const hasBasicCharacteristics = product && (
+  hasValue(product.tipo_grano) || 
+  hasValue(product.floracion_texto) || 
+  hasValue(product.insercion_mazorca)
+);
+
+// Check if we should show characteristics section
+const shouldShowCharacteristics = hasBasicCharacteristics || (orderedFeatures && orderedFeatures.length > 0);
 ---
 
 <dialog class="product-modal" id="product-modal" aria-labelledby="modal-title" aria-modal="true">
@@ -170,26 +199,29 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
           )}
 
           <!-- Characteristics Section -->
-          {(product.tipo_grano || product.floracion_texto || product.insercion_mazorca || orderedFeatures.length > 0) && (
+          {shouldShowCharacteristics && (
             <div class="modal-section">
               <h3 class="modal-section-title">{t.characteristics}</h3>
               
               <!-- Basic Details (Maíz) -->
-              {product.tipo_semilla === 'maiz' && (
+              {product.tipo_semilla === 'maiz' && hasBasicCharacteristics && (
                 <div class="modal-characteristics-list">
-                  {product.tipo_grano && typeof product.tipo_grano === 'string' && product.tipo_grano.trim() && (
+                  {hasValue(product.tipo_grano) && (
                     <div class="modal-characteristic-item">
                       <span class="characteristic-label">{t.grainType}</span>
+                      <span class="characteristic-value">{product.tipo_grano}</span>
                     </div>
                   )}
-                  {product.floracion_texto && typeof product.floracion_texto === 'string' && product.floracion_texto.trim() && (
+                  {hasValue(product.floracion_texto) && (
                     <div class="modal-characteristic-item">
                       <span class="characteristic-label">{t.flowering}</span>
+                      <span class="characteristic-value">{product.floracion_texto}</span>
                     </div>
                   )}
-                  {product.insercion_mazorca && typeof product.insercion_mazorca === 'string' && product.insercion_mazorca.trim() && (
+                  {hasValue(product.insercion_mazorca) && (
                     <div class="modal-characteristic-item">
                       <span class="characteristic-label">{t.earInsertion}</span>
+                      <span class="characteristic-value">{product.insercion_mazorca}</span>
                     </div>
                   )}
                 </div>
@@ -321,9 +353,36 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     const cicloRM = parseCicloRM(product.ciclo_rm);
 
     // Helper function to check if a value exists and is not empty
+    // More robust validation to handle all edge cases
     const hasValue = (val) => {
-      return val && typeof val === 'string' && val.trim().length > 0;
+      // Check for null, undefined, or falsy values
+      if (val === null || val === undefined || val === false) return false;
+      
+      // If it's not a string, convert it to string first
+      const strVal = typeof val === 'string' ? val : String(val);
+      
+      // Check if trimmed string has content
+      const trimmed = strVal.trim();
+      if (trimmed.length === 0) return false;
+      
+      // Additional check: if it's just whitespace or special characters
+      if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return false;
+      
+      return true;
     };
+    
+    // Debug: Log characteristic values for troubleshooting
+    console.log('🔍 [Modal] Characteristic values for', product.codigo || product.nombre, ':', {
+      tipo_grano: product.tipo_grano,
+      tipo_grano_type: typeof product.tipo_grano,
+      tipo_grano_hasValue: hasValue(product.tipo_grano),
+      floracion_texto: product.floracion_texto,
+      floracion_texto_type: typeof product.floracion_texto,
+      floracion_texto_hasValue: hasValue(product.floracion_texto),
+      insercion_mazorca: product.insercion_mazorca,
+      insercion_mazorca_type: typeof product.insercion_mazorca,
+      insercion_mazorca_hasValue: hasValue(product.insercion_mazorca),
+    });
 
     // Feature labels mapping
     const featureLabels = {
@@ -334,6 +393,11 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
       stay_green: { es: 'Stay-green', pt: 'Stay-green' },
       respuesta_alta_densidad: { es: 'Respuesta a alta densidad', pt: 'Resposta a alta densidade' },
       calidad_grano: { es: 'Calidad de grano', pt: 'Qualidade do grão' },
+      contenido_aceite: { es: 'Contenido de aceite', pt: 'Teor de óleo' },
+      tolerancia_dehiscencia: { es: 'Tolerancia a dehiscencia', pt: 'Tolerância à deiscência' },
+      sanidad: { es: 'Sanidad', pt: 'Sanidade' },
+      tolerancia_sequia: { es: 'Tolerancia a la sequía', pt: 'Tolerância à seca' },
+      implantacion: { es: 'Implantación', pt: 'Implantação' },
     };
 
     const featureOrderBySeed = {
@@ -440,14 +504,14 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
             </div>
           ` : ''}
           ${(product.descripcion_popup || product.ciclo_rm) ? '<div class="modal-separator"></div>' : ''}
-          ${(product.tipo_grano || product.floracion_texto || product.insercion_mazorca || orderedFeatures.length > 0) ? `
+          ${((hasValue(product.tipo_grano) || hasValue(product.floracion_texto) || hasValue(product.insercion_mazorca)) || orderedFeatures.length > 0) ? `
             <div class="modal-section">
               <h3 class="modal-section-title">${t.characteristics}</h3>
               ${product.tipo_semilla === 'maiz' && (hasValue(product.tipo_grano) || hasValue(product.floracion_texto) || hasValue(product.insercion_mazorca)) ? `
                 <div class="modal-characteristics-list">
-                  ${hasValue(product.tipo_grano) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.grainType}</span></div>` : ''}
-                  ${hasValue(product.floracion_texto) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.flowering}</span></div>` : ''}
-                  ${hasValue(product.insercion_mazorca) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.earInsertion}</span></div>` : ''}
+                  ${hasValue(product.tipo_grano) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.grainType}</span><span class="characteristic-value">${product.tipo_grano}</span></div>` : ''}
+                  ${hasValue(product.floracion_texto) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.flowering}</span><span class="characteristic-value">${product.floracion_texto}</span></div>` : ''}
+                  ${hasValue(product.insercion_mazorca) ? `<div class="modal-characteristic-item"><span class="characteristic-label">${t.earInsertion}</span><span class="characteristic-value">${product.insercion_mazorca}</span></div>` : ''}
                 </div>
               ` : ''}
               ${orderedFeatures.length > 0 ? `
@@ -1138,7 +1202,9 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
 
   .modal-characteristic-item {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 16px;
     margin-bottom: 1rem;
   }
 
@@ -1153,6 +1219,18 @@ const cicloRM = product ? parseCicloRM(product.ciclo_rm) : { cycle: '', rm: '' }
     line-height: 18.2px;
     letter-spacing: 0;
     color: #313639;
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+
+  .characteristic-value {
+    font-family: 'Bayer Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18.2px;
+    letter-spacing: 0;
+    color: #313639;
+    flex: 1;
   }
 
   /* Features List with Progress Bars */
