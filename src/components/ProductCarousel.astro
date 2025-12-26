@@ -286,7 +286,7 @@ const {
             codeLayer.style.position = "absolute";
             codeLayer.style.top = "20%";
             codeLayer.style.left = "25%";
-            codeLayer.style.backgroundImage = "url('/layer_filter.png')";
+            codeLayer.style.backgroundImage = "url('/images/layer_filter.png')";
             codeLayer.style.backgroundRepeat = "no-repeat";
             codeLayer.style.backgroundPosition = "center";
             codeLayer.style.backgroundSize = "100% 100%";
@@ -756,7 +756,7 @@ const {
     top: 20%;
     left: 25%;
     transform: translate(0, 0);
-    background-image: url("/layer_filter.png");
+    background-image: url("/images/layer_filter.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
@@ -818,6 +818,40 @@ const {
     justify-content: center;
     gap: var(--spacing-4);
     margin-top: var(--spacing-6);
+  }
+
+  @media (min-width: 768px) {
+    .product-carousel-container {
+      position: relative;
+    }
+
+    .carousel-controls {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      justify-content: space-between;
+      margin-top: 0;
+      gap: 0;
+      pointer-events: none;
+      padding: 0 var(--spacing-4);
+      z-index: 5;
+    }
+
+    .carousel-button {
+      position: relative;
+      pointer-events: auto;
+      transform: none;
+    }
+
+    .carousel-button:hover {
+      transform: scale(1.05);
+    }
+
+    .carousel-button:active {
+      transform: scale(0.95);
+    }
   }
 
   .carousel-button {
