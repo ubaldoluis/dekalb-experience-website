@@ -105,6 +105,10 @@ export interface Articulo {
 export interface CatalogoPDF {
   id: string;
   nombre: string;
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
   tipo: "maiz" | "colza";
   subcategoria: "genetica-agronomia" | "proteccion-cultivo" | "otros";
   pais: "espana" | "portugal";

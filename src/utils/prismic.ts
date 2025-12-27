@@ -781,16 +781,30 @@ export async function getAllCatalogs(
       },
     });
 
-    return documents.map((doc) => ({
-      id: doc.id,
-      nombre: doc.data.nombre || "",
-      tipo: (doc.data.tipo as "maiz" | "colza") || "maiz",
-      subcategoria: (doc.data.subcategoria as any) || "otros",
-      pais: (doc.data.pais as "espana" | "portugal") || "espana",
-      zona: doc.data.zona as any,
-      url_pdf: prismic.asLink(doc.data.url_pdf) || "",
-      orden: doc.data.orden || undefined,
-    }));
+    return documents.map((doc) => {
+      // Obtener URL base sin parámetros de transformación (rect, w, h, etc.)
+      let imagenUrl = doc.data.imagen?.url || "";
+      if (imagenUrl) {
+        imagenUrl = imagenUrl.split("?")[0];
+      }
+
+      return {
+        id: doc.id,
+        nombre: doc.data.nombre || "",
+        imagen: imagenUrl
+          ? {
+              url: imagenUrl,
+              alt: doc.data.imagen.alt || doc.data.nombre || "",
+            }
+          : undefined,
+        tipo: (doc.data.tipo as "maiz" | "colza") || "maiz",
+        subcategoria: (doc.data.subcategoria as any) || "otros",
+        pais: (doc.data.pais as "espana" | "portugal") || "espana",
+        zona: doc.data.zona as any,
+        url_pdf: prismic.asLink(doc.data.url_pdf) || "",
+        orden: doc.data.orden || undefined,
+      };
+    });
   } catch (error) {
     console.error("Error fetching catalogs:", error);
     return [];

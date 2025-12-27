@@ -4,7 +4,7 @@ import DownloadCard from "../../../components/DownloadCard.astro";
 import { getAllCatalogs } from "../../../utils/prismic";
 import type { CatalogoPDF } from "../../../types";
 
-const lang = "es";
+const lang = "pt";
 let catalogs: CatalogoPDF[] = [];
 
 try {
@@ -36,29 +36,18 @@ const getCategoryLabel = (subcategoria: string): string => {
 
 <PageLayout
   title="Catálogos"
-  description="Descarga de catálogos DEKALB"
+  description="Download de catálogos DEKALB"
   lang={lang}
 >
   <div class="catalogs-wrapper">
     <div class="catalogs-container">
       <header class="catalogs-header">
-        <h1 class="catalogs-title">Descarga de Catálogos</h1>
+        <h1 class="catalogs-title">Download de Catálogos</h1>
       </header>
 
       <!-- Search Bar -->
       <div class="catalogs-search-wrapper">
         <div class="catalogs-search-container">
-          <input
-            type="text"
-            id="catalog-search"
-            class="catalogs-search-input"
-            placeholder={lang === "es"
-              ? "Buscar catálogos..."
-              : "Pesquisar catálogos..."}
-            aria-label={lang === "es"
-              ? "Buscar catálogos"
-              : "Pesquisar catálogos"}
-          />
           <svg
             class="catalogs-search-icon"
             width="20"
@@ -75,6 +64,13 @@ const getCategoryLabel = (subcategoria: string): string => {
               stroke-linejoin="round"
             ></path>
           </svg>
+          <input
+            type="text"
+            id="catalog-search"
+            class="catalogs-search-input"
+            placeholder="Pesquisar catálogos..."
+            aria-label="Pesquisar catálogos"
+          />
         </div>
       </div>
 
@@ -139,11 +135,7 @@ const getCategoryLabel = (subcategoria: string): string => {
       {
         catalogs.length === 0 && (
           <div class="catalogs-empty">
-            <p>
-              {lang === "es"
-                ? "No hay catálogos disponibles en este momento."
-                : "Não há catálogos disponíveis no momento."}
-            </p>
+            <p>Não há catálogos disponíveis no momento.</p>
           </div>
         )
       }

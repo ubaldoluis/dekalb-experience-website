@@ -1,0 +1,224 @@
+---
+interface Props {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  categoria: string;
+  titulo: string;
+  urlDescarga: string;
+  variant?: "catalogo" | "informa";
+  lang?: "es" | "pt";
+  "data-catalog-name"?: string;
+  "data-catalog-category"?: string;
+}
+
+const {
+  imagen,
+  categoria,
+  titulo,
+  urlDescarga,
+  variant = "catalogo",
+  lang = "es",
+  "data-catalog-name": dataCatalogName,
+  "data-catalog-category": dataCatalogCategory,
+} = Astro.props;
+
+const downloadText = lang === "es" ? "Descargar" : "Descarregar";
+---
+
+<a
+  href={urlDescarga}
+  target="_blank"
+  rel="noopener noreferrer"
+  class={`download-card download-card-${variant}`}
+  download
+  data-catalog-name={dataCatalogName}
+  data-catalog-category={dataCatalogCategory}
+>
+  {
+    imagen?.url && (
+      <div class="download-card-image">
+        <img
+          src={imagen.url}
+          alt={imagen.alt || titulo}
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+
+  <div class="download-card-content">
+    <p class="download-card-category">{categoria}</p>
+    <h3 class="download-card-title">{titulo}</h3>
+    <div class="download-card-footer">
+      <div class="download-card-icon">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+          <path
+            d="M7 10L12 15L17 10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+          <path
+            d="M12 15V3"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+        </svg>
+      </div>
+      <span class="download-card-text">{downloadText}</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .download-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all var(--transition-base);
+    height: 100%;
+  }
+
+  .download-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .download-card-image {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #009ddb;
+  }
+
+  .download-card-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .download-card-content {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    flex: 1;
+  }
+
+  /* Variant: catalogo */
+  .download-card-catalogo .download-card-content {
+    background-color: #009ddb;
+  }
+
+  /* Variant: informa */
+  .download-card-informa .download-card-content {
+    background-color: #e9e7e4;
+  }
+
+  .download-card-category {
+    font-family: "Bayer Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18.2px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    margin: 0;
+    color: #ffffff;
+  }
+
+  .download-card-informa .download-card-category {
+    color: #313639;
+  }
+
+  .download-card-title {
+    font-family: "Bayer Sans", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    margin: 0;
+    color: #ffffff;
+    flex: 1;
+  }
+
+  .download-card-informa .download-card-title {
+    color: #00527f;
+  }
+
+  .download-card-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-top: auto;
+  }
+
+  .download-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .download-card-informa .download-card-icon {
+    background-color: #009ddb;
+  }
+
+  .download-card-icon svg {
+    width: 24px;
+    height: 24px;
+    color: #ffffff;
+  }
+
+  .download-card-text {
+    font-family: "Bayer Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20.8px;
+    letter-spacing: 0;
+    color: #ffffff;
+  }
+
+  .download-card-informa .download-card-text {
+    color: #313639;
+  }
+
+  @media (max-width: 767px) {
+    .download-card-content {
+      padding: var(--spacing-4);
+    }
+
+    .download-card-title {
+      font-size: 18px;
+      line-height: 23.4px;
+    }
+  }
+</style>

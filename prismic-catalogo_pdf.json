@@ -5,8 +5,19 @@
   "status": true,
   "json": {
     "Main": {
+      "imagen": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen del Catálogo",
+          "constraint": {
+            "width": 800,
+            "height": 600
+          },
+          "thumbnails": []
+        }
+      },
       "nombre": {
-        "type": "Title",
+        "type": "Text",
         "config": {
           "label": "Nombre del Catálogo",
           "placeholder": "Ej: Catálogo Ebro"
@@ -16,16 +27,7 @@
         "type": "Select",
         "config": {
           "label": "Tipo",
-          "options": [
-            {
-              "id": "maiz",
-              "label": "Maíz"
-            },
-            {
-              "id": "colza",
-              "label": "Colza"
-            }
-          ],
+          "options": ["maiz", "colza"],
           "default_value": "maiz"
         }
       },
@@ -33,20 +35,7 @@
         "type": "Select",
         "config": {
           "label": "Subcategoría",
-          "options": [
-            {
-              "id": "genetica-agronomia",
-              "label": "Genética y Agronomía"
-            },
-            {
-              "id": "proteccion-cultivo",
-              "label": "Protección de Cultivo"
-            },
-            {
-              "id": "otros",
-              "label": "Otros"
-            }
-          ],
+          "options": ["genetica-agronomia", "proteccion-cultivo", "otros"],
           "default_value": "genetica-agronomia"
         }
       },
@@ -54,16 +43,7 @@
         "type": "Select",
         "config": {
           "label": "País",
-          "options": [
-            {
-              "id": "espana",
-              "label": "España"
-            },
-            {
-              "id": "portugal",
-              "label": "Portugal"
-            }
-          ],
+          "options": ["espana", "portugal"],
           "default_value": "espana"
         }
       },
@@ -72,26 +52,11 @@
         "config": {
           "label": "Zona (solo si Maíz)",
           "options": [
-            {
-              "id": "ebro",
-              "label": "Ebro"
-            },
-            {
-              "id": "centro-sur",
-              "label": "Centro Sur"
-            },
-            {
-              "id": "noroeste",
-              "label": "Noroeste"
-            },
-            {
-              "id": "portugal",
-              "label": "Portugal"
-            },
-            {
-              "id": "centro-sur-extremadura-andalucia",
-              "label": "Centro Sur, Extremadura, Andalucía"
-            }
+            "ebro",
+            "centro-sur",
+            "noroeste",
+            "portugal",
+            "centro-sur-extremadura-andalucia"
           ]
         }
       },
@@ -113,4 +78,3 @@
     }
   }
 }
-
