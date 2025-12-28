@@ -152,8 +152,7 @@ const colzaInforma = informaDocs.filter((doc) => doc.tipo === "colza");
           cardElement.getAttribute("data-catalog-category") || "";
 
         const matchesSearch =
-          docName.includes(searchTerm) ||
-          docCategory.includes(searchTerm);
+          docName.includes(searchTerm) || docCategory.includes(searchTerm);
 
         if (matchesSearch || searchTerm === "") {
           cardElement.style.display = "";
@@ -188,7 +187,7 @@ const colzaInforma = informaDocs.filter((doc) => doc.tipo === "colza");
     background-image: url("/background-article.png");
     background-position: top center;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     background-color: #ffffff;
     padding: var(--spacing-16) 0;
   }
@@ -341,4 +340,3 @@ const colzaInforma = informaDocs.filter((doc) => doc.tipo === "colza");
     }
   }
 </style>
-
