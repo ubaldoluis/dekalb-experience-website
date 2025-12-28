@@ -1,0 +1,67 @@
+{
+  "id": "informa_pdf",
+  "label": "Informa PDF",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "imagen": {
+        "type": "Image",
+        "config": {
+          "label": "Imagen del Documento",
+          "constraint": {
+            "width": 800,
+            "height": 600
+          },
+          "thumbnails": []
+        }
+      },
+      "nombre": {
+        "type": "Text",
+        "config": {
+          "label": "Nombre del Documento",
+          "placeholder": "Ej: Guía Diagnóstico"
+        }
+      },
+      "tipo": {
+        "type": "Select",
+        "config": {
+          "label": "Tipo",
+          "options": ["maiz", "colza"],
+          "default_value": "maiz"
+        }
+      },
+      "subcategoria": {
+        "type": "Text",
+        "config": {
+          "label": "Subcategoría",
+          "placeholder": "Ej: GENÉTICA Y AGRONOMÍA COLZA"
+        }
+      },
+      "pais": {
+        "type": "Select",
+        "config": {
+          "label": "País",
+          "options": ["espana", "portugal"],
+          "default_value": "espana"
+        }
+      },
+      "url_pdf": {
+        "type": "Link",
+        "config": {
+          "label": "URL del PDF",
+          "select": "media",
+          "allowTargetBlank": true
+        }
+      },
+      "orden": {
+        "type": "Number",
+        "config": {
+          "label": "Orden",
+          "placeholder": "Ej: 1"
+        }
+      }
+    }
+  }
+}
+

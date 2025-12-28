@@ -1,0 +1,344 @@
+---
+import PageLayout from "../../../layouts/PageLayout.astro";
+import DownloadCard from "../../../components/DownloadCard.astro";
+import { getAllInforma } from "../../../utils/prismic";
+import type { InformaPDF } from "../../../types";
+
+const lang = "es";
+let informaDocs: InformaPDF[] = [];
+
+try {
+  informaDocs = await getAllInforma(lang);
+} catch (error) {
+  console.error("Error fetching informa:", error);
+}
+
+// Filter informa documents by type
+const maizInforma = informaDocs.filter((doc) => doc.tipo === "maiz");
+const colzaInforma = informaDocs.filter((doc) => doc.tipo === "colza");
+---
+
+<PageLayout
+  title="DEKALB Informa"
+  description="Documentos informativos DEKALB"
+  lang={lang}
+>
+  <div class="informa-wrapper">
+    <div class="informa-container">
+      <header class="informa-header">
+        <h1 class="informa-title">DEKALB Informa</h1>
+      </header>
+
+      <!-- Search Bar -->
+      <div class="informa-search-wrapper">
+        <div class="informa-search-container">
+          <input
+            type="text"
+            id="informa-search"
+            class="informa-search-input"
+            placeholder={lang === "es"
+              ? "Buscar documentos..."
+              : "Pesquisar documentos..."}
+            aria-label={lang === "es"
+              ? "Buscar documentos"
+              : "Pesquisar documentos"}
+          />
+          <svg
+            class="informa-search-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- DEKALB Maíz -->
+      {
+        maizInforma.length > 0 && (
+          <section
+            class="informa-section"
+            data-section="maiz"
+          >
+            <h2 class="informa-section-title">DEKALB Maíz</h2>
+            <div
+              class="informa-grid"
+              id="maiz-grid"
+            >
+              {maizInforma.map((doc) => (
+                <DownloadCard
+                  imagen={doc.imagen}
+                  categoria={doc.subcategoria.toUpperCase()}
+                  titulo={doc.nombre}
+                  urlDescarga={doc.url_pdf}
+                  variant="informa"
+                  lang={lang}
+                  data-catalog-name={doc.nombre.toLowerCase()}
+                  data-catalog-category={doc.subcategoria.toLowerCase()}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <!-- DEKALB Colza -->
+      {
+        colzaInforma.length > 0 && (
+          <section
+            class="informa-section"
+            data-section="colza"
+          >
+            <h2 class="informa-section-title">DEKALB Colza</h2>
+            <div
+              class="informa-grid"
+              id="colza-grid"
+            >
+              {colzaInforma.map((doc) => (
+                <DownloadCard
+                  imagen={doc.imagen}
+                  categoria={doc.subcategoria.toUpperCase()}
+                  titulo={doc.nombre}
+                  urlDescarga={doc.url_pdf}
+                  variant="informa"
+                  lang={lang}
+                  data-catalog-name={doc.nombre.toLowerCase()}
+                  data-catalog-category={doc.subcategoria.toLowerCase()}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        informaDocs.length === 0 && (
+          <div class="informa-empty">
+            <p>
+              {lang === "es"
+                ? "No hay documentos disponibles en este momento."
+                : "Não há documentos disponíveis no momento."}
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</PageLayout>
+
+<script>
+  // Client-side search functionality
+  const searchInput = document.getElementById("informa-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = (e.target as HTMLInputElement).value
+        .toLowerCase()
+        .trim();
+      const allCards = document.querySelectorAll("[data-catalog-name]");
+
+      allCards.forEach((card) => {
+        const cardElement = card as HTMLElement;
+        const docName = cardElement.getAttribute("data-catalog-name") || "";
+        const docCategory =
+          cardElement.getAttribute("data-catalog-category") || "";
+
+        const matchesSearch =
+          docName.includes(searchTerm) ||
+          docCategory.includes(searchTerm);
+
+        if (matchesSearch || searchTerm === "") {
+          cardElement.style.display = "";
+        } else {
+          cardElement.style.display = "none";
+        }
+      });
+
+      // Hide empty sections
+      const sections = document.querySelectorAll(".informa-section");
+      sections.forEach((section) => {
+        const sectionElement = section as HTMLElement;
+        const grid = sectionElement.querySelector(".informa-grid");
+        const visibleCards =
+          grid?.querySelectorAll('[data-catalog-name][style=""]') ||
+          grid?.querySelectorAll(
+            '[data-catalog-name]:not([style*="display: none"])'
+          );
+
+        if (visibleCards && visibleCards.length === 0) {
+          sectionElement.style.display = "none";
+        } else {
+          sectionElement.style.display = "";
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .informa-wrapper {
+    background-image: url("/background-article.png");
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: #ffffff;
+    padding: var(--spacing-16) 0;
+  }
+
+  .informa-container {
+    max-width: 1196px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+  }
+
+  .informa-header {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+  }
+
+  .informa-title {
+    font-size: 48px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin: 0;
+    line-height: 57.6px;
+    letter-spacing: 0.96px;
+  }
+
+  .informa-search-wrapper {
+    margin-bottom: var(--spacing-12);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .informa-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .informa-search-icon {
+    position: absolute;
+    left: var(--spacing-4);
+    color: #9ca3af;
+    pointer-events: none;
+    z-index: 1;
+    transition: color var(--transition-base);
+  }
+
+  .informa-search-container:has(.informa-search-input:focus)
+    .informa-search-icon {
+    color: #009ddb;
+  }
+
+  .informa-search-input {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4) var(--spacing-3)
+      calc(var(--spacing-4) + 28px);
+    border: 1px solid #e9e7e4;
+    border-radius: 100px;
+    font-size: 16px;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    transition: all var(--transition-base);
+    background-color: #ffffff;
+  }
+
+  .informa-search-input:focus {
+    outline: none;
+    border-color: #009ddb;
+    box-shadow: 0 0 0 2px rgba(0, 157, 219, 0.1);
+  }
+
+  .informa-search-input::placeholder {
+    color: #9ca3af;
+  }
+
+  .informa-section {
+    margin-bottom: var(--spacing-16);
+  }
+
+  .informa-section-title {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #00527f;
+    margin: 0 0 var(--spacing-8) 0;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .informa-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-6);
+    justify-items: center;
+  }
+
+  /* Centrar elementos huérfanos (menos de 3 en última fila) */
+  .informa-grid > :nth-child(3n + 1):last-child {
+    grid-column: 2;
+  }
+
+  .informa-grid > :nth-child(3n + 1):nth-last-child(2) {
+    grid-column: 1;
+  }
+
+  .informa-grid > :nth-child(3n + 2):last-child {
+    grid-column: 3;
+  }
+
+  .informa-empty {
+    text-align: center;
+    padding: var(--spacing-12);
+    color: #313639;
+    font-size: 20px;
+  }
+
+  @media (max-width: 1023px) {
+    .informa-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .informa-grid > :nth-child(3n + 1):last-child,
+    .informa-grid > :nth-child(3n + 1):nth-last-child(2),
+    .informa-grid > :nth-child(3n + 2):last-child {
+      grid-column: auto;
+    }
+
+    .informa-grid > :nth-child(2n + 1):last-child {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .informa-wrapper {
+      padding: var(--spacing-8) 0;
+    }
+
+    .informa-title {
+      font-size: 32px;
+      line-height: 38.4px;
+      letter-spacing: 0.64px;
+    }
+
+    .informa-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .informa-section-title {
+      font-size: 24px;
+    }
+  }
+</style>
+

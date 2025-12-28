@@ -117,6 +117,20 @@ export interface CatalogoPDF {
   orden?: number;
 }
 
+export interface InformaPDF {
+  id: string;
+  nombre: string;
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  tipo: "maiz" | "colza";
+  subcategoria: string;
+  pais: "espana" | "portugal";
+  url_pdf: string;
+  orden?: number;
+}
+
 export interface HomeContent {
   hero: {
     title: string;

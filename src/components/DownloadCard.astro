@@ -53,35 +53,45 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
     <h3 class="download-card-title">{titulo}</h3>
     <div class="download-card-footer">
       <div class="download-card-icon">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-          <path
-            d="M7 10L12 15L17 10"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-          <path
-            d="M12 15V3"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-        </svg>
+        {
+          variant === "informa" ? (
+            <img
+              src="/Recursos/MiPerfil/Frame 1410119264.svg"
+              alt=""
+              class="download-card-icon-img"
+            />
+          ) : (
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7 10L12 15L17 10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12 15V3"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          )
+        }
       </div>
       <span class="download-card-text">{downloadText}</span>
     </div>
@@ -113,6 +123,11 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
     background-color: #009ddb;
   }
 
+  /* Variant: informa - fondo naranja en contenedor de imagen */
+  .download-card-informa .download-card-image {
+    background-color: #f5a81c;
+  }
+
   .download-card-image img {
     width: 100%;
     height: 100%;
@@ -136,7 +151,7 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
 
   /* Variant: informa */
   .download-card-informa .download-card-content {
-    background-color: #e9e7e4;
+    background-color: #f5a81c;
   }
 
   .download-card-category {
@@ -151,7 +166,7 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
   }
 
   .download-card-informa .download-card-category {
-    color: #313639;
+    color: #ffffff;
   }
 
   .download-card-title {
@@ -167,7 +182,7 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
   }
 
   .download-card-informa .download-card-title {
-    color: #00527f;
+    color: #ffffff;
   }
 
   .download-card-footer {
@@ -189,13 +204,19 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
   }
 
   .download-card-informa .download-card-icon {
-    background-color: #009ddb;
+    background-color: transparent;
   }
 
   .download-card-icon svg {
     width: 24px;
     height: 24px;
     color: #ffffff;
+  }
+
+  .download-card-icon-img {
+    width: 36px;
+    height: 36px;
+    display: block;
   }
 
   .download-card-text {
@@ -208,7 +229,7 @@ const downloadText = lang === "es" ? "Descargar" : "Descarregar";
   }
 
   .download-card-informa .download-card-text {
-    color: #313639;
+    color: #ffffff;
   }
 
   @media (max-width: 767px) {

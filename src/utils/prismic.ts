@@ -7,6 +7,7 @@ import type {
   Producto,
   Articulo,
   CatalogoPDF,
+  InformaPDF,
   HomeContent,
   FieldViewContent,
   ProteccionCultivoContent,
@@ -807,6 +808,55 @@ export async function getAllCatalogs(
     });
   } catch (error) {
     console.error("Error fetching catalogs:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch all informa documents from Prismic
+ */
+export async function getAllInforma(
+  locale: string = "es"
+): Promise<InformaPDF[]> {
+  try {
+    if (!client) {
+      logger.warn("Prismic client not initialized");
+      return [];
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const documents = await client.getAllByType("informa_pdf", {
+      lang: prismicLocale,
+      orderings: {
+        field: "my.informa_pdf.orden",
+        direction: "asc",
+      },
+    });
+
+    return documents.map((doc) => {
+      // Obtener URL base sin parámetros de transformación (rect, w, h, etc.)
+      let imagenUrl = doc.data.imagen?.url || "";
+      if (imagenUrl) {
+        imagenUrl = imagenUrl.split("?")[0];
+      }
+
+      return {
+        id: doc.id,
+        nombre: doc.data.nombre || "",
+        imagen: imagenUrl
+          ? {
+              url: imagenUrl,
+              alt: doc.data.imagen.alt || doc.data.nombre || "",
+            }
+          : undefined,
+        tipo: (doc.data.tipo as "maiz" | "colza") || "maiz",
+        subcategoria: doc.data.subcategoria || "",
+        pais: (doc.data.pais as "espana" | "portugal") || "espana",
+        url_pdf: prismic.asLink(doc.data.url_pdf) || "",
+        orden: doc.data.orden || undefined,
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching informa:", error);
     return [];
   }
 }
