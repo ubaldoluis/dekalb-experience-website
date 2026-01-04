@@ -1,0 +1,338 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import YieldKitTabs from "../../components/YieldKitTabs.astro";
+import { getFieldViewContent } from "../../utils/prismic";
+import { renderRichText } from "../../utils/prismic-rich-text";
+import * as prismic from "@prismicio/client";
+
+const lang = "pt";
+let fieldViewContent = null;
+
+try {
+  fieldViewContent = await getFieldViewContent(lang);
+} catch (error) {
+  console.error("Error fetching FieldView content:", error);
+}
+
+// Fallback content si no hay datos de Prismic
+const defaultContent = {
+  hero: {
+    titulo: "Semeie dados e colha decisões",
+    descripcion: [
+      {
+        type: "paragraph",
+        text: "Descubra como tomar decisões agronómicas mais inteligentes com base nos dados das suas próprias colheitas.",
+        spans: [],
+      },
+    ],
+    imagen_fondo: undefined,
+    imagen_fondo_mobile: undefined,
+  },
+  introduccion: {
+    titulo:
+      "Transforme dados em decisões para uma agricultura inteligente e eficiente!",
+    texto: [
+      {
+        type: "paragraph",
+        text: "A plataforma digital da Bayer, FieldView™, é a ferramenta ideal para a agricultura do futuro: oferece soluções inovadoras baseadas em ciência de dados, concebidas para o ajudar a otimizar cada etapa da sua cultura, desde a sementeira até à colheita.",
+        spans: [],
+      },
+    ],
+  },
+  subsections: [
+    {
+      id: "drive" as const,
+      titulo: "FieldView Drive",
+      descripcion: [
+        {
+          type: "paragraph",
+          text: "O FieldView™ Drive é a ferramenta de agricultura digital que pode recolher e processar dados agrícolas em tempo real. É também o dispositivo com maior compatibilidade do mundo em maquinaria agrícola.",
+          spans: [],
+        },
+      ],
+      imagen: undefined,
+    },
+    {
+      id: "yield-kit" as const,
+      titulo: "FieldView Yield Kit",
+      descripcion: [],
+      imagen: undefined,
+      yieldKitTabs: [
+        {
+          id: "que-es" as const,
+          label: "O que é?",
+          content: [
+            {
+              type: "paragraph",
+              text: "O FieldView Yield Kit é uma solução tecnológica 100% compatível com qualquer ceifeira. Permite recolher dados precisos durante a colheita e utilizá-los para melhorar decisões agronómicas futuras.",
+              spans: [],
+            },
+          ],
+        },
+        {
+          id: "compatibilidade" as const,
+          label: "Compatibilidade",
+          content: [],
+        },
+        {
+          id: "vantagens" as const,
+          label: "Vantagens",
+          content: [],
+        },
+        {
+          id: "conectividade" as const,
+          label: "Conectividade",
+          content: [],
+        },
+      ],
+    },
+    {
+      id: "spraykit" as const,
+      titulo: "FieldView SprayKit",
+      descripcion: [
+        {
+          type: "paragraph",
+          text: "O SprayKit FieldView™ é uma solução ideal para melhorar a eficiência na aplicação. Permite monitorizar em tempo real a quantidade aplicada, otimizando o rendimento e reduzindo desperdícios.",
+          spans: [],
+        },
+      ],
+      imagen: undefined,
+    },
+  ],
+};
+
+const content = fieldViewContent || defaultContent;
+---
+
+<PageLayout
+  title="FieldView"
+  description={prismic.asText(content.hero.descripcion) || ""}
+  lang={lang}
+>
+  <!-- Hero Section -->
+  <section class="fieldview-hero">
+    <div
+      class="fieldview-hero-gradient"
+      style={content.hero.imagen_fondo?.url
+        ? `background-image: url("${content.hero.imagen_fondo.url}");`
+        : ""}
+    >
+    </div>
+    {
+      content.hero.imagen_fondo_mobile?.url && (
+        <div class="fieldview-hero-mobile-image">
+          <img
+            src={content.hero.imagen_fondo_mobile.url}
+            alt={content.hero.imagen_fondo_mobile.alt || ""}
+            loading="lazy"
+          />
+        </div>
+      )
+    }
+    <div class="container">
+      <div class="fieldview-hero-content">
+        <div class="fieldview-logo">
+          <img
+            src="/logo-fieldview_white.png"
+            alt="FieldView"
+          />
+        </div>
+        <h1 class="fieldview-hero-title">{content.hero.titulo}</h1>
+        <div
+          class="fieldview-hero-description"
+          set:html={renderRichText(content.hero.descripcion)}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Introducción Section -->
+  <section class="fieldview-intro">
+    <div class="container">
+      <div class="fieldview-intro-content">
+        <h2 class="fieldview-intro-title">{content.introduccion.titulo}</h2>
+        <div
+          class="fieldview-intro-text"
+          set:html={renderRichText(content.introduccion.texto)}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Subsections -->
+  <section class="fieldview-subsections">
+    <div class="container">
+      {
+        content.subsections.map((subsection) => (
+          <div
+            class={`fieldview-subsection fieldview-subsection-${subsection.id}`}
+          >
+            <div class="fieldview-subsection-image">
+              {subsection.imagen?.url ? (
+                <img
+                  src={subsection.imagen.url}
+                  alt={subsection.imagen.alt || subsection.titulo}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="fieldview-subsection-placeholder">
+                  {subsection.titulo}
+                </div>
+              )}
+            </div>
+            <div class="fieldview-subsection-content">
+              <h3 class="fieldview-subsection-title">{subsection.titulo}</h3>
+              {subsection.id === "yield-kit" && subsection.yieldKitTabs ? (
+                <YieldKitTabs tabs={subsection.yieldKitTabs} />
+              ) : subsection.descripcion ? (
+                <div class="fieldview-subsection-description">
+                  {typeof subsection.descripcion === "string" ? (
+                    <p>{subsection.descripcion}</p>
+                  ) : (
+                    <div set:html={renderRichText(subsection.descripcion)} />
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Hero Section */
+  .fieldview-hero {
+    position: relative;
+    /* Mobile: sin espacio arriba, solo abajo */
+    padding: 0 0 var(--spacing-16) 0;
+    /* Degradado mobile */
+    background: linear-gradient(135deg, #ffcb05 0%, #f5a81c 100%);
+    border-radius: 0 0 60px 60px;
+    overflow: hidden;
+    min-width: auto;
+    min-height: 628px;
+  }
+
+  .fieldview-hero-gradient {
+    display: none;
+  }
+
+  .fieldview-hero-mobile-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+  }
+
+  .fieldview-hero-mobile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fieldview-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: var(--spacing-16);
+    color: var(--color-white);
+  }
+
+  .fieldview-logo {
+    width: 220px;
+    margin: 0 auto var(--spacing-8);
+  }
+
+  .fieldview-logo img {
+    width: 100%;
+    height: auto;
+  }
+
+  .fieldview-hero-title {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .fieldview-hero-description :global(p) {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* Intro */
+  .fieldview-intro {
+    padding: var(--spacing-16) 0;
+  }
+
+  .fieldview-intro-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .fieldview-intro-title {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .fieldview-intro-text :global(p) {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* Subsections */
+  .fieldview-subsections {
+    padding: 0 0 var(--spacing-16) 0;
+  }
+
+  .fieldview-subsection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+    align-items: center;
+    margin-bottom: var(--spacing-16);
+  }
+
+  @media (min-width: 1024px) {
+    .fieldview-subsection {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .fieldview-subsection:nth-child(even) .fieldview-subsection-image {
+      order: 2;
+    }
+  }
+
+  .fieldview-subsection-image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--card-border-radius);
+  }
+
+  .fieldview-subsection-placeholder {
+    width: 100%;
+    min-height: 280px;
+    border-radius: var(--card-border-radius);
+    background: var(--color-gray-100);
+    display: grid;
+    place-items: center;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .fieldview-subsection-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .fieldview-subsection-description :global(p) {
+    margin: 0;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+  }
+</style>
+
+

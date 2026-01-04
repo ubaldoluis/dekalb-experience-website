@@ -45,33 +45,44 @@ const { solutions = [], lang = "es" } = Astro.props;
           class="solutions-carousel-track"
           id="solutions-carousel-track"
         >
-          {solutions.map((solution) => (
-            <div
-              class="solution-card"
-              data-solution-id={solution.id}
-            >
-              {solution.icon && (
-                <div class="solution-icon">
-                  <img
-                    src={solution.icon}
-                    alt=""
-                    aria-hidden="true"
-                  />
-                </div>
-              )}
-              {solution.logo && (
-                <div class="solution-logo">
-                  <img
-                    src={solution.logo}
-                    alt={solution.name}
-                  />
-                </div>
-              )}
-              {solution.description && (
-                <p class="solution-description">{solution.description}</p>
-              )}
-            </div>
-          ))}
+          {solutions.map((solution) => {
+            const CardTag = solution.link ? "a" : "div";
+            const cardProps = solution.link
+              ? {
+                  href: solution.link,
+                  "aria-label": solution.name,
+                }
+              : {};
+
+            return (
+              <CardTag
+                class="solution-card"
+                data-solution-id={solution.id}
+                {...cardProps}
+              >
+                {solution.icon && (
+                  <div class="solution-icon">
+                    <img
+                      src={solution.icon}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
+                {solution.logo && (
+                  <div class="solution-logo">
+                    <img
+                      src={solution.logo}
+                      alt={solution.name}
+                    />
+                  </div>
+                )}
+                {solution.description && (
+                  <p class="solution-description">{solution.description}</p>
+                )}
+              </CardTag>
+            );
+          })}
         </div>
         {solutions.length > 1 && (
           <button
@@ -239,11 +250,19 @@ const { solutions = [], lang = "es" } = Astro.props;
     width: calc(100% - var(--spacing-6));
     max-width: 344px;
     scroll-snap-align: start;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
   }
 
   .solution-card:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-4px);
+  }
+
+  .solution-card:focus-visible {
+    outline: 2px solid var(--color-bayer-secondary);
+    outline-offset: 4px;
   }
 
   .solution-icon {
