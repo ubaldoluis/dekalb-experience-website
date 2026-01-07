@@ -5,6 +5,7 @@ import ProductCarousel from '../../components/ProductCarousel.astro';
 import ProductModal from '../../components/ProductModal.astro';
 import SolutionsHero from '../../components/SolutionsHero.astro';
 import SolutionsCarousel from '../../components/SolutionsCarousel.astro';
+import ScrollReveal from '../../components/scroll-reveal/ScrollReveal.astro';
 import CTASection from '../../components/CTASection.astro';
 import { getAllProducts, getAllArticles, getHomeContent } from '../../utils/prismic';
 import { filterProducts, getDefaultFilterState, searchParamsToFilterState } from '../../utils/filterLogic';
@@ -56,7 +57,7 @@ const latestArticles = articles.slice(0, 4);
   <section class="hero-products-section">
     <div class="hero-products-background"></div>
     <div class="hero-products-overlay"></div>
-    <div class="hero-products-container">
+    <div class="hero-products-container" data-scroll-reveal>
       <!-- Hero Content -->
       <div class="hero-products-header">
         <h1 class="hero-products-title">{homeContent.hero.title}</h1>
@@ -76,7 +77,7 @@ const latestArticles = articles.slice(0, 4);
   </section>
 
   <!-- Mobile: Separate Hero Section -->
-  <section class="mobile-hero-section">
+  <section class="mobile-hero-section" data-scroll-reveal>
     <SolutionsHero 
       title={homeContent.hero.title}
       subtitle={homeContent.hero.claim}
@@ -85,7 +86,7 @@ const latestArticles = articles.slice(0, 4);
 
   <!-- Mobile: Products Section -->
   <section id="productos" class="mobile-products-section">
-    <div class="container">
+    <div class="container" data-scroll-reveal>
       <h2 class="section-title">Produtos</h2>
       <FilterDropdown filterState={filterState} lang={lang} />
       <ProductCarousel products={filteredProducts} lang={lang} carouselId="product-carousel-mobile" />
@@ -141,59 +142,61 @@ const latestArticles = articles.slice(0, 4);
   <!-- Solutions Section -->
   <section id="soluciones" class="solutions-section">
     <div class="container">
-      <h2 class="section-title">Soluções</h2>
-      <p class="section-description">Descubra nossas soluções integrais para o cultivo de milho.</p>
-      <SolutionsCarousel 
-        solutions={[
-          { 
-            id: 'acceleron',
-            name: 'Acceleron',
-            description: 'Protege e nutre seu milho com Acceleron® para uma cultura saudável e produtiva.',
-            logo: '/Logo_Acceleron.svg',
-            icon: '/Icon_Acceleron.svg',
-            link: '/pt/acceleron'
-          },
-          { 
-            id: 'fieldshield',
-            name: 'FieldShield',
-            description: 'Fortalece seu milho. FieldShield reduz o risco de doenças e melhora o rendimento.',
-            logo: '/Logo_Fieldshield.svg',
-            icon: '/Icon_FieldShield.svg',
-            link: '/pt/fieldshield'
-          },
-          { 
-            id: 'silo-extra',
-            name: 'Silo Extra',
-            description: 'Mais qualidade, mais quantidade. Descubra os híbridos SiloExtra e melhore sua colheita.',
-            logo: '/Logo_SiloExtra.svg',
-            icon: '/Icon_SiloExtra.svg',
-            link: '/pt/siloextra'
-          },
-          { 
-            id: 'preceon',
-            name: 'Preceon',
-            description: 'Proteja seu milho desde o primeiro dia com as soluções Bayer mais eficazes.',
-            logo: '/Logo_Preceon.svg',
-            icon: '/Icon_Preceon.svg',
-            link: '/pt/preceon'
-          },
-          { 
-            id: 'fieldview',
-            name: 'FieldView',
-            description: 'Aproveite seus dados. Acesse FieldView e tome decisões mais inteligentes em cada campanha.',
-            logo: '/Logo_Fieldview.svg',
-            icon: '/Icon_FieldView.svg',
-            link: '/pt/fieldview'
-          },
-        ]}
-        lang={lang}
-      />
+      <ScrollReveal>
+        <h2 class="section-title">Soluções</h2>
+        <p class="section-description">Descubra nossas soluções integrais para o cultivo de milho.</p>
+        <SolutionsCarousel 
+          solutions={[
+            { 
+              id: 'acceleron',
+              name: 'Acceleron',
+              description: 'Protege e nutre seu milho com Acceleron® para uma cultura saudável e produtiva.',
+              logo: '/Logo_Acceleron.svg',
+              icon: '/Icon_Acceleron.svg',
+              link: '/pt/acceleron'
+            },
+            { 
+              id: 'fieldshield',
+              name: 'FieldShield',
+              description: 'Fortalece seu milho. FieldShield reduz o risco de doenças e melhora o rendimento.',
+              logo: '/Logo_Fieldshield.svg',
+              icon: '/Icon_FieldShield.svg',
+              link: '/pt/fieldshield'
+            },
+            { 
+              id: 'silo-extra',
+              name: 'Silo Extra',
+              description: 'Mais qualidade, mais quantidade. Descubra os híbridos SiloExtra e melhore sua colheita.',
+              logo: '/Logo_SiloExtra.svg',
+              icon: '/Icon_SiloExtra.svg',
+              link: '/pt/siloextra'
+            },
+            { 
+              id: 'preceon',
+              name: 'Preceon',
+              description: 'Proteja seu milho desde o primeiro dia com as soluções Bayer mais eficazes.',
+              logo: '/Logo_Preceon.svg',
+              icon: '/Icon_Preceon.svg',
+              link: '/pt/preceon'
+            },
+            { 
+              id: 'fieldview',
+              name: 'FieldView',
+              description: 'Aproveite seus dados. Acesse FieldView e tome decisões mais inteligentes em cada campanha.',
+              logo: '/Logo_Fieldview.svg',
+              icon: '/Icon_FieldView.svg',
+              link: '/pt/fieldview'
+            },
+          ]}
+          lang={lang}
+        />
+      </ScrollReveal>
     </div>
   </section>
 
   <!-- FieldView Section -->
   <section class="fieldview-section">
-    <div class="container">
+    <div class="container" data-scroll-reveal>
       <CTASection
         title={homeContent.solutions.fieldview}
         description="Plataforma digital para gestão agrícola avançada"
@@ -207,7 +210,7 @@ const latestArticles = articles.slice(0, 4);
 
   <!-- Protección de Cultivo Section -->
   <section class="protection-section">
-    <div class="container">
+    <div class="container" data-scroll-reveal>
       <CTASection
         title={homeContent.solutions.protection}
         description="Soluções inovadoras para a proteção das suas culturas"
@@ -222,7 +225,7 @@ const latestArticles = articles.slice(0, 4);
   <!-- Preceon Section -->
   <section class="preceon-section">
     <div class="container">
-      <div class="content-left-card-wrapper">
+      <div class="content-left-card-wrapper" data-scroll-reveal>
         <div class="content-left-card-content">
           <div class="content-left-card-logo">
             <img
@@ -258,7 +261,7 @@ const latestArticles = articles.slice(0, 4);
   <!-- Calculadora de Densidades Section -->
   <section class="calculator-section">
     <div class="container">
-      <div class="content-right-card-wrapper">
+      <div class="content-right-card-wrapper" data-scroll-reveal>
         <div class="content-right-card-image">
           <picture>
             <source
@@ -290,7 +293,7 @@ const latestArticles = articles.slice(0, 4);
   <!-- Guides Section -->
   <section class="guides-section">
     <div class="container">
-      <div class="content-left-card-wrapper">
+      <div class="content-left-card-wrapper" data-scroll-reveal>
         <div class="content-left-card-content">
           <h2 class="content-left-card-title">Evite problemas com seu milho</h2>
           <p>
@@ -321,7 +324,7 @@ const latestArticles = articles.slice(0, 4);
   <!-- Catalogs Section -->
   <section class="catalogs-section">
     <div class="container">
-      <div class="content-right-card-wrapper">
+      <div class="content-right-card-wrapper" data-scroll-reveal>
         <div class="content-right-card-image">
           <picture>
             <source
@@ -353,7 +356,7 @@ const latestArticles = articles.slice(0, 4);
 
   <!-- Catálogos Download Section -->
   <section class="catalogs-download-section">
-    <div class="container">
+    <div class="container" data-scroll-reveal>
       <h2 class="section-title">Download de Catálogos</h2>
       <div class="catalogs-grid">
         <a href="/es/catalogo" class="catalog-card">
@@ -372,7 +375,7 @@ const latestArticles = articles.slice(0, 4);
   {
     latestArticles.length > 0 && (
       <section class="news-section">
-        <div class="container">
+        <div class="container" data-scroll-reveal>
           <div class="news-header">
             <h2 class="news-title">Atualidade Dekalb</h2>
             <p class="news-subtitle">
