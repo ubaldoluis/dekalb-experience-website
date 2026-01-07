@@ -31,3 +31,6 @@ pnpm-debug.log*
 
 #Ignore cursor AI rules
 .cursor/rules/codacy.mdc
+
+# Local-only scripts (do not commit)
+.local-scripts/

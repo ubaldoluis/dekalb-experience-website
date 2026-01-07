@@ -1,0 +1,31 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import DensityCalculator from "../../components/DensityCalculator.astro";
+
+const lang = "pt";
+---
+
+<PageLayout
+  title="Calculadora de Densidades"
+  description="Calcula a densidade de sementeira recomendada para o teu cultivo"
+  lang={lang}
+>
+  <section class="calculator-page">
+    <div class="container">
+      <DensityCalculator lang={lang} />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .calculator-page {
+    padding: var(--spacing-16) 0;
+    background: linear-gradient(
+      135deg,
+      var(--color-gray-50) 0%,
+      var(--color-white) 100%
+    );
+  }
+</style>
+
+
