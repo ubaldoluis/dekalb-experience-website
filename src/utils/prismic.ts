@@ -3,6 +3,8 @@
  */
 
 import * as prismic from "@prismicio/client";
+import { logger } from "./logger";
+import { isValidImageUrl } from "./security";
 import type {
   Producto,
   Articulo,
@@ -16,13 +18,26 @@ import type {
   PreceonContent,
 } from "../types";
 
-import { logger } from "./logger";
-
 const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || "";
 const accessToken = import.meta.env.PRISMIC_ACCESS_TOKEN || "";
 
 if (!repositoryName) {
   logger.warn("PRISMIC_REPOSITORY_NAME is not set");
+}
+
+/**
+ * Helper function to process and validate image URLs from Prismic
+ * Removes query parameters and validates the URL
+ */
+function processImageUrl(url: string | undefined): string {
+  if (!url) return "";
+  let processedUrl = url.split("?")[0];
+  // ✅ SECURITY: Validate image URL before returning
+  if (!isValidImageUrl(processedUrl)) {
+    logger.warn("Invalid image URL detected, skipping:", processedUrl);
+    return "";
+  }
+  return processedUrl;
 }
 
 // Create client only if repository name is available
@@ -61,25 +76,59 @@ export async function getAllProducts(
       id: doc.id,
       nombre: doc.data.nombre || "",
       codigo: doc.data.codigo || "",
-      imagen_saco: doc.data.saco_ref?.data?.imagen?.url
-        ? {
-            url: doc.data.saco_ref.data.imagen.url || "",
-            alt:
-              doc.data.saco_ref.data.imagen.alt ||
-              doc.data.saco_ref.data.nombre ||
-              doc.data.nombre ||
-              "",
-          }
-        : undefined,
+      imagen_saco: (() => {
+        const imgUrl = doc.data.saco_ref?.data?.imagen?.url || "";
+        if (!imgUrl || !isValidImageUrl(imgUrl)) {
+          if (imgUrl)
+            logger.warn(
+              "Invalid image URL detected in producto, skipping:",
+              imgUrl
+            );
+          return undefined;
+        }
+        return {
+          url: imgUrl,
+          alt:
+            doc.data.saco_ref.data.imagen.alt ||
+            doc.data.saco_ref.data.nombre ||
+            doc.data.nombre ||
+            "",
+        };
+      })(),
       claim: doc.data.claim || undefined,
       ciclo_rm: doc.data.ciclo_rm || undefined,
       descripcion_popup:
         prismic.asText(doc.data.descripcion_popup) || undefined,
-      tipo_grano: (doc.data.tipo_grano && typeof doc.data.tipo_grano === 'string' && doc.data.tipo_grano.trim()) ? doc.data.tipo_grano.trim() : undefined,
-      altura_planta_texto: (doc.data.altura_planta_texto && typeof doc.data.altura_planta_texto === 'string' && doc.data.altura_planta_texto.trim()) ? doc.data.altura_planta_texto.trim() : undefined,
-      floracion_texto: (doc.data.floracion_texto && typeof doc.data.floracion_texto === 'string' && doc.data.floracion_texto.trim()) ? doc.data.floracion_texto.trim() : undefined,
-      madurez_texto: (doc.data.madurez_texto && typeof doc.data.madurez_texto === 'string' && doc.data.madurez_texto.trim()) ? doc.data.madurez_texto.trim() : undefined,
-      insercion_mazorca: (doc.data.insercion_mazorca && typeof doc.data.insercion_mazorca === 'string' && doc.data.insercion_mazorca.trim()) ? doc.data.insercion_mazorca.trim() : undefined,
+      tipo_grano:
+        doc.data.tipo_grano &&
+        typeof doc.data.tipo_grano === "string" &&
+        doc.data.tipo_grano.trim()
+          ? doc.data.tipo_grano.trim()
+          : undefined,
+      altura_planta_texto:
+        doc.data.altura_planta_texto &&
+        typeof doc.data.altura_planta_texto === "string" &&
+        doc.data.altura_planta_texto.trim()
+          ? doc.data.altura_planta_texto.trim()
+          : undefined,
+      floracion_texto:
+        doc.data.floracion_texto &&
+        typeof doc.data.floracion_texto === "string" &&
+        doc.data.floracion_texto.trim()
+          ? doc.data.floracion_texto.trim()
+          : undefined,
+      madurez_texto:
+        doc.data.madurez_texto &&
+        typeof doc.data.madurez_texto === "string" &&
+        doc.data.madurez_texto.trim()
+          ? doc.data.madurez_texto.trim()
+          : undefined,
+      insercion_mazorca:
+        doc.data.insercion_mazorca &&
+        typeof doc.data.insercion_mazorca === "string" &&
+        doc.data.insercion_mazorca.trim()
+          ? doc.data.insercion_mazorca.trim()
+          : undefined,
       caracteristicas: Array.isArray(doc.data.caracteristicas)
         ? doc.data.caracteristicas
             .map((c: any) => ({
@@ -157,7 +206,7 @@ export async function getProductById(
 ): Promise<Producto | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -170,25 +219,59 @@ export async function getProductById(
       id: doc.id,
       nombre: doc.data.nombre || "",
       codigo: doc.data.codigo || "",
-      imagen_saco: doc.data.saco_ref?.data?.imagen?.url
-        ? {
-            url: doc.data.saco_ref.data.imagen.url || "",
-            alt:
-              doc.data.saco_ref.data.imagen.alt ||
-              doc.data.saco_ref.data.nombre ||
-              doc.data.nombre ||
-              "",
-          }
-        : undefined,
+      imagen_saco: (() => {
+        const imgUrl = doc.data.saco_ref?.data?.imagen?.url || "";
+        if (!imgUrl || !isValidImageUrl(imgUrl)) {
+          if (imgUrl)
+            logger.warn(
+              "Invalid image URL detected in producto, skipping:",
+              imgUrl
+            );
+          return undefined;
+        }
+        return {
+          url: imgUrl,
+          alt:
+            doc.data.saco_ref.data.imagen.alt ||
+            doc.data.saco_ref.data.nombre ||
+            doc.data.nombre ||
+            "",
+        };
+      })(),
       claim: doc.data.claim || undefined,
       ciclo_rm: doc.data.ciclo_rm || undefined,
       descripcion_popup:
         prismic.asText(doc.data.descripcion_popup) || undefined,
-      tipo_grano: (doc.data.tipo_grano && typeof doc.data.tipo_grano === 'string' && doc.data.tipo_grano.trim()) ? doc.data.tipo_grano.trim() : undefined,
-      altura_planta_texto: (doc.data.altura_planta_texto && typeof doc.data.altura_planta_texto === 'string' && doc.data.altura_planta_texto.trim()) ? doc.data.altura_planta_texto.trim() : undefined,
-      floracion_texto: (doc.data.floracion_texto && typeof doc.data.floracion_texto === 'string' && doc.data.floracion_texto.trim()) ? doc.data.floracion_texto.trim() : undefined,
-      madurez_texto: (doc.data.madurez_texto && typeof doc.data.madurez_texto === 'string' && doc.data.madurez_texto.trim()) ? doc.data.madurez_texto.trim() : undefined,
-      insercion_mazorca: (doc.data.insercion_mazorca && typeof doc.data.insercion_mazorca === 'string' && doc.data.insercion_mazorca.trim()) ? doc.data.insercion_mazorca.trim() : undefined,
+      tipo_grano:
+        doc.data.tipo_grano &&
+        typeof doc.data.tipo_grano === "string" &&
+        doc.data.tipo_grano.trim()
+          ? doc.data.tipo_grano.trim()
+          : undefined,
+      altura_planta_texto:
+        doc.data.altura_planta_texto &&
+        typeof doc.data.altura_planta_texto === "string" &&
+        doc.data.altura_planta_texto.trim()
+          ? doc.data.altura_planta_texto.trim()
+          : undefined,
+      floracion_texto:
+        doc.data.floracion_texto &&
+        typeof doc.data.floracion_texto === "string" &&
+        doc.data.floracion_texto.trim()
+          ? doc.data.floracion_texto.trim()
+          : undefined,
+      madurez_texto:
+        doc.data.madurez_texto &&
+        typeof doc.data.madurez_texto === "string" &&
+        doc.data.madurez_texto.trim()
+          ? doc.data.madurez_texto.trim()
+          : undefined,
+      insercion_mazorca:
+        doc.data.insercion_mazorca &&
+        typeof doc.data.insercion_mazorca === "string" &&
+        doc.data.insercion_mazorca.trim()
+          ? doc.data.insercion_mazorca.trim()
+          : undefined,
       caracteristicas: Array.isArray(doc.data.caracteristicas)
         ? doc.data.caracteristicas
             .map((c: any) => ({
@@ -288,7 +371,7 @@ export async function getAllArticles(
       publicado: doc.data.publicado || false,
     }));
   } catch (error) {
-    console.error("Error fetching articles:", error);
+    logger.error("Error fetching articles:", error);
     return [];
   }
 }
@@ -302,7 +385,7 @@ export async function getArticleBySlug(
 ): Promise<Articulo | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -342,7 +425,7 @@ export async function getHomeContent(
 ): Promise<HomeContent | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -364,7 +447,7 @@ export async function getHomeContent(
       },
     };
   } catch (error) {
-    console.error("Error fetching home content:", error);
+    logger.error("Error fetching home content:", error);
     return null;
   }
 }
@@ -377,7 +460,7 @@ export async function getFieldViewContent(
 ): Promise<FieldViewContent | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -387,10 +470,26 @@ export async function getFieldViewContent(
     let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
     if (heroImagenFondoUrl) {
       heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
+      // ✅ SECURITY: Validate image URL
+      if (!isValidImageUrl(heroImagenFondoUrl)) {
+        logger.warn(
+          "Invalid hero image URL detected in fieldview, skipping:",
+          heroImagenFondoUrl
+        );
+        heroImagenFondoUrl = "";
+      }
     }
     let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
     if (heroImagenFondoMobileUrl) {
       heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
+      // ✅ SECURITY: Validate image URL
+      if (!isValidImageUrl(heroImagenFondoMobileUrl)) {
+        logger.warn(
+          "Invalid hero mobile image URL detected in fieldview, skipping:",
+          heroImagenFondoMobileUrl
+        );
+        heroImagenFondoMobileUrl = "";
+      }
     }
 
     // Mapear tabs de Yield Kit
@@ -432,35 +531,44 @@ export async function getFieldViewContent(
           id: "drive",
           titulo: doc.data.drive_titulo || "FieldView Drive",
           descripcion: doc.data.drive_descripcion || [],
-          imagen: doc.data.drive_imagen
-            ? {
-                url: doc.data.drive_imagen.url || "",
-                alt: doc.data.drive_imagen.alt || "",
-              }
-            : undefined,
+          imagen: (() => {
+            const imgUrl = processImageUrl(doc.data.drive_imagen?.url);
+            return imgUrl
+              ? {
+                  url: imgUrl,
+                  alt: doc.data.drive_imagen.alt || "",
+                }
+              : undefined;
+          })(),
         },
         {
           id: "yield-kit",
           titulo: doc.data.yield_kit_titulo || "FieldView Yield Kit",
           descripcion: doc.data.yield_kit_descripcion || [],
-          imagen: doc.data.yield_kit_imagen
-            ? {
-                url: doc.data.yield_kit_imagen.url || "",
-                alt: doc.data.yield_kit_imagen.alt || "",
-              }
-            : undefined,
+          imagen: (() => {
+            const imgUrl = processImageUrl(doc.data.yield_kit_imagen?.url);
+            return imgUrl
+              ? {
+                  url: imgUrl,
+                  alt: doc.data.yield_kit_imagen.alt || "",
+                }
+              : undefined;
+          })(),
           yieldKitTabs: yieldKitTabs,
         },
         {
           id: "spraykit",
           titulo: doc.data.spraykit_titulo || "FieldView SprayKit",
           descripcion: doc.data.spraykit_descripcion || [],
-          imagen: doc.data.spraykit_imagen
-            ? {
-                url: doc.data.spraykit_imagen.url || "",
-                alt: doc.data.spraykit_imagen.alt || "",
-              }
-            : undefined,
+          imagen: (() => {
+            const imgUrl = processImageUrl(doc.data.spraykit_imagen?.url);
+            return imgUrl
+              ? {
+                  url: imgUrl,
+                  alt: doc.data.spraykit_imagen.alt || "",
+                }
+              : undefined;
+          })(),
         },
       ],
     };
@@ -577,20 +685,16 @@ export async function getProteccionCultivoContent(
     }
 
     // Procesar hero (título, descripción e imágenes de fondo)
-    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
-    if (heroImagenFondoUrl) {
-      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
-    }
-    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
-    if (heroImagenFondoMobileUrl) {
-      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
-    }
+    let heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    let heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
 
     // Mapear soluciones - Prismic Groups se devuelven como arrays
     const solucionesRaw = doc.data.soluciones;
 
     if (!solucionesRaw) {
-      console.warn("No soluciones field found in document");
+      logger.warn("No soluciones field found in document");
       // Procesar seccion_imagen_texto incluso si no hay soluciones
       const seccionImagenTextoRaw = doc.data.seccion_imagen_texto;
       let seccionImagenTexto = {
@@ -604,8 +708,8 @@ export async function getProteccionCultivoContent(
           seccionImagenTextoRaw.length > 0
         ) {
           const seccionData = seccionImagenTextoRaw[0];
-          if (seccionData.imagen?.url) {
-            let imagenUrl = seccionData.imagen.url.split("?")[0];
+          const imagenUrl = processImageUrl(seccionData.imagen?.url);
+          if (imagenUrl) {
             seccionImagenTexto.imagen = {
               url: imagenUrl,
               alt: seccionData.imagen.alt || "",
@@ -616,8 +720,8 @@ export async function getProteccionCultivoContent(
           typeof seccionImagenTextoRaw === "object" &&
           !Array.isArray(seccionImagenTextoRaw)
         ) {
-          if (seccionImagenTextoRaw.imagen?.url) {
-            let imagenUrl = seccionImagenTextoRaw.imagen.url.split("?")[0];
+          const imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+          if (imagenUrl) {
             seccionImagenTexto.imagen = {
               url: imagenUrl,
               alt: seccionImagenTextoRaw.imagen.alt || "",
@@ -654,17 +758,23 @@ export async function getProteccionCultivoContent(
       ? solucionesRaw.map((solucion: any, index: number) => {
           logger.debug(`Processing solucion ${index}:`, solucion);
           return {
-            logo:
-              solucion.logo && solucion.logo.url
+            logo: (() => {
+              const logoUrl = solucion.logo?.url;
+              if (!logoUrl) return undefined;
+              // Remover parámetros de tamaño de Prismic para mantener dimensiones originales
+              let processedUrl = logoUrl
+                .replace(/[?&]w=\d+/g, "")
+                .replace(/[?&]h=\d+/g, "")
+                .replace(/[?&]rect=[^&]*/g, "");
+              // ✅ SECURITY: Validate logo URL
+              processedUrl = processImageUrl(processedUrl);
+              return processedUrl
                 ? {
-                    // Remover parámetros de tamaño de Prismic para mantener dimensiones originales
-                    url: (solucion.logo.url || "")
-                      .replace(/[?&]w=\d+/g, "")
-                      .replace(/[?&]h=\d+/g, "")
-                      .replace(/[?&]rect=[^&]*/g, ""),
+                    url: processedUrl,
                     alt: solucion.logo.alt || "",
                   }
-                : undefined,
+                : undefined;
+            })(),
             texto_introductorio: solucion.texto_introductorio || [],
             tabla: solucion.tabla || [],
           };
@@ -687,10 +797,8 @@ export async function getProteccionCultivoContent(
         seccionImagenTextoRaw.length > 0
       ) {
         const seccionData = seccionImagenTextoRaw[0];
-        if (seccionData.imagen?.url) {
-          let imagenUrl = seccionData.imagen.url;
-          // Eliminar parámetros de tamaño de Prismic para mantener dimensiones originales
-          imagenUrl = imagenUrl.split("?")[0];
+        const imagenUrl = processImageUrl(seccionData.imagen?.url);
+        if (imagenUrl) {
           seccionImagenTexto.imagen = {
             url: imagenUrl,
             alt: seccionData.imagen.alt || "",
@@ -702,9 +810,8 @@ export async function getProteccionCultivoContent(
         !Array.isArray(seccionImagenTextoRaw)
       ) {
         // Si es un objeto directo (no array)
-        if (seccionImagenTextoRaw.imagen?.url) {
-          let imagenUrl = seccionImagenTextoRaw.imagen.url;
-          imagenUrl = imagenUrl.split("?")[0];
+        const imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+        if (imagenUrl) {
           seccionImagenTexto.imagen = {
             url: imagenUrl,
             alt: seccionImagenTextoRaw.imagen.alt || "",
@@ -787,6 +894,14 @@ export async function getAllCatalogs(
       let imagenUrl = doc.data.imagen?.url || "";
       if (imagenUrl) {
         imagenUrl = imagenUrl.split("?")[0];
+        // ✅ SECURITY: Validate image URL before returning
+        if (!isValidImageUrl(imagenUrl)) {
+          logger.warn(
+            "Invalid image URL detected in catalogo, skipping:",
+            imagenUrl
+          );
+          imagenUrl = "";
+        }
       }
 
       return {
@@ -807,7 +922,7 @@ export async function getAllCatalogs(
       };
     });
   } catch (error) {
-    console.error("Error fetching catalogs:", error);
+    logger.error("Error fetching catalogs:", error);
     return [];
   }
 }
@@ -837,6 +952,14 @@ export async function getAllInforma(
       let imagenUrl = doc.data.imagen?.url || "";
       if (imagenUrl) {
         imagenUrl = imagenUrl.split("?")[0];
+        // ✅ SECURITY: Validate image URL before returning
+        if (!isValidImageUrl(imagenUrl)) {
+          logger.warn(
+            "Invalid image URL detected in catalogo, skipping:",
+            imagenUrl
+          );
+          imagenUrl = "";
+        }
       }
 
       return {
@@ -856,7 +979,7 @@ export async function getAllInforma(
       };
     });
   } catch (error) {
-    console.error("Error fetching informa:", error);
+    logger.error("Error fetching informa:", error);
     return [];
   }
 }
@@ -869,36 +992,26 @@ export async function getAcceleronContent(
 ): Promise<AcceleronContent | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
     const doc = await client.getSingle("acceleron", { lang: prismicLocale });
 
     // Procesar hero logo
-    let heroLogoUrl = doc.data.hero_logo?.url || "";
-    if (heroLogoUrl) {
-      heroLogoUrl = heroLogoUrl.split("?")[0];
-    }
+    let heroLogoUrl = processImageUrl(doc.data.hero_logo?.url);
 
     // Procesar hero imagen fondo (desktop y mobile)
-    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
-    if (heroImagenFondoUrl) {
-      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
-    }
-    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
-    if (heroImagenFondoMobileUrl) {
-      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
-    }
+    let heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    let heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
 
     // Mapear bloques
     const bloquesRaw = doc.data.bloques;
     const bloques = Array.isArray(bloquesRaw)
       ? bloquesRaw.map((bloque: any) => {
-          let imagenUrl = bloque.imagen?.url || "";
-          if (imagenUrl) {
-            imagenUrl = imagenUrl.split("?")[0];
-          }
+          const imagenUrl = processImageUrl(bloque.imagen?.url);
           return {
             imagen: imagenUrl
               ? {
@@ -917,15 +1030,8 @@ export async function getAcceleronContent(
       ? doc.data.bloque_final[0]
       : doc.data.bloque_final;
 
-    let imagenDesktopUrl = bloqueFinalRaw?.imagen_desktop?.url || "";
-    if (imagenDesktopUrl) {
-      imagenDesktopUrl = imagenDesktopUrl.split("?")[0];
-    }
-
-    let imagenMobileUrl = bloqueFinalRaw?.imagen_mobile?.url || "";
-    if (imagenMobileUrl) {
-      imagenMobileUrl = imagenMobileUrl.split("?")[0];
-    }
+    let imagenDesktopUrl = processImageUrl(bloqueFinalRaw?.imagen_desktop?.url);
+    let imagenMobileUrl = processImageUrl(bloqueFinalRaw?.imagen_mobile?.url);
 
     return {
       hero: {
@@ -972,7 +1078,7 @@ export async function getAcceleronContent(
       },
     };
   } catch (error) {
-    console.error("Error fetching Acceleron content:", error);
+    logger.error("Error fetching Acceleron content:", error);
     return null;
   }
 }
@@ -985,28 +1091,24 @@ export async function getFieldShieldContent(
 ): Promise<FieldShieldContent | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
     const doc = await client.getSingle("fieldshield", { lang: prismicLocale });
 
     // Procesar hero
-    let heroLogoUrl = doc.data.hero_logo?.url || "";
-    if (heroLogoUrl) heroLogoUrl = heroLogoUrl.split("?")[0];
-    let heroImagenFondoUrl = doc.data.hero_imagen_fondo?.url || "";
-    if (heroImagenFondoUrl)
-      heroImagenFondoUrl = heroImagenFondoUrl.split("?")[0];
-    let heroImagenFondoMobileUrl = doc.data.hero_imagen_fondo_mobile?.url || "";
-    if (heroImagenFondoMobileUrl)
-      heroImagenFondoMobileUrl = heroImagenFondoMobileUrl.split("?")[0];
+    let heroLogoUrl = processImageUrl(doc.data.hero_logo?.url);
+    let heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    let heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
 
     // Mapear módulos
     const modulosRaw = doc.data.modulos;
     const modulos = Array.isArray(modulosRaw)
       ? modulosRaw.map((modulo: any) => {
-          let imagenUrl = modulo.imagen?.url || "";
-          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          const imagenUrl = processImageUrl(modulo.imagen?.url);
           return {
             imagen: imagenUrl
               ? { url: imagenUrl, alt: modulo.imagen?.alt || "" }
@@ -1035,8 +1137,7 @@ export async function getFieldShieldContent(
     const cardsGrisRaw = doc.data.cards_gris;
     const cardsGris = Array.isArray(cardsGrisRaw)
       ? cardsGrisRaw.map((card: any) => {
-          let imagenUrl = card.imagen?.url || "";
-          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          const imagenUrl = processImageUrl(card.imagen?.url);
           return {
             imagen: imagenUrl
               ? { url: imagenUrl, alt: card.imagen?.alt || "" }
@@ -1055,15 +1156,13 @@ export async function getFieldShieldContent(
     const bloqueDegradadoRaw = Array.isArray(doc.data.bloque_degradado)
       ? doc.data.bloque_degradado[0]
       : doc.data.bloque_degradado;
-    let bloqueImagenUrl = bloqueDegradadoRaw?.imagen?.url || "";
-    if (bloqueImagenUrl) bloqueImagenUrl = bloqueImagenUrl.split("?")[0];
+    let bloqueImagenUrl = processImageUrl(bloqueDegradadoRaw?.imagen?.url);
 
     // Mapear cards_finales
     const cardsFinalesRaw = doc.data.cards_finales;
     const cardsFinales = Array.isArray(cardsFinalesRaw)
       ? cardsFinalesRaw.map((card: any) => {
-          let imagenUrl = card.imagen?.url || "";
-          if (imagenUrl) imagenUrl = imagenUrl.split("?")[0];
+          const imagenUrl = processImageUrl(card.imagen?.url);
           const tabsLabelsStr = card.tabs_labels || "";
           const tabs = tabsLabelsStr
             ? tabsLabelsStr
@@ -1125,7 +1224,7 @@ export async function getFieldShieldContent(
       cards_finales: cardsFinales,
     };
   } catch (error) {
-    console.error("Error fetching FieldShield content:", error);
+    logger.error("Error fetching FieldShield content:", error);
     return null;
   }
 }
@@ -1138,7 +1237,7 @@ export async function getSiloextraContent(
 ): Promise<any | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -1149,22 +1248,16 @@ export async function getSiloextraContent(
     }
 
     // Hero
-    const heroImagenFondoUrl: string = (doc.data.hero_imagen_fondo?.url || "")
-      .split("?")[0]
-      .trim();
-    const heroImagenFondoMobileUrl: string = (
-      doc.data.hero_imagen_fondo_mobile?.url || ""
-    )
-      .split("?")[0]
-      .trim();
+    const heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    const heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
 
     // Bloques
     const bloquesRaw = doc.data.bloques;
     const bloques = Array.isArray(bloquesRaw)
       ? bloquesRaw.map((bloque: any) => {
-          const imagenUrl: string = (bloque.imagen?.url || "")
-            .split("?")[0]
-            .trim();
+          const imagenUrl = processImageUrl(bloque.imagen?.url);
           return {
             imagen: imagenUrl
               ? {
@@ -1202,7 +1295,7 @@ export async function getSiloextraContent(
       bloques,
     };
   } catch (error) {
-    console.error("Error fetching Siloextra content:", error);
+    logger.error("Error fetching Siloextra content:", error);
     return null;
   }
 }
@@ -1215,7 +1308,7 @@ export async function getPreceonContent(
 ): Promise<PreceonContent | null> {
   try {
     if (!client) {
-      console.warn("Prismic client not initialized");
+      logger.warn("Prismic client not initialized");
       return null;
     }
     const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
@@ -1226,25 +1319,17 @@ export async function getPreceonContent(
     }
 
     // Hero
-    let heroLogoUrl: string = (doc.data.hero_logo?.url || "")
-      .split("?")[0]
-      .trim();
-    let heroImagenFondoUrl: string = (doc.data.hero_imagen_fondo?.url || "")
-      .split("?")[0]
-      .trim();
-    let heroImagenFondoMobileUrl: string = (
-      doc.data.hero_imagen_fondo_mobile?.url || ""
-    )
-      .split("?")[0]
-      .trim();
+    let heroLogoUrl = processImageUrl(doc.data.hero_logo?.url);
+    let heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    let heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
 
     // Elementos grid
     const elementosGridRaw = doc.data.elementos_grid;
     const elementosGrid = Array.isArray(elementosGridRaw)
       ? elementosGridRaw.map((elemento: any) => {
-          const imagenUrl: string = (elemento.imagen?.url || "")
-            .split("?")[0]
-            .trim();
+          const imagenUrl = processImageUrl(elemento.imagen?.url);
           return {
             imagen: imagenUrl
               ? {
@@ -1270,9 +1355,7 @@ export async function getPreceonContent(
     const imagenesDegradadoRaw = doc.data.imagenes_degradado;
     const imagenesDegradado = Array.isArray(imagenesDegradadoRaw)
       ? imagenesDegradadoRaw.map((item: any) => {
-          const imagenUrl: string = (item.imagen?.url || "")
-            .split("?")[0]
-            .trim();
+          const imagenUrl = processImageUrl(item.imagen?.url);
           return {
             imagen: imagenUrl
               ? {
@@ -1289,9 +1372,7 @@ export async function getPreceonContent(
     const bloqueFinalRaw = Array.isArray(doc.data.bloque_final)
       ? doc.data.bloque_final[0]
       : doc.data.bloque_final;
-    const bloqueFinalImagenUrl: string = (bloqueFinalRaw?.imagen?.url || "")
-      .split("?")[0]
-      .trim();
+    const bloqueFinalImagenUrl = processImageUrl(bloqueFinalRaw?.imagen?.url);
 
     return {
       hero: {
@@ -1337,7 +1418,7 @@ export async function getPreceonContent(
       },
     };
   } catch (error) {
-    console.error("Error fetching Preceon content:", error);
+    logger.error("Error fetching Preceon content:", error);
     return null;
   }
 }
