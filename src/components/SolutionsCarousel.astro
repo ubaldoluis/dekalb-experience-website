@@ -109,9 +109,15 @@ const { solutions = [], lang = "es" } = Astro.props;
 
 <script>
   let carouselTrack: HTMLElement | null = null;
+  let carouselContainer: HTMLElement | null = null;
   let scrollPosition = 0;
+  let autoScrollTimer: number | null = null;
+  let isAutoScrollPaused = false;
 
   function initSolutionsCarousel() {
+    carouselContainer = document.getElementById(
+      "solutions-carousel"
+    ) as HTMLElement | null;
     carouselTrack = document.getElementById(
       "solutions-carousel-track"
     ) as HTMLElement;
@@ -141,9 +147,43 @@ const { solutions = [], lang = "es" } = Astro.props;
 
     // Initial state
     updateControlsVisibility();
+
+    // Auto-scroll (every 3 seconds) until hover
+    startAutoScroll();
+    bindHoverPause();
   }
 
-  function scrollCarousel(direction: "prev" | "next") {
+  function startAutoScroll() {
+    if (!carouselTrack) return;
+    stopAutoScroll();
+    autoScrollTimer = window.setInterval(() => {
+      if (!carouselTrack || isAutoScrollPaused) return;
+      scrollCarousel("next", { loopToStart: true });
+    }, 3000);
+  }
+
+  function stopAutoScroll() {
+    if (autoScrollTimer === null) return;
+    window.clearInterval(autoScrollTimer);
+    autoScrollTimer = null;
+  }
+
+  function bindHoverPause() {
+    const el = carouselContainer || carouselTrack;
+    if (!el) return;
+
+    el.addEventListener("pointerenter", () => {
+      isAutoScrollPaused = true;
+    });
+    el.addEventListener("pointerleave", () => {
+      isAutoScrollPaused = false;
+    });
+  }
+
+  function scrollCarousel(
+    direction: "prev" | "next",
+    options?: { loopToStart?: boolean }
+  ) {
     if (!carouselTrack) return;
 
     const cardWidth =
@@ -157,6 +197,11 @@ const { solutions = [], lang = "es" } = Astro.props;
     // Clamp scroll position
     const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
     scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+
+    if (options?.loopToStart && direction === "next") {
+      const isAtEnd = scrollPosition >= maxScroll - 1; // -1 for rounding errors
+      if (isAtEnd) scrollPosition = 0;
+    }
 
     carouselTrack.scrollTo({
       left: scrollPosition,
