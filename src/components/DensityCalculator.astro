@@ -12,7 +12,7 @@ const translations = {
     grano: "Grano",
     silo: "Silo",
     zone: "Zona geográfica",
-    potential: "Potencial de producción (Tn/Ha)",
+    potential: "Potencial de Producción en la finca (Tn/Ha)",
     hybrid: "Híbrido DEKALB",
     surface: "Superficie a sembrar",
     calculate: "CALCULAR",
@@ -21,6 +21,12 @@ const translations = {
       bags: "Nº de bolsas DEKALB",
       plantsPerHa: "miles plantas/Ha",
     },
+    selectZone: "Seleccionar zona",
+    selectPotential: "Seleccionar potencial",
+    selectHybrid: "Seleccionar híbrido",
+    missingFields: "Por favor, completa todos los campos",
+    missingDensity:
+      "No hay una recomendación disponible para esta combinación. Revisa los datos o actualiza la tabla.",
   },
   pt: {
     title: "Calculadora de Densidades",
@@ -28,7 +34,7 @@ const translations = {
     grano: "Grão",
     silo: "Silagem",
     zone: "Zona geográfica",
-    potential: "Potencial de produção (Tn/Ha)",
+    potential: "Potencial de Produção na quinta (Tn/Ha)",
     hybrid: "Híbrido DEKALB",
     surface: "Superfície a semear",
     calculate: "CALCULAR",
@@ -37,23 +43,16 @@ const translations = {
       bags: "Nº de sacos DEKALB",
       plantsPerHa: "mil plantas/Ha",
     },
+    selectZone: "Selecionar zona",
+    selectPotential: "Selecionar potencial",
+    selectHybrid: "Selecionar híbrido",
+    missingFields: "Por favor, preenche todos os campos",
+    missingDensity:
+      "Não existe recomendação para esta combinação. Revê os dados ou atualiza a tabela.",
   },
 };
 
 const t = translations[lang];
-
-const zones = [
-  { value: "ebro", label: lang === "es" ? "Ebro" : "Ebro" },
-  {
-    value: "centro-sur",
-    label:
-      lang === "es"
-        ? "Centro Sur, Extremadura, Andalucía"
-        : "Centro Sul, Extremadura, Andaluzia",
-  },
-  { value: "noroeste", label: lang === "es" ? "Noroeste" : "Noroeste" },
-  { value: "portugal", label: lang === "es" ? "Portugal" : "Portugal" },
-];
 ---
 
 <div
@@ -101,31 +100,25 @@ const zones = [
         class="form-select"
         required
       >
-        <option value=""
-          >{lang === "es" ? "Seleccionar zona" : "Selecionar zona"}</option
-        >
-        {zones.map((zone) => <option value={zone.value}>{zone.label}</option>)}
+        <option value="">{t.selectZone}</option>
       </select>
     </div>
 
     <!-- Potencial de producción -->
     <div class="form-group">
       <label
-        for="potential-slider"
+        for="potential-select"
         class="form-label"
       >
-        {t.potential}: <span id="potential-value">10</span> Tn/Ha
+        {t.potential}
       </label>
-      <input
-        type="range"
-        id="potential-slider"
-        class="form-slider"
-        min="0"
-        max="20"
-        step="0.5"
-        value="10"
+      <select
+        id="potential-select"
+        class="form-select"
         required
-      />
+      >
+        <option value="">{t.selectPotential}</option>
+      </select>
     </div>
 
     <!-- Híbrido DEKALB -->
@@ -140,12 +133,7 @@ const zones = [
         class="form-select"
         required
       >
-        <option value=""
-          >{
-            lang === "es" ? "Seleccionar híbrido" : "Selecionar híbrido"
-          }</option
-        >
-        <!-- Options will be populated dynamically based on zone -->
+        <option value="">{t.selectHybrid}</option>
       </select>
     </div>
 
@@ -218,164 +206,309 @@ const zones = [
 </div>
 
 <script>
-  const form = document.getElementById("calculator-form") as HTMLFormElement;
-  const useButtons = document.querySelectorAll(".use-button");
+  type UseType = "grano" | "silo";
+
+  type DensityEntry = {
+    use: UseType;
+    zone: string;
+    potential: string;
+    hybrid: string;
+    densityK: number;
+  };
+
+  type DensityDatasetV1 = {
+    schemaVersion: 1;
+    seedsPerBag: number;
+    zones: Record<UseType, string[]>;
+    potentials: Record<UseType, string[]>;
+    entries: DensityEntry[];
+  };
+
+  const densityDataUrl = "/density-calculator.v1.json";
+  const form = document.getElementById(
+    "calculator-form"
+  ) as HTMLFormElement | null;
+  const useButtons = Array.from(
+    document.querySelectorAll(".use-button")
+  ) as HTMLButtonElement[];
   const zoneSelect = document.getElementById(
     "zone-select"
-  ) as HTMLSelectElement;
-  const potentialSlider = document.getElementById(
-    "potential-slider"
-  ) as HTMLInputElement;
-  const potentialValue = document.getElementById("potential-value");
+  ) as HTMLSelectElement | null;
+  const potentialSelect = document.getElementById(
+    "potential-select"
+  ) as HTMLSelectElement | null;
   const hybridSelect = document.getElementById(
     "hybrid-select"
-  ) as HTMLSelectElement;
+  ) as HTMLSelectElement | null;
   const surfaceInput = document.getElementById(
     "surface-input"
-  ) as HTMLInputElement;
-  const resultsDiv = document.getElementById("calculator-results");
-  const resultDensity = document.getElementById("result-density");
-  const resultBags = document.getElementById("result-bags");
+  ) as HTMLInputElement | null;
+  const resultsDiv = document.getElementById(
+    "calculator-results"
+  ) as HTMLDivElement | null;
+  const resultDensity = document.getElementById(
+    "result-density"
+  ) as HTMLElement | null;
+  const resultBags = document.getElementById(
+    "result-bags"
+  ) as HTMLElement | null;
 
-  let selectedUse: "grano" | "silo" | null = null;
+  const lang = document.documentElement.lang === "pt" ? "pt" : "es";
+  const i18n = {
+    es: {
+      selectZone: "Seleccionar zona",
+      selectPotential: "Seleccionar potencial",
+      selectHybrid: "Seleccionar híbrido",
+      missingFields: "Por favor, completa todos los campos",
+      missingDensity:
+        "No hay una recomendación disponible para esta combinación. Revisa los datos o actualiza la tabla.",
+    },
+    pt: {
+      selectZone: "Selecionar zona",
+      selectPotential: "Selecionar potencial",
+      selectHybrid: "Selecionar híbrido",
+      missingFields: "Por favor, preenche todos os campos",
+      missingDensity:
+        "Não existe recomendação para esta combinação. Revê os dados ou atualiza a tabela.",
+    },
+  } as const;
 
-  // Update potential value display
-  if (potentialSlider && potentialValue) {
-    potentialSlider.addEventListener("input", () => {
-      potentialValue.textContent = potentialSlider.value;
+  let selectedUse: UseType | null = null;
+  let dataset: DensityDatasetV1 | null = null;
+
+  function clearSelect(select: HTMLSelectElement) {
+    while (select.firstChild) select.removeChild(select.firstChild);
+  }
+
+  function setDefaultOption(select: HTMLSelectElement, label: string) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = label;
+    select.appendChild(opt);
+  }
+
+  async function loadDataset(): Promise<DensityDatasetV1> {
+    if (dataset) return dataset;
+    const res = await fetch(densityDataUrl, { credentials: "omit" });
+    if (!res.ok) {
+      throw new Error(`Failed to load density dataset: ${res.status}`);
+    }
+    const json = (await res.json()) as DensityDatasetV1;
+    dataset = json;
+    return json;
+  }
+
+  function getAvailableZones(data: DensityDatasetV1, use: UseType): string[] {
+    return Array.isArray(data.zones?.[use]) ? data.zones[use] : [];
+  }
+
+  function getAvailablePotentials(
+    data: DensityDatasetV1,
+    use: UseType
+  ): string[] {
+    return Array.isArray(data.potentials?.[use]) ? data.potentials[use] : [];
+  }
+
+  function getAvailableHybrids(
+    data: DensityDatasetV1,
+    params: { use: UseType; zone: string; potential: string }
+  ): string[] {
+    const hybrids = data.entries
+      .filter(
+        (e) =>
+          e.use === params.use &&
+          e.zone === params.zone &&
+          e.potential === params.potential
+      )
+      .map((e) => e.hybrid);
+    return Array.from(new Set(hybrids)).sort((a, b) => a.localeCompare(b));
+  }
+
+  function findDensityK(
+    data: DensityDatasetV1,
+    params: { use: UseType; zone: string; potential: string; hybrid: string }
+  ): number | null {
+    const entry = data.entries.find(
+      (e) =>
+        e.use === params.use &&
+        e.zone === params.zone &&
+        e.potential === params.potential &&
+        e.hybrid === params.hybrid
+    );
+    return typeof entry?.densityK === "number" ? entry.densityK : null;
+  }
+
+  function calculateBags(params: {
+    densityK: number;
+    surfaceHa: number;
+    seedsPerBag: number;
+  }) {
+    // densityK está en miles de plantas/Ha. seedsPerBag por defecto 50.000.
+    // bolsas = ceil( (densityK * 1000 * ha) / seedsPerBag ) === ceil( (densityK/50) * ha ) si seedsPerBag=50.000
+    const totalSeeds = params.densityK * 1000 * params.surfaceHa;
+    return Math.ceil(totalSeeds / params.seedsPerBag);
+  }
+
+  function resetResults() {
+    if (resultsDiv) resultsDiv.style.display = "none";
+    if (resultDensity) resultDensity.textContent = "-";
+    if (resultBags) resultBags.textContent = "-";
+  }
+
+  function resetDependentSelects() {
+    if (!zoneSelect || !potentialSelect || !hybridSelect) return;
+    clearSelect(zoneSelect);
+    setDefaultOption(zoneSelect, i18n[lang].selectZone);
+    clearSelect(potentialSelect);
+    setDefaultOption(potentialSelect, i18n[lang].selectPotential);
+    clearSelect(hybridSelect);
+    setDefaultOption(hybridSelect, i18n[lang].selectHybrid);
+  }
+
+  async function hydrateOptionsForUse(use: UseType) {
+    if (!zoneSelect || !potentialSelect || !hybridSelect) return;
+    const data = await loadDataset();
+
+    // Zones
+    clearSelect(zoneSelect);
+    setDefaultOption(zoneSelect, i18n[lang].selectZone);
+    getAvailableZones(data, use).forEach((zone) => {
+      const opt = document.createElement("option");
+      opt.value = zone;
+      opt.textContent = zone;
+      zoneSelect.appendChild(opt);
+    });
+
+    // Potentials
+    clearSelect(potentialSelect);
+    setDefaultOption(potentialSelect, i18n[lang].selectPotential);
+    getAvailablePotentials(data, use).forEach((pot) => {
+      const opt = document.createElement("option");
+      opt.value = pot;
+      opt.textContent = pot;
+      potentialSelect.appendChild(opt);
+    });
+
+    // Hybrids
+    clearSelect(hybridSelect);
+    setDefaultOption(hybridSelect, i18n[lang].selectHybrid);
+  }
+
+  async function hydrateHybrids() {
+    if (!selectedUse || !zoneSelect || !potentialSelect || !hybridSelect)
+      return;
+    resetResults();
+    const zone = zoneSelect.value;
+    const potential = potentialSelect.value;
+    clearSelect(hybridSelect);
+    setDefaultOption(hybridSelect, i18n[lang].selectHybrid);
+    if (!zone || !potential) return;
+
+    const data = await loadDataset();
+    const hybrids = getAvailableHybrids(data, {
+      use: selectedUse,
+      zone,
+      potential,
+    });
+    hybrids.forEach((hybrid) => {
+      const opt = document.createElement("option");
+      opt.value = hybrid;
+      opt.textContent = hybrid;
+      hybridSelect.appendChild(opt);
     });
   }
 
-  // Handle use buttons
   useButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       useButtons.forEach((b) => {
         b.classList.remove("use-button-active");
         b.setAttribute("aria-pressed", "false");
       });
       btn.classList.add("use-button-active");
       btn.setAttribute("aria-pressed", "true");
-      selectedUse = btn.getAttribute("data-use") as "grano" | "silo";
+
+      selectedUse = btn.getAttribute("data-use") as UseType;
+      resetResults();
+      resetDependentSelects();
+      try {
+        await hydrateOptionsForUse(selectedUse);
+      } catch (e) {
+        console.error(e);
+      }
     });
   });
 
-  // Update hybrids based on zone
-  if (zoneSelect && hybridSelect) {
-    zoneSelect.addEventListener("change", () => {
-      const zone = zoneSelect.value;
+  zoneSelect?.addEventListener("change", () => {
+    hydrateHybrids().catch((e) => console.error(e));
+  });
 
-      // ✅ SECURITY: Clear using removeChild instead of innerHTML
-      while (hybridSelect.firstChild) {
-        hybridSelect.removeChild(hybridSelect.firstChild);
-      }
+  potentialSelect?.addEventListener("change", () => {
+    hydrateHybrids().catch((e) => console.error(e));
+  });
 
-      // Create default option
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      // Get lang from data attribute or default to 'es'
-      const currentLang = document.documentElement.lang || "es";
-      defaultOption.textContent =
-        currentLang === "es" ? "Seleccionar híbrido" : "Selecionar híbrido";
-      hybridSelect.appendChild(defaultOption);
-
-      // Mock hybrid data - In production, fetch from API/Prismic
-      const hybrids: Record<string, string[]> = {
-        ebro: ["DKC3045", "DKC6836SC", "DKC6648SC"],
-        "centro-sur": ["DKC3045", "DKC6836SC"],
-        noroeste: ["DKC3045", "DKC6648SC"],
-        portugal: ["DKC3045", "DKC6836SC", "DKC6648SC"],
-      };
-
-      if (zone && hybrids[zone]) {
-        hybrids[zone].forEach((hybrid) => {
-          const option = document.createElement("option");
-          option.value = hybrid;
-          option.textContent = hybrid;
-          hybridSelect.appendChild(option);
-        });
-      }
-    });
-  }
-
-  // Calculate function
   function calculate() {
     if (
       !selectedUse ||
-      !zoneSelect.value ||
-      !hybridSelect.value ||
-      !surfaceInput.value
-    ) {
-      alert("Por favor, completa todos los campos");
+      !zoneSelect ||
+      !potentialSelect ||
+      !hybridSelect ||
+      !surfaceInput
+    )
       return;
-    }
 
-    const potential = parseFloat(potentialSlider.value);
-    const surface = parseFloat(surfaceInput.value);
     const zone = zoneSelect.value;
+    const potential = potentialSelect.value;
+    const hybrid = hybridSelect.value;
+    const surfaceHa = parseFloat(surfaceInput.value);
 
-    // ✅ SECURITY: Validate input ranges
-    if (isNaN(potential) || potential < 0 || potential > 20) {
-      alert("El potencial debe estar entre 0 y 20 Tn/Ha");
+    if (!zone || !potential || !hybrid || !surfaceInput.value) {
+      alert(i18n[lang].missingFields);
       return;
     }
 
-    if (isNaN(surface) || surface <= 0 || surface > 10000) {
-      alert("La superficie debe ser un valor válido entre 0.1 y 10000 Ha");
+    if (Number.isNaN(surfaceHa) || surfaceHa <= 0 || surfaceHa > 10000) {
+      alert(
+        lang === "es"
+          ? "La superficie debe ser un valor válido entre 0.1 y 10000 Ha"
+          : "A superfície deve ser um valor válido entre 0.1 e 10000 Ha"
+      );
       return;
     }
 
-    // Validate zone
-    const validZones = ["ebro", "centro-sur", "noroeste", "portugal"];
-    if (!validZones.includes(zone)) {
-      alert("Zona no válida");
+    if (!dataset) {
+      alert(i18n[lang].missingDensity);
       return;
     }
 
-    // Simplified calculation logic
-    // In production, this would use actual formulas based on use, zone, potential
-    let density = 0;
-
-    if (selectedUse === "grano") {
-      density = 80 + potential * 2; // Base density + potential factor
-    } else if (selectedUse === "silo") {
-      density = 100 + potential * 2.5;
+    const densityK = findDensityK(dataset, {
+      use: selectedUse,
+      zone,
+      potential,
+      hybrid,
+    });
+    if (densityK === null) {
+      alert(i18n[lang].missingDensity);
+      return;
     }
 
-    // Adjust by zone (simplified)
-    const zoneFactors: Record<string, number> = {
-      ebro: 1.0,
-      "centro-sur": 0.95,
-      noroeste: 1.05,
-      portugal: 1.0,
-    };
+    const bags = calculateBags({
+      densityK,
+      surfaceHa,
+      seedsPerBag: dataset.seedsPerBag || 50000,
+    });
 
-    density = density * (zoneFactors[zone] || 1.0);
-
-    // Calculate bags (assuming 50,000 seeds per bag)
-    const seedsPerHa = density * 1000; // Convert to seeds
-    const totalSeeds = seedsPerHa * surface;
-    const bags = Math.ceil(totalSeeds / 50000);
-
-    // Display results
-    if (resultDensity) {
-      resultDensity.textContent = density.toFixed(1);
-    }
-    if (resultBags) {
-      resultBags.textContent = bags.toString();
-    }
+    if (resultDensity) resultDensity.textContent = densityK.toString();
+    if (resultBags) resultBags.textContent = bags.toString();
     if (resultsDiv) {
       resultsDiv.style.display = "block";
       resultsDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 
-  // Form submission
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      calculate();
-    });
-  }
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculate();
+  });
 </script>
 
 <style>
