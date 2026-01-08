@@ -409,3 +409,69 @@ export interface PreceonContent {
   imagenes_degradado: PreceonImagenDegradado[];
   bloque_final: PreceonBloqueFinal;
 }
+
+export interface ColzaBeneficio {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string;
+  descripcion: string;
+}
+
+export interface ColzaCicloCrecimiento {
+  titulo: string;
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  texto: any;
+}
+
+export interface ColzaProducto {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string;
+  descripcion: string;
+  url_descarga?: string;
+}
+
+export interface ColzaFieldViewCard {
+  logo?: {
+    url: string;
+    alt?: string;
+  };
+  imagen_movil?: {
+    url: string;
+    alt?: string;
+  };
+  texto: string;
+  link_fieldview: string;
+}
+
+export interface ColzaContent {
+  hero: {
+    titulo: string;
+    descripcion: string;
+    imagen_fondo?: {
+      url: string;
+      alt?: string;
+    };
+    imagen_fondo_mobile?: {
+      url: string;
+      alt?: string;
+    };
+  };
+  introduccion: {
+    titulo: string;
+    texto: string;
+  };
+  beneficios: ColzaBeneficio[];
+  ciclo_crecimiento: ColzaCicloCrecimiento;
+  productos_fila_1: ColzaProducto[];
+  productos_fila_2: ColzaProducto[];
+  productos_fila_3: ColzaProducto[];
+  card_fieldview: ColzaFieldViewCard;
+}

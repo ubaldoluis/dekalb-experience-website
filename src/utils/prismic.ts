@@ -16,6 +16,7 @@ import type {
   AcceleronContent,
   FieldShieldContent,
   PreceonContent,
+  ColzaContent,
 } from "../types";
 
 const repositoryName = import.meta.env.PRISMIC_REPOSITORY_NAME || "";
@@ -1419,6 +1420,174 @@ export async function getPreceonContent(
     };
   } catch (error) {
     logger.error("Error fetching Preceon content:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetch Colza content from Prismic
+ */
+export async function getColzaContent(
+  locale: string = "es"
+): Promise<ColzaContent | null> {
+  try {
+    if (!client) {
+      logger.warn("Prismic client not initialized");
+      return null;
+    }
+    const prismicLocale = locale === "pt" ? "pt-pt" : "es-es";
+    const doc = await client.getSingle("colza", { lang: prismicLocale });
+
+    // Procesar hero imágenes
+    let heroImagenFondoUrl = processImageUrl(doc.data.hero_imagen_fondo?.url);
+    let heroImagenFondoMobileUrl = processImageUrl(
+      doc.data.hero_imagen_fondo_mobile?.url
+    );
+
+    // Mapear beneficios (Group → Array)
+    const beneficiosRaw = doc.data.beneficios;
+    const beneficios = Array.isArray(beneficiosRaw)
+      ? beneficiosRaw.map((beneficio: any) => {
+          const imagenUrl = processImageUrl(beneficio.imagen?.url);
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: beneficio.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: beneficio.titulo || "",
+            descripcion: beneficio.descripcion || "",
+          };
+        })
+      : [];
+
+    // Procesar ciclo de crecimiento
+    const cicloImagenUrl = processImageUrl(
+      doc.data.ciclo_crecimiento_imagen?.url
+    );
+
+    // Mapear productos fila 1 (Group → Array)
+    const productosFila1Raw = doc.data.productos_fila_1;
+    const productosFila1 = Array.isArray(productosFila1Raw)
+      ? productosFila1Raw.map((producto: any) => {
+          const imagenUrl = processImageUrl(producto.imagen?.url);
+          const urlDescarga = prismic.asLink(producto.url_descarga) || "";
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: producto.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: producto.titulo || "",
+            descripcion: producto.descripcion || "",
+            url_descarga: urlDescarga || undefined,
+          };
+        })
+      : [];
+
+    // Mapear productos fila 2 (Group → Array)
+    const productosFila2Raw = doc.data.productos_fila_2;
+    const productosFila2 = Array.isArray(productosFila2Raw)
+      ? productosFila2Raw.map((producto: any) => {
+          const imagenUrl = processImageUrl(producto.imagen?.url);
+          const urlDescarga = prismic.asLink(producto.url_descarga) || "";
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: producto.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: producto.titulo || "",
+            descripcion: producto.descripcion || "",
+            url_descarga: urlDescarga || undefined,
+          };
+        })
+      : [];
+
+    // Mapear productos fila 3 (Group → Array)
+    const productosFila3Raw = doc.data.productos_fila_3;
+    const productosFila3 = Array.isArray(productosFila3Raw)
+      ? productosFila3Raw.map((producto: any) => {
+          const imagenUrl = processImageUrl(producto.imagen?.url);
+          const urlDescarga = prismic.asLink(producto.url_descarga) || "";
+          return {
+            imagen: imagenUrl
+              ? {
+                  url: imagenUrl,
+                  alt: producto.imagen?.alt || "",
+                }
+              : undefined,
+            titulo: producto.titulo || "",
+            descripcion: producto.descripcion || "",
+            url_descarga: urlDescarga || undefined,
+          };
+        })
+      : [];
+
+    // Procesar card FieldView
+    const fieldviewLogoUrl = processImageUrl(doc.data.fieldview_logo?.url);
+    const fieldviewImagenMovilUrl = processImageUrl(
+      doc.data.fieldview_imagen_movil?.url
+    );
+    const fieldviewLink = prismic.asLink(doc.data.fieldview_link) || "";
+
+    return {
+      hero: {
+        titulo: doc.data.hero_titulo || "",
+        descripcion: doc.data.hero_descripcion || "",
+        imagen_fondo: heroImagenFondoUrl
+          ? {
+              url: heroImagenFondoUrl,
+              alt: doc.data.hero_imagen_fondo?.alt || "",
+            }
+          : undefined,
+        imagen_fondo_mobile: heroImagenFondoMobileUrl
+          ? {
+              url: heroImagenFondoMobileUrl,
+              alt: doc.data.hero_imagen_fondo_mobile?.alt || "",
+            }
+          : undefined,
+      },
+      introduccion: {
+        titulo: doc.data.introduccion_titulo || "",
+        texto: doc.data.introduccion_texto || "",
+      },
+      beneficios: beneficios,
+      ciclo_crecimiento: {
+        titulo: doc.data.ciclo_crecimiento_titulo || "",
+        imagen: cicloImagenUrl
+          ? {
+              url: cicloImagenUrl,
+              alt: doc.data.ciclo_crecimiento_imagen?.alt || "",
+            }
+          : undefined,
+        texto: doc.data.ciclo_crecimiento_texto || [],
+      },
+      productos_fila_1: productosFila1,
+      productos_fila_2: productosFila2,
+      productos_fila_3: productosFila3,
+      card_fieldview: {
+        logo: fieldviewLogoUrl
+          ? {
+              url: fieldviewLogoUrl,
+              alt: doc.data.fieldview_logo?.alt || "",
+            }
+          : undefined,
+        imagen_movil: fieldviewImagenMovilUrl
+          ? {
+              url: fieldviewImagenMovilUrl,
+              alt: doc.data.fieldview_imagen_movil?.alt || "",
+            }
+          : undefined,
+        texto: doc.data.fieldview_texto || "",
+        link_fieldview: fieldviewLink,
+      },
+    };
+  } catch (error) {
+    logger.error("Error fetching Colza content:", error);
     return null;
   }
 }

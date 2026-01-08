@@ -7,7 +7,7 @@ import { getColzaContent } from "../../utils/prismic";
 import { renderRichText } from "../../utils/prismic-rich-text";
 import * as prismic from "@prismicio/client";
 
-const lang = "es";
+const lang = "pt";
 let colzaContent = null;
 
 try {
@@ -20,16 +20,13 @@ try {
 const defaultContent = {
   hero: {
     titulo: "La genetica más avanzada",
-    descripcion:
-      "Supera todos los desafíos con las armas adecuadas para tu campo.",
+    descripcion: "Supera todos los desafíos con las armas adecuadas para tu campo.",
     imagen_fondo: undefined,
     imagen_fondo_mobile: undefined,
   },
   introduccion: {
-    titulo:
-      "Soluciones diseñadas para actuar en diferentes condiciones, afrontando desafíos y asegurando tu rendimiento y rentabilidad.",
-    texto:
-      "En Bayer te recomendamos las soluciones precisas que necesitas en tu campo; por eso, ponemos a tu disposición un amplio rango de soluciones diseñadas para actuar en diferentes condiciones.",
+    titulo: "Soluciones diseñadas para actuar en diferentes condiciones, afrontando desafíos y asegurando tu rendimiento y rentabilidad.",
+    texto: "En Bayer te recomendamos las soluciones precisas que necesitas en tu campo; por eso, ponemos a tu disposición un amplio rango de soluciones diseñadas para actuar en diferentes condiciones.",
   },
   beneficios: [],
   ciclo_crecimiento: {
@@ -44,7 +41,7 @@ const defaultContent = {
     logo: undefined,
     imagen_movil: undefined,
     texto: "",
-    link_fieldview: "/es/fieldview",
+    link_fieldview: "/pt/fieldview",
   },
 };
 
@@ -104,10 +101,7 @@ const content = colzaContent || defaultContent;
       <section class="colza-beneficios">
         <div class="container">
           <ScrollReveal>
-            <BeneficiosCarousel
-              beneficios={content.beneficios}
-              lang={lang}
-            />
+            <BeneficiosCarousel beneficios={content.beneficios} lang={lang} />
           </ScrollReveal>
         </div>
       </section>
@@ -120,20 +114,15 @@ const content = colzaContent || defaultContent;
       <ScrollReveal>
         <h2 class="colza-ciclo-title">{content.ciclo_crecimiento.titulo}</h2>
         <div class="colza-ciclo-wrapper">
-          {
-            content.ciclo_crecimiento.imagen?.url && (
-              <div class="colza-ciclo-image">
-                <img
-                  src={content.ciclo_crecimiento.imagen.url}
-                  alt={
-                    content.ciclo_crecimiento.imagen.alt ||
-                    content.ciclo_crecimiento.titulo
-                  }
-                  loading="lazy"
-                />
-              </div>
-            )
-          }
+          {content.ciclo_crecimiento.imagen?.url && (
+            <div class="colza-ciclo-image">
+              <img
+                src={content.ciclo_crecimiento.imagen.url}
+                alt={content.ciclo_crecimiento.imagen.alt || content.ciclo_crecimiento.titulo}
+                loading="lazy"
+              />
+            </div>
+          )}
           <div class="colza-ciclo-content">
             <div
               class="colza-ciclo-text"
@@ -223,9 +212,7 @@ const content = colzaContent || defaultContent;
                   <div class="content-right-card-image">
                     <img
                       src={content.card_fieldview.imagen_movil.url}
-                      alt={
-                        content.card_fieldview.imagen_movil.alt || "FieldView"
-                      }
+                      alt={content.card_fieldview.imagen_movil.alt || "FieldView"}
                       loading="lazy"
                     />
                   </div>
@@ -328,15 +315,16 @@ const content = colzaContent || defaultContent;
     position: relative;
     z-index: 1;
     max-width: 462px;
+    padding-top: var(--spacing-20);
   }
 
   .colza-hero-title {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #ffffff;
     margin: 0 0 var(--spacing-4) 0;
-    line-height: 3.2rem;
+    line-height: 2.2rem;
     letter-spacing: 0.96px;
   }
 
@@ -351,7 +339,7 @@ const content = colzaContent || defaultContent;
 
   /* Introducción Section */
   .colza-intro {
-    padding: var(--spacing-16) 0 0 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -462,7 +450,7 @@ const content = colzaContent || defaultContent;
 
   /* Productos Sections */
   .colza-productos {
-    padding: var(--spacing-8) 0 0 0;
+    padding: var(--spacing-16) 0;
     background-color: #ffffff;
   }
 
@@ -480,6 +468,7 @@ const content = colzaContent || defaultContent;
   .colza-productos-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
+
 
   @media (max-width: 1023px) {
     .colza-productos-grid-2,
@@ -660,6 +649,7 @@ const content = colzaContent || defaultContent;
       font-size: 18px;
       line-height: 24px;
     }
+
 
     .colza-ciclo-title {
       font-size: 32px;

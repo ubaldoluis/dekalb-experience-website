@@ -1,0 +1,469 @@
+---
+interface Beneficio {
+  imagen?: {
+    url: string;
+    alt?: string;
+  };
+  titulo: string;
+  descripcion: string;
+}
+
+interface Props {
+  beneficios: Beneficio[];
+  lang?: "es" | "pt";
+}
+
+const { beneficios = [], lang = "es" } = Astro.props;
+---
+
+<div class="beneficios-carousel-wrapper">
+  {
+    beneficios.length > 0 ? (
+      <div
+        class="beneficios-carousel-container"
+        id="beneficios-carousel"
+      >
+        {beneficios.length > 1 && (
+          <button
+            class="carousel-button carousel-button-prev"
+            aria-label="Anterior"
+            id="beneficios-carousel-prev"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        )}
+        <div
+          class="beneficios-carousel-track"
+          id="beneficios-carousel-track"
+        >
+          {beneficios.map((beneficio, index) => (
+            <div
+              class="beneficio-card"
+              data-beneficio-index={index}
+            >
+              {beneficio.imagen?.url && (
+                <div class="beneficio-image">
+                  <img
+                    src={beneficio.imagen.url}
+                    alt={beneficio.imagen.alt || beneficio.titulo}
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div class="beneficio-content">
+                <h3 class="beneficio-title">{beneficio.titulo}</h3>
+                <p class="beneficio-description">{beneficio.descripcion}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {beneficios.length > 1 && (
+          <button
+            class="carousel-button carousel-button-next"
+            aria-label="Siguiente"
+            id="beneficios-carousel-next"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        )}
+      </div>
+    ) : null
+  }
+</div>
+
+<script>
+  let carouselTrack: HTMLElement | null = null;
+  let carouselContainer: HTMLElement | null = null;
+  let scrollPosition = 0;
+  let autoScrollTimer: number | null = null;
+  let isAutoScrollPaused = false;
+
+  function initBeneficiosCarousel() {
+    carouselContainer = document.getElementById(
+      "beneficios-carousel"
+    ) as HTMLElement | null;
+    carouselTrack = document.getElementById(
+      "beneficios-carousel-track"
+    ) as HTMLElement;
+    if (!carouselTrack) return;
+
+    const prevButton = document.getElementById(
+      "beneficios-carousel-prev"
+    ) as HTMLButtonElement | null;
+    const nextButton = document.getElementById(
+      "beneficios-carousel-next"
+    ) as HTMLButtonElement | null;
+
+    if (prevButton) {
+      prevButton.addEventListener("click", () => {
+        scrollCarousel("prev");
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener("click", () => {
+        scrollCarousel("next");
+      });
+    }
+
+    // Listen to scroll events to update button states
+    carouselTrack.addEventListener("scroll", handleScroll);
+
+    // Initial state
+    updateControlsVisibility();
+
+    // Auto-scroll (every 3 seconds) until hover
+    startAutoScroll();
+    bindHoverPause();
+  }
+
+  function startAutoScroll() {
+    if (!carouselTrack) return;
+    stopAutoScroll();
+    autoScrollTimer = window.setInterval(() => {
+      if (!carouselTrack || isAutoScrollPaused) return;
+      scrollCarousel("next", { loopToStart: true });
+    }, 3000);
+  }
+
+  function stopAutoScroll() {
+    if (autoScrollTimer === null) return;
+    window.clearInterval(autoScrollTimer);
+    autoScrollTimer = null;
+  }
+
+  function bindHoverPause() {
+    const el = carouselContainer || carouselTrack;
+    if (!el) return;
+
+    el.addEventListener("pointerenter", () => {
+      isAutoScrollPaused = true;
+    });
+    el.addEventListener("pointerleave", () => {
+      isAutoScrollPaused = false;
+    });
+  }
+
+  function scrollCarousel(
+    direction: "prev" | "next",
+    options?: { loopToStart?: boolean }
+  ) {
+    if (!carouselTrack) return;
+
+    const cardWidth =
+      carouselTrack.querySelector(".beneficio-card")?.getBoundingClientRect()
+        .width || 0;
+    const gap = 24; // 1.5rem = 24px
+    const scrollAmount = cardWidth + gap;
+
+    scrollPosition += direction === "next" ? scrollAmount : -scrollAmount;
+
+    // Clamp scroll position
+    const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+    scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+
+    if (options?.loopToStart && direction === "next") {
+      const isAtEnd = scrollPosition >= maxScroll - 1; // -1 for rounding errors
+      if (isAtEnd) scrollPosition = 0;
+    }
+
+    carouselTrack.scrollTo({
+      left: scrollPosition,
+      behavior: "smooth",
+    });
+  }
+
+  function updateControlsVisibility() {
+    if (!carouselTrack) return;
+
+    const prevButton = document.getElementById(
+      "beneficios-carousel-prev"
+    ) as HTMLButtonElement | null;
+    const nextButton = document.getElementById(
+      "beneficios-carousel-next"
+    ) as HTMLButtonElement | null;
+
+    // Update button states based on scroll position
+    if (prevButton) {
+      prevButton.disabled = scrollPosition <= 0;
+    }
+
+    if (nextButton) {
+      const maxScroll = carouselTrack.scrollWidth - carouselTrack.clientWidth;
+      nextButton.disabled = scrollPosition >= maxScroll - 1; // -1 for rounding errors
+    }
+  }
+
+  function handleScroll() {
+    if (!carouselTrack) return;
+    scrollPosition = carouselTrack.scrollLeft;
+    updateControlsVisibility();
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBeneficiosCarousel);
+  } else {
+    initBeneficiosCarousel();
+  }
+
+  // Update controls visibility on resize
+  window.addEventListener("resize", updateControlsVisibility);
+</script>
+
+<style>
+  .beneficios-carousel-wrapper {
+    width: 100%;
+    position: relative;
+  }
+
+  .beneficios-carousel-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .beneficios-carousel-track {
+    display: flex;
+    gap: var(--spacing-6);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: var(--spacing-2) 0;
+    flex: 1;
+    width: 100%;
+  }
+
+  .beneficios-carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .beneficio-card {
+    background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all var(--transition-base);
+    flex: 0 0 auto;
+    width: calc(100% - var(--spacing-6));
+    max-width: 345px;
+    scroll-snap-align: start;
+    cursor: pointer;
+  }
+
+  .beneficio-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .beneficio-card:focus-visible {
+    outline: 2px solid var(--color-bayer-secondary);
+    outline-offset: 4px;
+  }
+
+  .beneficio-image {
+    width: 100%;
+    height: 177px;
+    overflow: hidden;
+    background-color: transparent;
+  }
+
+  .beneficio-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .beneficio-content {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .beneficio-title {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--font-family-primary);
+    color: #009ddb;
+    margin: 0;
+    line-height: 28px;
+  }
+
+  .beneficio-description {
+    font-size: 20px;
+    font-weight: 400;
+    font-family: var(--font-family-primary);
+    color: #313639;
+    margin: 0;
+    line-height: 26px;
+  }
+
+  .carousel-button {
+    background: var(--color-white);
+    color: var(--color-bayer-secondary);
+    border: 2px solid var(--color-bayer-secondary);
+    border-radius: var(--radius-full);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+  }
+
+  .carousel-button svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--color-bayer-secondary);
+  }
+
+  .carousel-button:hover {
+    background: var(--color-bayer-secondary);
+    color: var(--color-white);
+    transform: scale(1.05);
+  }
+
+  .carousel-button:hover svg {
+    stroke: var(--color-white);
+  }
+
+  .carousel-button:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 767px) {
+    .carousel-button:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-button:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+  }
+
+  .carousel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (max-width: 767px) {
+    .beneficios-carousel-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .beneficios-carousel-track {
+      padding: var(--spacing-2) var(--spacing-4);
+      gap: var(--spacing-4);
+    }
+
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+    }
+
+    .carousel-button-prev {
+      left: var(--spacing-2);
+    }
+
+    .carousel-button-next {
+      right: var(--spacing-2);
+    }
+
+    .beneficio-card {
+      width: calc(100vw - var(--spacing-16));
+      min-width: calc(100vw - var(--spacing-16));
+      max-width: calc(100vw - var(--spacing-16));
+      scroll-snap-align: center;
+    }
+  }
+
+  /* Tablet: 2 columns visible */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .beneficio-card {
+      width: calc((100% - var(--spacing-6)) / 2);
+      max-width: 345px;
+    }
+  }
+
+  /* Desktop: 4 columns visible with scroll */
+  @media (min-width: 1024px) {
+    .beneficios-carousel-wrapper {
+      /*
+        Break out of the page `.container` (1440px max-width) so 4 cards
+        can be visible at their current min-width on desktop.
+      */
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: 0;
+    }
+
+    .beneficios-carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 var(--container-padding-desktop);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+
+    .carousel-button {
+      display: flex;
+      flex-shrink: 0;
+    }
+
+    .beneficios-carousel-track {
+      flex: 1;
+      width: auto;
+    }
+
+    .beneficio-card {
+      width: calc((100% - (3 * var(--spacing-6))) / 4);
+      max-width: 345px;
+      min-width: 280px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .beneficios-carousel-wrapper {
+      padding: 0 var(--spacing-12);
+    }
+  }
+</style>
