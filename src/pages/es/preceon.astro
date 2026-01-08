@@ -457,7 +457,7 @@ const content = preceonContent || defaultContent;
 
   /* Elementos Destacados */
   .preceon-elementos-destacados {
-    padding: 0 0 var(--spacing-16) 0;
+    padding: 0 0 var(--spacing-12) 0;
     background-color: #ffffff;
   }
 
@@ -531,8 +531,13 @@ const content = preceonContent || defaultContent;
 
   /* Imágenes con Degradado */
   .preceon-imagenes-degradado {
-    padding: var(--spacing-16) 0;
+    /* padding: var(--spacing-16) 0;
+    background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%); */
+  }
+  .preceon-imagenes-degradado .container {
     background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%);
+    padding: var(--spacing-8);
+    border-radius: 0.7rem;
   }
 
   .preceon-imagenes-degradado-wrapper {
@@ -578,7 +583,7 @@ const content = preceonContent || defaultContent;
 
   /* Bloque Final - Reutilizando estilos de fieldshield */
   .preceon-bloque-final {
-    padding: var(--spacing-20) 0 var(--spacing-4) 0;
+    padding: var(--spacing-24) 0 var(--spacing-4) 0;
     background-color: #ffffff;
   }
 
