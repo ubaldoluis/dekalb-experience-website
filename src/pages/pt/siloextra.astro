@@ -127,7 +127,7 @@ const content = siloextraContent || defaultContent;
     border-radius: 0 0 60px 60px;
     overflow: hidden;
     min-width: auto;
-    max-height: 628px;
+    min-height: 628px;
   }
 
   .siloextra-hero-gradient {
@@ -150,9 +150,7 @@ const content = siloextraContent || defaultContent;
   .siloextra-hero-content {
     position: relative;
     z-index: 1;
-    max-width: 360px;
-    /* padding-top: var(--spacing-20); */
-    margin-top: -120px;
+    max-width: 462px;
   }
 
   .siloextra-hero-title {
@@ -278,27 +276,37 @@ const content = siloextraContent || defaultContent;
       right: 0;
       height: 100%;
       background-repeat: no-repeat;
-      background-position: center top;
+      background-position: right top;
       background-size: contain;
       z-index: 0;
     }
     .siloextra-hero {
       position: relative;
       padding: var(--spacing-16) 0;
-      background: linear-gradient(135deg, #f5a81c 0%, #fded0a 100%);
+      background: linear-gradient(
+        135deg,
+        #f5a81c 0%,
+        #fded0a 70%,
+        #ffffff 100%
+      );
       border-radius: 0;
+      border-bottom-left-radius: 60px;
       min-width: 500px !important;
-    }
-    .siloextra-hero-mobile-image {
-      display: none;
+      min-height: 628px;
+      display: flex;
+      align-items: center;
     }
     .siloextra-hero .container {
       display: flex;
       align-items: center;
-      min-height: 628px;
+      height: 100%;
+    }
+    .siloextra-hero-mobile-image {
+      display: none;
     }
     .siloextra-hero-content {
       padding-top: 0;
+      margin-top: 0;
     }
     .siloextra-bloque {
       flex-direction: row;

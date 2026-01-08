@@ -275,21 +275,30 @@ const content = preceonContent || defaultContent;
       right: 0;
       height: 100%;
       background-repeat: no-repeat;
-      background-position: center top;
+      background-position: right top;
       background-size: contain;
       z-index: 0;
     }
     .preceon-hero {
       position: relative;
       padding: var(--spacing-16) 0;
-      background: linear-gradient(135deg, #d30f4b 0%, #9a0d4a 100%);
+      background: linear-gradient(
+        135deg,
+        #d30f4b 0%,
+        #9a0d4a 70%,
+        #ffffff 100%
+      );
       border-radius: 0;
+      border-bottom-left-radius: 60px;
       min-width: 500px !important;
+      min-height: 628px;
+      display: flex;
+      align-items: center;
     }
     .preceon-hero .container {
       display: flex;
       align-items: center;
-      min-height: 628px;
+      height: 100%;
     }
     .preceon-hero-content {
       padding-top: 0;
@@ -302,8 +311,7 @@ const content = preceonContent || defaultContent;
   .preceon-hero-content {
     position: relative;
     z-index: 1;
-    max-width: 360px;
-    padding-top: var(--spacing-20);
+    max-width: 462px;
   }
 
   .preceon-logo {
