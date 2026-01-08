@@ -181,7 +181,7 @@
   /* Ancho del frame desktop en Figma */
 
   /* Container */
-  --container-max-width: 1280px;
+  --container-max-width: 1440px;
   --container-padding-mobile: 1.5rem;
   /* ~24px basado en análisis del frame mobile */
   --container-padding-desktop: 5rem;
@@ -194,9 +194,9 @@
 
   /* Component Specific - Shared */
   --header-height: 64px;
-  --hero-title-size: 2.2rem;
+  --hero-title-size: 2.5rem;
   /* 40px */
-  --hero-subtitle-size: 1.5rem;
+  --hero-subtitle-size: 2rem;
   /* 32px */
   --button-height: 40px;
   --button-border-radius: 26px;
