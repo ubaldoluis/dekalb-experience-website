@@ -229,6 +229,12 @@ const t = translations[lang as keyof typeof translations] || translations.es;
     display: block;
   }
 
+  .proteccion-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 462px;
+  }
+
   @media (min-width: 1024px) {
     .proteccion-hero-gradient {
       display: block;
@@ -238,20 +244,37 @@ const t = translations[lang as keyof typeof translations] || translations.es;
       right: 0;
       height: 100%;
       background-repeat: no-repeat;
-      background-position: center top;
+      background-position: right top;
       background-size: contain;
       z-index: 0;
     }
     .proteccion-hero {
       position: relative;
       padding: var(--spacing-16) 0;
-      /* Degradado desktop con colores invertidos respecto a mobile */
-      background: linear-gradient(135deg, #abe2f8 0%, #009ddb 100%);
+      background: linear-gradient(
+        135deg,
+        #abe2f8 0%,
+        #009ddb 70%,
+        #ffffff 100%
+      );
       border-radius: 0;
+      border-bottom-left-radius: 60px;
       min-width: 500px !important;
+      min-height: 628px;
+      display: flex;
+      align-items: center;
+    }
+    .proteccion-hero .container {
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
     .proteccion-hero-mobile-image {
       display: none;
+    }
+    .proteccion-hero-content {
+      padding-top: 0;
+      margin-top: 0;
     }
   }
 
