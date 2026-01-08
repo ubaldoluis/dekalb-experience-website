@@ -329,7 +329,7 @@ const content = preceonContent || defaultContent;
     font-family: var(--font-family-primary);
     color: #ffffff;
     margin: 0 0 var(--spacing-4) 0;
-    line-height: 3.2rem;
+    line-height: 3.5rem;
     letter-spacing: 0.96px;
   }
 
@@ -344,7 +344,7 @@ const content = preceonContent || defaultContent;
 
   /* Título Intro */
   .preceon-titulo-intro {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-16) 0 0 0;
     background-color: #ffffff;
   }
 
@@ -355,12 +355,12 @@ const content = preceonContent || defaultContent;
   }
 
   .preceon-titulo-intro-title {
-    font-size: 34px;
+    font-size: 3rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #d30f4b;
     margin: 0 0 var(--spacing-6) 0;
-    line-height: 40.8px;
+    line-height: 3.5rem;
   }
 
   .preceon-titulo-intro-text {
@@ -374,7 +374,7 @@ const content = preceonContent || defaultContent;
 
   /* Elementos Grid */
   .preceon-elementos-grid {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-8) 0;
     background-color: #ffffff;
   }
 
@@ -427,7 +427,7 @@ const content = preceonContent || defaultContent;
 
   /* Producción y Calidad */
   .preceon-produccion {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-16) 0 0 0;
     background-color: #ffffff;
   }
 
@@ -438,11 +438,12 @@ const content = preceonContent || defaultContent;
   }
 
   .preceon-produccion-title {
+    font-size: 3rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #d30f4b;
     margin: 0 0 var(--spacing-6) 0;
-    line-height: 40.8px;
+    line-height: 3.5rem;
   }
 
   .preceon-produccion-text {
@@ -577,7 +578,7 @@ const content = preceonContent || defaultContent;
 
   /* Bloque Final - Reutilizando estilos de fieldshield */
   .preceon-bloque-final {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-20) 0 var(--spacing-4) 0;
     background-color: #ffffff;
   }
 
@@ -585,6 +586,7 @@ const content = preceonContent || defaultContent;
     display: flex;
     flex-direction: column;
     gap: 0;
+    margin-bottom: var(--spacing-12);
     overflow: hidden;
     background: linear-gradient(to right, #ffffff 0%, #e9e7e4 100%);
   }
@@ -596,9 +598,9 @@ const content = preceonContent || defaultContent;
   }
 
   .preceon-bloque-final-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    /* width: 100%;
+    height: 100%; */
+    object-fit: fill;
   }
 
   .preceon-bloque-final-content {
@@ -607,20 +609,20 @@ const content = preceonContent || defaultContent;
   }
 
   .preceon-bloque-final-title {
-    font-size: 28px;
+    font-size: 2.2rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #009ddb;
     margin: 0 0 var(--spacing-4) 0;
-    line-height: 34px;
+    line-height: 2.4rem;
   }
 
   .preceon-bloque-final-description {
-    font-size: 14px;
+    font-size: 1.3rem;
     font-weight: 400;
     font-family: var(--font-family-primary);
     color: #313639;
-    line-height: 22px;
+    line-height: 1.5rem;
   }
 
   .preceon-bloque-final-description :global(p) {
@@ -646,6 +648,15 @@ const content = preceonContent || defaultContent;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      background: transparent;
+    }
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .preceon-bloque-final-title {
+      font-size: 28px;
+      line-height: 34px;
     }
   }
 
@@ -678,6 +689,16 @@ const content = preceonContent || defaultContent;
     }
 
     .preceon-produccion-text {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .preceon-bloque-final-title {
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .preceon-bloque-final-description {
       font-size: 18px;
       line-height: 24px;
     }

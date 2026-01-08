@@ -176,7 +176,7 @@ const content = siloextraContent || defaultContent;
     color: #ffffff !important;
   }
   .siloextra-intro {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-16) 0 0 0;
     background-color: #ffffff;
   }
 
@@ -205,13 +205,14 @@ const content = siloextraContent || defaultContent;
   }
 
   .siloextra-bloques {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-8) 0 0 0;
     background-color: #ffffff;
   }
 
   .siloextra-bloque {
     display: flex;
     flex-direction: column;
+    gap: 0;
     margin-bottom: var(--spacing-12);
     background: linear-gradient(to right, #ffffff 0%, #e9e7e4 100%);
     overflow: hidden;
@@ -224,9 +225,9 @@ const content = siloextraContent || defaultContent;
   }
 
   .siloextra-bloque-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    /* width: 100%;
+    height: 100%; */
+    object-fit: fill;
   }
 
   .siloextra-bloque-placeholder {
@@ -243,22 +244,24 @@ const content = siloextraContent || defaultContent;
 
   .siloextra-bloque-content {
     padding: var(--spacing-8);
+    background-color: transparent;
   }
 
   .siloextra-bloque-title {
-    font-size: 28px;
+    font-size: 2.2rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #009ddb;
     margin: 0 0 var(--spacing-4) 0;
+    line-height: 2.4rem;
   }
 
   .siloextra-bloque-description {
-    font-size: 16px;
+    font-size: 1.3rem;
     font-weight: 400;
     font-family: var(--font-family-primary);
     color: #313639;
-    line-height: 24px;
+    line-height: 1.5rem;
   }
 
   .siloextra-bloque-description :global(p) {
@@ -325,6 +328,28 @@ const content = siloextraContent || defaultContent;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      background: transparent;
+    }
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .siloextra-bloque-title {
+      font-size: 28px;
+      line-height: 34px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .siloextra-bloque-title {
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .siloextra-bloque-description {
+      font-size: 18px;
+      line-height: 24px;
     }
   }
 </style>
