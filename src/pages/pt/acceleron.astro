@@ -222,28 +222,43 @@ const content = acceleronContent || defaultContent;
       right: 0;
       height: 100%;
       background-repeat: no-repeat;
-      background-position: center top;
+      background-position: right top;
       background-size: contain;
       z-index: 0;
     }
     .acceleron-hero {
       position: relative;
       padding: var(--spacing-16) 0;
-      /* Degradado desktop con colores invertidos respecto a mobile */
-      background: linear-gradient(135deg, #a6ce39 0%, #287032 100%);
+      background: linear-gradient(
+        135deg,
+        #a6ce39 0%,
+        #287032 70%,
+        #ffffff 100%
+      );
       border-radius: 0;
+      border-bottom-left-radius: 60px;
       min-width: 500px !important;
+      min-height: 628px;
+      display: flex;
+      align-items: center;
+    }
+    .acceleron-hero .container {
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
     .acceleron-hero-mobile-image {
       display: none;
+    }
+    .acceleron-hero-content {
+      padding-top: 0;
     }
   }
 
   .acceleron-hero-content {
     position: relative;
     z-index: 1;
-    max-width: 360px;
-    padding-top: var(--spacing-20);
+    max-width: 462px;
   }
 
   .acceleron-logo {
