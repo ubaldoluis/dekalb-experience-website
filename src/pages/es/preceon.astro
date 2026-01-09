@@ -1,5 +1,6 @@
 ---
 import PageLayout from "../../layouts/PageLayout.astro";
+import ScrollReveal from "../../components/scroll-reveal/ScrollReveal.astro";
 import { getPreceonContent } from "../../utils/prismic";
 import { renderRichText } from "../../utils/prismic-rich-text";
 import * as prismic from "@prismicio/client";
@@ -66,24 +67,26 @@ const content = preceonContent || defaultContent;
       )
     }
     <div class="container">
-      <div class="preceon-hero-content">
-        {
-          content.hero.logo?.url && (
-            <div class="preceon-logo">
-              <img
-                src={content.hero.logo.url}
-                alt={content.hero.logo.alt || "Preceon"}
-                loading="lazy"
-              />
-            </div>
-          )
-        }
-        <h1 class="preceon-hero-title">{content.hero.titulo}</h1>
-        <div
-          class="preceon-hero-description"
-          set:html={renderRichText(content.hero.descripcion)}
-        />
-      </div>
+      <ScrollReveal>
+        <div class="preceon-hero-content">
+          {
+            content.hero.logo?.url && (
+              <div class="preceon-logo">
+                <img
+                  src={content.hero.logo.url}
+                  alt={content.hero.logo.alt || "Preceon"}
+                  loading="lazy"
+                />
+              </div>
+            )
+          }
+          <h1 class="preceon-hero-title">{content.hero.titulo}</h1>
+          <div
+            class="preceon-hero-description"
+            set:html={renderRichText(content.hero.descripcion)}
+          />
+        </div>
+      </ScrollReveal>
     </div>
   </section>
 
@@ -92,13 +95,15 @@ const content = preceonContent || defaultContent;
     content.titulo_intro && (
       <section class="preceon-titulo-intro">
         <div class="container">
-          <div class="preceon-titulo-intro-content">
-            <h2 class="preceon-titulo-intro-title">{content.titulo_intro}</h2>
-            <div
-              class="preceon-titulo-intro-text"
-              set:html={renderRichText(content.texto_intro)}
-            />
-          </div>
+          <ScrollReveal>
+            <div class="preceon-titulo-intro-content">
+              <h2 class="preceon-titulo-intro-title">{content.titulo_intro}</h2>
+              <div
+                class="preceon-titulo-intro-text"
+                set:html={renderRichText(content.texto_intro)}
+              />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -109,25 +114,27 @@ const content = preceonContent || defaultContent;
     content.elementos_grid && content.elementos_grid.length > 0 && (
       <section class="preceon-elementos-grid">
         <div class="container">
-          <div class="preceon-elementos-grid-wrapper">
-            {content.elementos_grid.map((elemento) => (
-              <div class="preceon-elemento-grid">
-                {elemento.imagen?.url && (
-                  <div class="preceon-elemento-grid-image">
-                    <img
-                      src={elemento.imagen.url}
-                      alt={elemento.imagen.alt || ""}
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div
-                  class="preceon-elemento-grid-text"
-                  set:html={renderRichText(elemento.texto)}
-                />
-              </div>
-            ))}
-          </div>
+          <ScrollReveal>
+            <div class="preceon-elementos-grid-wrapper">
+              {content.elementos_grid.map((elemento) => (
+                <div class="preceon-elemento-grid">
+                  {elemento.imagen?.url && (
+                    <div class="preceon-elemento-grid-image">
+                      <img
+                        src={elemento.imagen.url}
+                        alt={elemento.imagen.alt || ""}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  <div
+                    class="preceon-elemento-grid-text"
+                    set:html={renderRichText(elemento.texto)}
+                  />
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -138,15 +145,17 @@ const content = preceonContent || defaultContent;
     content.produccion.titulo && (
       <section class="preceon-produccion">
         <div class="container">
-          <div class="preceon-produccion-content">
-            <h2 class="preceon-produccion-title">
-              {content.produccion.titulo}
-            </h2>
-            <div
-              class="preceon-produccion-text"
-              set:html={renderRichText(content.produccion.texto)}
-            />
-          </div>
+          <ScrollReveal>
+            <div class="preceon-produccion-content">
+              <h2 class="preceon-produccion-title">
+                {content.produccion.titulo}
+              </h2>
+              <div
+                class="preceon-produccion-text"
+                set:html={renderRichText(content.produccion.texto)}
+              />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -157,21 +166,23 @@ const content = preceonContent || defaultContent;
     content.elementos_destacados && content.elementos_destacados.length > 0 && (
       <section class="preceon-elementos-destacados">
         <div class="container">
-          <div class="preceon-elementos-destacados-wrapper">
-            {content.elementos_destacados.map((elemento) => (
-              <div class="preceon-elemento-destacado">
-                <div class="preceon-elemento-destacado-content">
-                  <h3 class="preceon-elemento-destacado-title">
-                    {elemento.titulo}
-                  </h3>
-                  <div
-                    class="preceon-elemento-destacado-text"
-                    set:html={renderRichText(elemento.texto)}
-                  />
+          <ScrollReveal>
+            <div class="preceon-elementos-destacados-wrapper">
+              {content.elementos_destacados.map((elemento) => (
+                <div class="preceon-elemento-destacado">
+                  <div class="preceon-elemento-destacado-content">
+                    <h3 class="preceon-elemento-destacado-title">
+                      {elemento.titulo}
+                    </h3>
+                    <div
+                      class="preceon-elemento-destacado-text"
+                      set:html={renderRichText(elemento.texto)}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -182,25 +193,27 @@ const content = preceonContent || defaultContent;
     content.imagenes_degradado && content.imagenes_degradado.length > 0 && (
       <section class="preceon-imagenes-degradado">
         <div class="container">
-          <div class="preceon-imagenes-degradado-wrapper">
-            {content.imagenes_degradado.map((item) => (
-              <div class="preceon-imagen-degradado">
-                {item.imagen?.url && (
-                  <div class="preceon-imagen-degradado-image">
-                    <img
-                      src={item.imagen.url}
-                      alt={item.imagen.alt || ""}
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div
-                  class="preceon-imagen-degradado-text"
-                  set:html={renderRichText(item.texto)}
-                />
-              </div>
-            ))}
-          </div>
+          <ScrollReveal>
+            <div class="preceon-imagenes-degradado-wrapper">
+              {content.imagenes_degradado.map((item) => (
+                <div class="preceon-imagen-degradado">
+                  {item.imagen?.url && (
+                    <div class="preceon-imagen-degradado-image">
+                      <img
+                        src={item.imagen.url}
+                        alt={item.imagen.alt || ""}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  <div
+                    class="preceon-imagen-degradado-text"
+                    set:html={renderRichText(item.texto)}
+                  />
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -211,26 +224,28 @@ const content = preceonContent || defaultContent;
     content.bloque_final.titulo && (
       <section class="preceon-bloque-final">
         <div class="container">
-          <div class="preceon-bloque-final-wrapper">
-            {content.bloque_final.imagen?.url && (
-              <div class="preceon-bloque-final-image">
-                <img
-                  src={content.bloque_final.imagen.url}
-                  alt={content.bloque_final.imagen.alt || ""}
-                  loading="lazy"
+          <ScrollReveal>
+            <div class="preceon-bloque-final-wrapper">
+              {content.bloque_final.imagen?.url && (
+                <div class="preceon-bloque-final-image">
+                  <img
+                    src={content.bloque_final.imagen.url}
+                    alt={content.bloque_final.imagen.alt || ""}
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div class="preceon-bloque-final-content">
+                <h3 class="preceon-bloque-final-title">
+                  {content.bloque_final.titulo}
+                </h3>
+                <div
+                  class="preceon-bloque-final-description"
+                  set:html={renderRichText(content.bloque_final.descripcion)}
                 />
               </div>
-            )}
-            <div class="preceon-bloque-final-content">
-              <h3 class="preceon-bloque-final-title">
-                {content.bloque_final.titulo}
-              </h3>
-              <div
-                class="preceon-bloque-final-description"
-                set:html={renderRichText(content.bloque_final.descripcion)}
-              />
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
     )
@@ -535,15 +550,18 @@ const content = preceonContent || defaultContent;
     background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%); */
   }
   .preceon-imagenes-degradado .container {
-    background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%);
+    /* background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%);
     padding: var(--spacing-8);
-    border-radius: 0.7rem;
+    border-radius: 0.7rem; */
   }
 
   .preceon-imagenes-degradado-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--spacing-8);
+    background: linear-gradient(to bottom, #b81b52 0%, #64304d 100%);
+    padding: var(--spacing-8);
+    border-radius: 0.7rem;
   }
 
   .preceon-imagen-degradado {
