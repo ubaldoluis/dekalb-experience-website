@@ -2,6 +2,8 @@
  * Global Styles - Reset and Base
  */
 
+@import './design-tokens.css';
+
 /**
  * Bayer Sans Web Fonts
  * 
@@ -161,8 +163,6 @@
   font-style: italic;
   font-display: swap;
 }
-
-@import './design-tokens.css';
 
 /* Reset */
 *,
