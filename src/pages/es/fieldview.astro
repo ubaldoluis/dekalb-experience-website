@@ -1,5 +1,6 @@
 ---
 import PageLayout from "../../layouts/PageLayout.astro";
+import ScrollReveal from "../../components/scroll-reveal/ScrollReveal.astro";
 import YieldKitTabs from "../../components/YieldKitTabs.astro";
 import { getFieldViewContent } from "../../utils/prismic";
 import { renderRichText } from "../../utils/prismic-rich-text";
@@ -130,32 +131,36 @@ const content = fieldViewContent || defaultContent;
       )
     }
     <div class="container">
-      <div class="fieldview-hero-content">
-        <div class="fieldview-logo">
-          <img
-            src="/logo-fieldview_white.png"
-            alt="FieldView"
+      <ScrollReveal>
+        <div class="fieldview-hero-content">
+          <div class="fieldview-logo">
+            <img
+              src="/logo-fieldview_white.png"
+              alt="FieldView"
+            />
+          </div>
+          <h1 class="fieldview-hero-title">{content.hero.titulo}</h1>
+          <div
+            class="fieldview-hero-description"
+            set:html={renderRichText(content.hero.descripcion)}
           />
         </div>
-        <h1 class="fieldview-hero-title">{content.hero.titulo}</h1>
-        <div
-          class="fieldview-hero-description"
-          set:html={renderRichText(content.hero.descripcion)}
-        />
-      </div>
+      </ScrollReveal>
     </div>
   </section>
 
   <!-- Introducción Section -->
   <section class="fieldview-intro">
     <div class="container">
-      <div class="fieldview-intro-content">
-        <h2 class="fieldview-intro-title">{content.introduccion.titulo}</h2>
-        <div
-          class="fieldview-intro-text"
-          set:html={renderRichText(content.introduccion.texto)}
-        />
-      </div>
+      <ScrollReveal>
+        <div class="fieldview-intro-content">
+          <h2 class="fieldview-intro-title">{content.introduccion.titulo}</h2>
+          <div
+            class="fieldview-intro-text"
+            set:html={renderRichText(content.introduccion.texto)}
+          />
+        </div>
+      </ScrollReveal>
     </div>
   </section>
 
@@ -164,37 +169,39 @@ const content = fieldViewContent || defaultContent;
     <div class="container">
       {
         content.subsections.map((subsection) => (
-          <div
-            class={`fieldview-subsection fieldview-subsection-${subsection.id}`}
-          >
-            <div class="fieldview-subsection-image">
-              {subsection.imagen?.url ? (
-                <img
-                  src={subsection.imagen.url}
-                  alt={subsection.imagen.alt || subsection.titulo}
-                  loading="lazy"
-                />
-              ) : (
-                <div class="fieldview-subsection-placeholder">
-                  {subsection.titulo}
-                </div>
-              )}
+          <ScrollReveal>
+            <div
+              class={`fieldview-subsection fieldview-subsection-${subsection.id}`}
+            >
+              <div class="fieldview-subsection-image">
+                {subsection.imagen?.url ? (
+                  <img
+                    src={subsection.imagen.url}
+                    alt={subsection.imagen.alt || subsection.titulo}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="fieldview-subsection-placeholder">
+                    {subsection.titulo}
+                  </div>
+                )}
+              </div>
+              <div class="fieldview-subsection-content">
+                <h3 class="fieldview-subsection-title">{subsection.titulo}</h3>
+                {subsection.id === "yield-kit" && subsection.yieldKitTabs ? (
+                  <YieldKitTabs tabs={subsection.yieldKitTabs} />
+                ) : subsection.descripcion ? (
+                  <div class="fieldview-subsection-description">
+                    {typeof subsection.descripcion === "string" ? (
+                      <p>{subsection.descripcion}</p>
+                    ) : (
+                      <div set:html={renderRichText(subsection.descripcion)} />
+                    )}
+                  </div>
+                ) : null}
+              </div>
             </div>
-            <div class="fieldview-subsection-content">
-              <h3 class="fieldview-subsection-title">{subsection.titulo}</h3>
-              {subsection.id === "yield-kit" && subsection.yieldKitTabs ? (
-                <YieldKitTabs tabs={subsection.yieldKitTabs} />
-              ) : subsection.descripcion ? (
-                <div class="fieldview-subsection-description">
-                  {typeof subsection.descripcion === "string" ? (
-                    <p>{subsection.descripcion}</p>
-                  ) : (
-                    <div set:html={renderRichText(subsection.descripcion)} />
-                  )}
-                </div>
-              ) : null}
-            </div>
-          </div>
+          </ScrollReveal>
         ))
       }
     </div>
@@ -340,7 +347,7 @@ const content = fieldViewContent || defaultContent;
 
   /* Subsections */
   .fieldview-subsections {
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-8) 0 0 0;
     background-color: #ffffff;
   }
 
@@ -361,8 +368,8 @@ const content = fieldViewContent || defaultContent;
   }
 
   .fieldview-subsection-image img {
-    width: 100%;
-    height: 100%;
+    /* width: 100%;
+    height: 100%; */
     object-fit: fill;
   }
 
@@ -384,20 +391,20 @@ const content = fieldViewContent || defaultContent;
   }
 
   .fieldview-subsection-title {
-    font-size: 28px;
+    font-size: 2.2rem;
     font-weight: 700;
     font-family: var(--font-family-primary);
     color: #f5a81c;
     margin: 0 0 var(--spacing-4) 0;
-    line-height: 34px;
+    line-height: 2.4rem;
   }
 
   .fieldview-subsection-description {
-    font-size: 14px;
+    font-size: 1.3rem;
     font-weight: 400;
     font-family: var(--font-family-primary);
     color: #313639;
-    line-height: 22px;
+    line-height: 1.5rem;
   }
 
   .fieldview-subsection-description :global(p) {
