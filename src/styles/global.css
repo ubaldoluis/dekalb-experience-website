@@ -2,6 +2,7 @@
  * Global Styles - Reset and Base
  */
 
+@import './fonts.css';
 @import './design-tokens.css';
 
 /* Reset */
@@ -290,10 +291,11 @@ select:focus {
   padding-right: var(--container-padding-mobile);
 }
 
-@media (min-width: 768px) {
+/* Desktop: sin padding en el container */
+@media (min-width: 1024px) {
   .container {
-    padding-left: var(--container-padding-desktop);
-    padding-right: var(--container-padding-desktop);
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
