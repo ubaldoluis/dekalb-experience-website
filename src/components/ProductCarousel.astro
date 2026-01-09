@@ -126,6 +126,18 @@ const {
   let scrollPosition = 0;
   let autoScrollInterval = null;
 
+  // Get layer filter URL - use absolute path that works in both dev and production
+  const getLayerFilterUrl = () => {
+    if (typeof window !== "undefined") {
+      // In browser, use current origin
+      return `${window.location.origin}/layer_filter.png`;
+    }
+    // Fallback for SSR
+    return "/layer_filter.png";
+  };
+
+  const LAYER_FILTER_URL = getLayerFilterUrl();
+
   function updateCarousel(newProducts, isFiltered = false) {
     try {
       // Stop auto-scroll during update
@@ -290,7 +302,7 @@ const {
             codeLayer.style.position = "absolute";
             codeLayer.style.top = "20%";
             codeLayer.style.left = "25%";
-            codeLayer.style.backgroundImage = "url('/layer_filter.png')";
+            codeLayer.style.backgroundImage = `url('${LAYER_FILTER_URL}')`;
             codeLayer.style.backgroundRepeat = "no-repeat";
             codeLayer.style.backgroundPosition = "center";
             codeLayer.style.backgroundSize = "100% 100%";
@@ -666,6 +678,14 @@ const {
 
   document.addEventListener("DOMContentLoaded", () => {
     console.log("🎠 [Carousel] DOMContentLoaded, initializing...", CAROUSEL_ID);
+
+    // Set CSS variable for layer filter URL on client side
+    const layerUrl = `${window.location.origin}/layer_filter.png`;
+    document.documentElement.style.setProperty(
+      "--layer-filter-url",
+      `url('${layerUrl}')`
+    );
+
     carouselTrack = document.getElementById(`${CAROUSEL_ID}-track`);
 
     if (!carouselTrack) {
@@ -992,7 +1012,7 @@ const {
     top: 20%;
     left: 25%;
     transform: translate(0, 0);
-    background-image: url("/layer_filter.png");
+    background-image: var(--layer-filter-url, url("/layer_filter.png"));
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;

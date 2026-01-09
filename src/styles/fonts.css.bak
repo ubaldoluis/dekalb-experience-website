@@ -1,0 +1,159 @@
+/**
+ * Bayer Sans Web Fonts
+ * 
+ * Declaraciones @font-face para todas las variantes de Bayer Sans
+ * Las fuentes están ubicadas en /fonts/ (public/fonts/)
+ */
+
+/* Thin (100) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Thin.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-ThinItalic.woff2') format('woff2');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ExtraLight (200) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-ExtraLight.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-ExtraLightItalic.woff2') format('woff2');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Light (300) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Regular (400) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Medium (500) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Semibold (600) - Usando Medium como fallback */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Medium.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-MediumItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Bold (700) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Heavy (800) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Heavy.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-HeavyItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Black (900) */
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bayer Sans';
+  src: url('/fonts/BayerSansWeb-BlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
