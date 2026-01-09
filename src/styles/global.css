@@ -291,11 +291,12 @@ select:focus {
   padding-right: var(--container-padding-mobile);
 }
 
-/* Desktop: sin padding en el container */
-@media (min-width: 1024px) {
+/* Tablet y Desktop: sin padding en el container */
+/* Asegurar que sobrescriba cualquier media query anterior */
+@media (min-width: 768px) {
   .container {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
