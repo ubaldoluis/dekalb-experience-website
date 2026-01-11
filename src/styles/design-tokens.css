@@ -184,7 +184,7 @@
   --container-max-width: 1440px;
   --container-padding-mobile: 1.5rem;
   /* ~24px basado en análisis del frame mobile */
-  --container-padding-desktop: 5rem;
+  /* --container-padding-desktop: 5rem; */
   /* ~80px basado en análisis del frame desktop */
 
   /* Gradients - Extraídos de Figma */

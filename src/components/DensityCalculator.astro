@@ -8,11 +8,13 @@ const { lang = "es" } = Astro.props;
 const translations = {
   es: {
     title: "Calculador de Densidades",
+    subtitle:
+      "Obtén la densidad de siembra y el número de bolsas DEKALB que necesitas.",
     use: "Uso del maíz",
     grano: "Grano",
     silo: "Silo",
     zone: "Zona geográfica",
-    potential: "Potencial de Producción en la finca (Tn/Ha)",
+    potential: "Potencial de producción de la finca (Tn/Ha)",
     hybrid: "Híbrido DEKALB",
     surface: "Superficie a sembrar",
     calculate: "CALCULAR",
@@ -30,6 +32,8 @@ const translations = {
   },
   pt: {
     title: "Calculadora de Densidades",
+    subtitle:
+      "Obtém a densidade de sementeira e o número de sacos DEKALB que precisas.",
     use: "Uso do milho",
     grano: "Grão",
     silo: "Silagem",
@@ -55,131 +59,93 @@ const translations = {
 const t = translations[lang];
 ---
 
-<div
-  class="density-calculator"
-  id="density-calculator"
->
-  <h2 class="calculator-title">{t.title}</h2>
+<section class="density-calculator-page" id="density-calculator">
+  <div class="density-calculator-bg" aria-hidden="true"></div>
+  <div class="density-calculator-bg-overlay" aria-hidden="true"></div>
 
-  <form
-    class="calculator-form"
-    id="calculator-form"
-  >
-    <!-- Uso del maíz -->
-    <div class="form-group">
-      <label class="form-label">{t.use}</label>
-      <div class="button-group">
-        <button
-          type="button"
-          class="use-button"
-          data-use="grano"
-          aria-pressed="false"
-        >
-          {t.grano}
+  <div class="density-calculator-content">
+    <header class="density-calculator-hero">
+      <h1 class="density-calculator-title">{t.title.toUpperCase()}</h1>
+      <p class="density-calculator-subtitle">{t.subtitle}</p>
+    </header>
+
+    <div class="density-calculator-card" aria-label={t.title}>
+      <form class="calculator-form" id="calculator-form">
+        <!-- Uso del maíz (Figma: SILO / GRANO) -->
+        <div class="use-toggle" role="group" aria-label={t.use}>
+          <button
+            type="button"
+            class="use-chip use-button"
+            data-use="silo"
+            aria-pressed="false"
+          >
+            {t.silo.toUpperCase()}
+          </button>
+          <button
+            type="button"
+            class="use-chip use-button"
+            data-use="grano"
+            aria-pressed="false"
+          >
+            {t.grano.toUpperCase()}
+          </button>
+        </div>
+
+        <!-- Zona geográfica -->
+        <div class="pill-field">
+          <label for="zone-select" class="sr-only">{t.zone}</label>
+          <select id="zone-select" class="pill-select" required>
+            <option value="">{t.zone}</option>
+          </select>
+        </div>
+
+        <!-- Potencial de producción -->
+        <div class="pill-field">
+          <label for="potential-select" class="sr-only">{t.potential}</label>
+          <select id="potential-select" class="pill-select" required>
+            <option value="">{t.potential}</option>
+          </select>
+        </div>
+
+        <!-- Híbrido DEKALB -->
+        <div class="pill-field">
+          <label for="hybrid-select" class="sr-only">{t.hybrid}</label>
+          <select id="hybrid-select" class="pill-select" required>
+            <option value="">{t.hybrid}</option>
+          </select>
+        </div>
+
+        <!-- Superficie a sembrar -->
+        <div class="surface-row">
+          <span class="surface-label">{t.surface}</span>
+          <div class="surface-input-pill">
+            <label for="surface-input" class="sr-only">{t.surface}</label>
+            <input
+              type="number"
+              id="surface-input"
+              class="surface-input"
+              min="0.1"
+              step="0.1"
+              placeholder="00"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="calculator-cta">
+          {lang === "es" ? "Calcular" : "Calcular"}
         </button>
-        <button
-          type="button"
-          class="use-button"
-          data-use="silo"
-          aria-pressed="false"
-        >
-          {t.silo}
-        </button>
-      </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Zona geográfica -->
-    <div class="form-group">
-      <label
-        for="zone-select"
-        class="form-label"
-        >{t.zone}</label
-      >
-      <select
-        id="zone-select"
-        class="form-select"
-        required
-      >
-        <option value="">{t.selectZone}</option>
-      </select>
-    </div>
-
-    <!-- Potencial de producción -->
-    <div class="form-group">
-      <label
-        for="potential-select"
-        class="form-label"
-      >
-        {t.potential}
-      </label>
-      <select
-        id="potential-select"
-        class="form-select"
-        required
-      >
-        <option value="">{t.selectPotential}</option>
-      </select>
-    </div>
-
-    <!-- Híbrido DEKALB -->
-    <div class="form-group">
-      <label
-        for="hybrid-select"
-        class="form-label"
-        >{t.hybrid}</label
-      >
-      <select
-        id="hybrid-select"
-        class="form-select"
-        required
-      >
-        <option value="">{t.selectHybrid}</option>
-      </select>
-    </div>
-
-    <!-- Superficie a sembrar -->
-    <div class="form-group">
-      <label
-        for="surface-input"
-        class="form-label"
-        >{t.surface}</label
-      >
-      <input
-        type="number"
-        id="surface-input"
-        class="form-input"
-        min="0.1"
-        step="0.1"
-        placeholder="0.0"
-        required
-      />
-      <span class="input-unit">Ha</span>
-    </div>
-
-    <button
-      type="submit"
-      class="btn btn-primary calculate-button"
-    >
-      {t.calculate}
-    </button>
-  </form>
-
-  <!-- Results -->
-  <div
-    class="calculator-results"
-    id="calculator-results"
-    style="display: none;"
-  >
+  <!-- Results (se definirá en el siguiente paso) -->
+  <div class="calculator-results" id="calculator-results" style="display: none;">
     <div class="result-card">
       <div class="result-icon">🌾</div>
       <div class="result-content">
         <h3>{t.result.density}</h3>
-        <p
-          class="result-value"
-          id="result-density"
-        >
-          -
-        </p>
+        <p class="result-value" id="result-density">-</p>
         <span class="result-unit">{t.result.plantsPerHa}</span>
       </div>
     </div>
@@ -187,23 +153,14 @@ const t = translations[lang];
       <div class="result-icon">📦</div>
       <div class="result-content">
         <h3>{t.result.bags}</h3>
-        <p
-          class="result-value"
-          id="result-bags"
-        >
-          -
-        </p>
+        <p class="result-value" id="result-bags">-</p>
       </div>
     </div>
     <div class="result-image">
-      <img
-        src="/calculator-result.jpg"
-        alt="Resultado"
-        id="result-image"
-      />
+      <img src="/calculator-result.jpg" alt="Resultado" id="result-image" />
     </div>
   </div>
-</div>
+</section>
 
 <script>
   type UseType = "grano" | "silo";
@@ -512,130 +469,195 @@ const t = translations[lang];
 </script>
 
 <style>
-  .density-calculator {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: var(--spacing-8);
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
 
-  .calculator-title {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
+  .density-calculator-page {
+    position: relative;
+    min-height: 892px;
+    overflow: hidden;
+  }
+
+  .density-calculator-bg {
+    position: absolute;
+    inset: 64px 0 0 0;
+    background-image: url("/Frame_1410119213.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+
+  .density-calculator-bg-overlay {
+    position: absolute;
+    inset: 64px 0 0 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+  }
+
+  .density-calculator-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 136px 100px 64px;
+    display: grid;
+    place-items: center;
+    gap: 48px;
+  }
+
+  .density-calculator-hero {
     text-align: center;
-    margin-bottom: var(--spacing-8);
-    color: var(--color-gray-900);
+    color: #fff;
+    width: 571px;
+    max-width: 100%;
+  }
+
+  .density-calculator-title {
+    margin: 0;
+    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+
+  .density-calculator-subtitle {
+    margin: 13px 0 0;
+    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .density-calculator-card {
+    width: 353px;
+    max-width: 100%;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 12px;
   }
 
   .calculator-form {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-6);
+    gap: 12px;
   }
 
-  .form-group {
+  .use-toggle {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-2);
+    gap: 9px;
+    height: 36px;
   }
 
-  .form-label {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-700);
-    font-size: var(--font-size-sm);
-  }
-
-  .button-group {
-    display: flex;
-    gap: var(--spacing-2);
-  }
-
-  .use-button {
+  .use-chip {
     flex: 1;
-    padding: var(--spacing-3) var(--spacing-4);
-    background: var(--color-white);
-    border: 2px solid var(--color-gray-300);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-weight-semibold);
+    height: 36px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(231, 231, 231, 0.6);
+    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    color: #313639;
     cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .use-button:hover {
-    border-color: var(--color-dekalb-primary);
-    color: var(--color-dekalb-primary);
   }
 
   .use-button-active {
-    background-color: var(--color-dekalb-primary);
-    border-color: var(--color-dekalb-primary);
-    color: var(--color-white);
+    border-color: rgba(231, 231, 231, 0.9);
   }
 
-  .form-select,
-  .form-input {
-    padding: var(--spacing-3);
-    border: 2px solid var(--color-gray-300);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    transition: border-color var(--transition-fast);
+  .pill-field {
+    height: 40px;
   }
 
-  .form-select:focus,
-  .form-input:focus {
-    outline: none;
-    border-color: var(--color-dekalb-primary);
-  }
-
-  .form-slider {
+  .pill-select {
     width: 100%;
-    height: 8px;
-    border-radius: var(--radius-full);
-    background: var(--color-gray-200);
-    outline: none;
-    -webkit-appearance: none;
-  }
-
-  .form-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    height: 40px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1px solid #dbdbdb;
+    padding: 0 24px;
+    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    color: #313639;
     appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--color-dekalb-primary);
-    cursor: pointer;
   }
 
-  .form-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--color-dekalb-primary);
-    cursor: pointer;
-    border: none;
+  .pill-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 157, 219, 0.25);
   }
 
-  .form-group:has(#surface-input) {
-    position: relative;
+  .surface-row {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
   }
 
-  .input-unit {
-    position: absolute;
-    right: var(--spacing-3);
-    top: calc(var(--spacing-2) + 1.5rem + var(--spacing-2));
-    color: var(--color-gray-500);
-    font-size: var(--font-size-sm);
+  .surface-label {
+    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    color: #313639;
   }
 
-  .calculate-button {
+  .surface-input-pill {
+    width: 91px;
+    height: 40px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1px solid #dbdbdb;
+    display: grid;
+    place-items: center;
+  }
+
+  .surface-input {
     width: 100%;
-    padding: var(--spacing-4);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    height: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    text-align: center;
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14.5px;
+    color: #313639;
+  }
+
+  .calculator-cta {
+    height: 40px;
+    width: 100%;
+    border: 0;
+    border-radius: 26px;
+    background: linear-gradient(90deg, #009ddb 30%, #005475 100%);
+    color: #ffffff;
+    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    cursor: pointer;
+  }
+
+  .calculator-cta:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 3px;
   }
 
   .calculator-results {
@@ -692,12 +714,8 @@ const t = translations[lang];
   }
 
   @media (max-width: 767px) {
-    .density-calculator {
-      padding: var(--spacing-4);
-    }
-
-    .button-group {
-      flex-direction: column;
+    .density-calculator-content {
+      padding: 120px 24px 48px;
     }
   }
 </style>

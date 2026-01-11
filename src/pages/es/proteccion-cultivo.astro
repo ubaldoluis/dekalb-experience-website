@@ -175,17 +175,11 @@ const content = proteccionCultivoContent || defaultContent;
           <div class="content-right-card-wrapper">
             {content.seccion_imagen_texto.imagen?.url && (
               <div class="content-right-card-image">
-                <picture>
-                  <source
-                    media="(max-width: 767px)"
-                    srcset="/card_background_mobile-proteccion_bayer.jpg"
-                  />
-                  <img
-                    src={content.seccion_imagen_texto.imagen.url}
-                    alt={content.seccion_imagen_texto.imagen.alt || ""}
-                    loading="lazy"
-                  />
-                </picture>
+                <img
+                  src={content.seccion_imagen_texto.imagen.url}
+                  alt={content.seccion_imagen_texto.imagen.alt || ""}
+                  loading="lazy"
+                />
               </div>
             )}
             {content.seccion_imagen_texto.texto?.length > 0 && (
@@ -199,6 +193,8 @@ const content = proteccionCultivoContent || defaultContent;
       </section>
     )
   }
+
+  <!-- Sección Imagen y Texto - Bloque adicional (igual que Acceleron) -->
 </PageLayout>
 
 <style>
@@ -460,6 +456,8 @@ const content = proteccionCultivoContent || defaultContent;
     overflow: hidden;
     min-height: 400px;
     position: relative;
+    max-width: 1440px;
+    margin: 0 auto;
   }
 
   .proteccion-imagen-texto-section .content-right-card-content {
@@ -471,10 +469,6 @@ const content = proteccionCultivoContent || defaultContent;
     position: relative;
     z-index: 2;
     order: 2;
-  }
-  .content-right-card-content {
-    width: 80%;
-    font-size: 1.2rem;
   }
   .proteccion-imagen-texto-section .content-right-card-image {
     display: block;
@@ -545,9 +539,145 @@ const content = proteccionCultivoContent || defaultContent;
     color: #ffffff;
   }
 
+  .proteccion-imagen-texto-section .content-right-card-content :global(p) {
+    font-size: 20px;
+    line-height: 26px;
+    margin: 0;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
   .proteccion-imagen-texto-section .content-right-card-content :global(strong) {
     font-weight: 700;
     text-decoration: underline;
+  }
+
+  .proteccion-imagen-texto-section .content-right-card-content :global(p > a) {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Sección Imagen y Texto - Bloque adicional (igual que Acceleron) */
+  .proteccion-imagen-texto-section-2 {
+    padding: 0 0 var(--spacing-16) 0;
+  }
+
+  .proteccion-imagen-texto-section-2 .content-right-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
+    background: linear-gradient(to left, #005475 0%, #009ddb 100%);
+    border-radius: 12px 12px 12px 12px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+  }
+
+  .proteccion-imagen-texto-section-2 .content-right-card-content {
+    text-align: left;
+    padding: var(--spacing-12) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    order: 2;
+  }
+
+  .proteccion-imagen-texto-section-2 .content-right-card-image {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    order: 1;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .proteccion-imagen-texto-section-2 .content-right-card-image img,
+  .proteccion-imagen-texto-section-2 .content-right-card-image picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Mobile: Content Right Card - Imagen primero, contenido después */
+  @media (max-width: 767px) {
+    .proteccion-imagen-texto-section-2 .content-right-card-image {
+      border-radius: 12px 12px 0 0;
+      min-height: 200px;
+      max-height: 300px;
+    }
+
+    .proteccion-imagen-texto-section-2 .content-right-card-image img,
+    .proteccion-imagen-texto-section-2 .content-right-card-image picture {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .proteccion-imagen-texto-section-2 .content-right-card-content {
+      border-radius: 0 0 12px 12px;
+    }
+  }
+
+  /* Desktop: Content Right Card - 60% imagen / 40% contenido */
+  @media (min-width: 1024px) {
+    .proteccion-imagen-texto-section-2 .content-right-card-wrapper {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      gap: 0;
+      min-height: 400px;
+      border-radius: 60px 12px 60px 12px;
+      background: linear-gradient(to left, #005475 0%, #009ddb 100%);
+    }
+
+    .proteccion-imagen-texto-section-2 .content-right-card-content {
+      padding: var(--spacing-12) var(--spacing-12);
+      order: unset;
+    }
+
+    .proteccion-imagen-texto-section-2 .content-right-card-image {
+      display: block;
+      order: unset;
+    }
+
+    .proteccion-imagen-texto-section-2 .content-right-card-image img,
+    .proteccion-imagen-texto-section-2 .content-right-card-image picture {
+      object-fit: fill;
+    }
+  }
+
+  /* Estilos para texto blanco dentro del contenido */
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(p),
+  .proteccion-imagen-texto-section-2
+    .content-right-card-content
+    :global(strong),
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(em),
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(span),
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(h3),
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(h4) {
+    color: #ffffff;
+  }
+
+  .proteccion-imagen-texto-section-2 .content-right-card-content :global(p) {
+    font-size: 1.3rem;
+    line-height: 1.8rem;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+  .proteccion-imagen-texto-section-2
+    .content-right-card-content
+    :global(strong) {
+    font-weight: 700;
+  }
+
+  .proteccion-imagen-texto-section-2
+    .content-right-card-content
+    :global(p > a) {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
   }
 
   /* Estilos para tablas dentro del contenido rich text */

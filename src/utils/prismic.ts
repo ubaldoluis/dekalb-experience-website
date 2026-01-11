@@ -709,7 +709,12 @@ export async function getProteccionCultivoContent(
           seccionImagenTextoRaw.length > 0
         ) {
           const seccionData = seccionImagenTextoRaw[0];
-          const imagenUrl = processImageUrl(seccionData.imagen?.url);
+          let imagenUrl = processImageUrl(seccionData.imagen?.url);
+          // Añadir parámetro de caché basado en la fecha de modificación del documento
+          if (imagenUrl && doc.last_publication_date) {
+            const cacheParam = new Date(doc.last_publication_date).getTime();
+            imagenUrl = `${imagenUrl}?v=${cacheParam}`;
+          }
           if (imagenUrl) {
             seccionImagenTexto.imagen = {
               url: imagenUrl,
@@ -721,7 +726,12 @@ export async function getProteccionCultivoContent(
           typeof seccionImagenTextoRaw === "object" &&
           !Array.isArray(seccionImagenTextoRaw)
         ) {
-          const imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+          let imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+          // Añadir parámetro de caché basado en la fecha de modificación del documento
+          if (imagenUrl && doc.last_publication_date) {
+            const cacheParam = new Date(doc.last_publication_date).getTime();
+            imagenUrl = `${imagenUrl}?v=${cacheParam}`;
+          }
           if (imagenUrl) {
             seccionImagenTexto.imagen = {
               url: imagenUrl,
@@ -798,7 +808,12 @@ export async function getProteccionCultivoContent(
         seccionImagenTextoRaw.length > 0
       ) {
         const seccionData = seccionImagenTextoRaw[0];
-        const imagenUrl = processImageUrl(seccionData.imagen?.url);
+        let imagenUrl = processImageUrl(seccionData.imagen?.url);
+        // Añadir parámetro de caché basado en la fecha de modificación del documento
+        if (imagenUrl && doc.last_publication_date) {
+          const cacheParam = new Date(doc.last_publication_date).getTime();
+          imagenUrl = `${imagenUrl}?v=${cacheParam}`;
+        }
         if (imagenUrl) {
           seccionImagenTexto.imagen = {
             url: imagenUrl,
@@ -811,7 +826,12 @@ export async function getProteccionCultivoContent(
         !Array.isArray(seccionImagenTextoRaw)
       ) {
         // Si es un objeto directo (no array)
-        const imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+        let imagenUrl = processImageUrl(seccionImagenTextoRaw.imagen?.url);
+        // Añadir parámetro de caché basado en la fecha de modificación del documento
+        if (imagenUrl && doc.last_publication_date) {
+          const cacheParam = new Date(doc.last_publication_date).getTime();
+          imagenUrl = `${imagenUrl}?v=${cacheParam}`;
+        }
         if (imagenUrl) {
           seccionImagenTexto.imagen = {
             url: imagenUrl,
