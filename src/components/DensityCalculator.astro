@@ -59,20 +59,30 @@ const translations = {
 const t = translations[lang];
 ---
 
-<section class="density-calculator-page" id="density-calculator">
-  <div class="density-calculator-bg" aria-hidden="true"></div>
-  <div class="density-calculator-bg-overlay" aria-hidden="true"></div>
-
+<section
+  class="density-calculator-page"
+  id="density-calculator"
+>
   <div class="density-calculator-content">
     <header class="density-calculator-hero">
       <h1 class="density-calculator-title">{t.title.toUpperCase()}</h1>
       <p class="density-calculator-subtitle">{t.subtitle}</p>
     </header>
 
-    <div class="density-calculator-card" aria-label={t.title}>
-      <form class="calculator-form" id="calculator-form">
+    <div
+      class="density-calculator-card"
+      aria-label={t.title}
+    >
+      <form
+        class="calculator-form"
+        id="calculator-form"
+      >
         <!-- Uso del maíz (Figma: SILO / GRANO) -->
-        <div class="use-toggle" role="group" aria-label={t.use}>
+        <div
+          class="use-toggle"
+          role="group"
+          aria-label={t.use}
+        >
           <button
             type="button"
             class="use-chip use-button"
@@ -93,24 +103,48 @@ const t = translations[lang];
 
         <!-- Zona geográfica -->
         <div class="pill-field">
-          <label for="zone-select" class="sr-only">{t.zone}</label>
-          <select id="zone-select" class="pill-select" required>
+          <label
+            for="zone-select"
+            class="sr-only"
+            >{t.zone}</label
+          >
+          <select
+            id="zone-select"
+            class="pill-select"
+            required
+          >
             <option value="">{t.zone}</option>
           </select>
         </div>
 
         <!-- Potencial de producción -->
         <div class="pill-field">
-          <label for="potential-select" class="sr-only">{t.potential}</label>
-          <select id="potential-select" class="pill-select" required>
+          <label
+            for="potential-select"
+            class="sr-only"
+            >{t.potential}</label
+          >
+          <select
+            id="potential-select"
+            class="pill-select"
+            required
+          >
             <option value="">{t.potential}</option>
           </select>
         </div>
 
         <!-- Híbrido DEKALB -->
         <div class="pill-field">
-          <label for="hybrid-select" class="sr-only">{t.hybrid}</label>
-          <select id="hybrid-select" class="pill-select" required>
+          <label
+            for="hybrid-select"
+            class="sr-only"
+            >{t.hybrid}</label
+          >
+          <select
+            id="hybrid-select"
+            class="pill-select"
+            required
+          >
             <option value="">{t.hybrid}</option>
           </select>
         </div>
@@ -119,7 +153,11 @@ const t = translations[lang];
         <div class="surface-row">
           <span class="surface-label">{t.surface}</span>
           <div class="surface-input-pill">
-            <label for="surface-input" class="sr-only">{t.surface}</label>
+            <label
+              for="surface-input"
+              class="sr-only"
+              >{t.surface}</label
+            >
             <input
               type="number"
               id="surface-input"
@@ -132,7 +170,10 @@ const t = translations[lang];
           </div>
         </div>
 
-        <button type="submit" class="calculator-cta">
+        <button
+          type="submit"
+          class="calculator-cta"
+        >
           {lang === "es" ? "Calcular" : "Calcular"}
         </button>
       </form>
@@ -140,12 +181,21 @@ const t = translations[lang];
   </div>
 
   <!-- Results (se definirá en el siguiente paso) -->
-  <div class="calculator-results" id="calculator-results" style="display: none;">
+  <div
+    class="calculator-results"
+    id="calculator-results"
+    style="display: none;"
+  >
     <div class="result-card">
       <div class="result-icon">🌾</div>
       <div class="result-content">
         <h3>{t.result.density}</h3>
-        <p class="result-value" id="result-density">-</p>
+        <p
+          class="result-value"
+          id="result-density"
+        >
+          -
+        </p>
         <span class="result-unit">{t.result.plantsPerHa}</span>
       </div>
     </div>
@@ -153,11 +203,20 @@ const t = translations[lang];
       <div class="result-icon">📦</div>
       <div class="result-content">
         <h3>{t.result.bags}</h3>
-        <p class="result-value" id="result-bags">-</p>
+        <p
+          class="result-value"
+          id="result-bags"
+        >
+          -
+        </p>
       </div>
     </div>
     <div class="result-image">
-      <img src="/calculator-result.jpg" alt="Resultado" id="result-image" />
+      <img
+        src="/calculator-result.jpg"
+        alt="Resultado"
+        id="result-image"
+      />
     </div>
   </div>
 </section>
@@ -483,25 +542,7 @@ const t = translations[lang];
 
   .density-calculator-page {
     position: relative;
-    min-height: 892px;
     overflow: hidden;
-  }
-
-  .density-calculator-bg {
-    position: absolute;
-    inset: 64px 0 0 0;
-    background-image: url("/Frame_1410119213.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 0;
-  }
-
-  .density-calculator-bg-overlay {
-    position: absolute;
-    inset: 64px 0 0 0;
-    background: rgba(0, 0, 0, 0.25);
-    z-index: 1;
   }
 
   .density-calculator-content {
@@ -509,7 +550,7 @@ const t = translations[lang];
     z-index: 2;
     max-width: 1600px;
     margin: 0 auto;
-    padding: 136px 100px 64px;
+    padding: 66px 100px 64px;
     display: grid;
     place-items: center;
     gap: 48px;
@@ -524,16 +565,25 @@ const t = translations[lang];
 
   .density-calculator-title {
     margin: 0;
-    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-family:
+      "Bayer Sans",
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 700;
     font-size: 32px;
     line-height: 32px;
     text-transform: uppercase;
+    color: #ffffff;
   }
 
   .density-calculator-subtitle {
     margin: 13px 0 0;
-    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-family:
+      "Bayer Sans",
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 20px;
     line-height: 26px;
@@ -565,7 +615,11 @@ const t = translations[lang];
     border-radius: 12px;
     background: #ffffff;
     border: 1px solid rgba(231, 231, 231, 0.6);
-    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-family:
+      Roboto,
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 12px;
     line-height: 20px;
@@ -588,7 +642,11 @@ const t = translations[lang];
     background: #ffffff;
     border: 1px solid #dbdbdb;
     padding: 0 24px;
-    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-family:
+      Roboto,
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
@@ -610,7 +668,11 @@ const t = translations[lang];
   }
 
   .surface-label {
-    font-family: Roboto, system-ui, -apple-system, sans-serif;
+    font-family:
+      Roboto,
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
@@ -634,7 +696,11 @@ const t = translations[lang];
     outline: none;
     background: transparent;
     text-align: center;
-    font-family: Inter, system-ui, -apple-system, sans-serif;
+    font-family:
+      Inter,
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 12px;
     line-height: 14.5px;
@@ -648,7 +714,11 @@ const t = translations[lang];
     border-radius: 26px;
     background: linear-gradient(90deg, #009ddb 30%, #005475 100%);
     color: #ffffff;
-    font-family: "Bayer Sans", system-ui, -apple-system, sans-serif;
+    font-family:
+      "Bayer Sans",
+      system-ui,
+      -apple-system,
+      sans-serif;
     font-weight: 400;
     font-size: 16px;
     line-height: 21px;

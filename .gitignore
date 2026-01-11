@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # Local-only scripts (do not commit)
 .local-scripts/
+
+# Local-only tools (do not commit)
+.local-tools/

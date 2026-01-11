@@ -1,11 +1,15 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
-import DensityCalculator from '../../components/DensityCalculator.astro';
+import PageLayout from "../../layouts/PageLayout.astro";
+import DensityCalculator from "../../components/DensityCalculator.astro";
 
-const lang = 'es';
+const lang = "es";
 ---
 
-<PageLayout title="Calculador de Densidades" description="Calcula la densidad de siembra recomendada para tu cultivo" lang={lang}>
+<PageLayout
+  title="Calculador de Densidades"
+  description="Calcula la densidad de siembra recomendada para tu cultivo"
+  lang={lang}
+>
   <section class="calculator-page">
     <DensityCalculator lang={lang} />
   </section>
@@ -15,5 +19,38 @@ const lang = 'es';
   .calculator-page {
     padding: 0;
   }
-</style>
 
+  /* Fondo de página: empieza “debajo” del header cubriendo su alto con blanco.
+     Esto permite que el fondo también esté detrás del Footer (para el radio superior). */
+  :global(body) {
+    background-image:
+      linear-gradient(
+        to bottom,
+        var(--color-white) 0,
+        var(--color-white) var(--header-height),
+        rgba(255, 255, 255, 0) var(--header-height)
+      ),
+      url("/calculator_background-desktop.png");
+    background-size:
+      100% 100%,
+      cover;
+    background-position:
+      top left,
+      center;
+    background-repeat: no-repeat, no-repeat;
+
+    /* Sticky footer: si falta contenido, el footer baja al final de la vista */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  :global(main#main-content) {
+    flex: 1;
+  }
+
+  :global(.footer) {
+    /* En el site, el footer tiene margin-top positivo. En la calculadora no debe haber espacio extra. */
+    margin-top: 0 !important;
+  }
+</style>

@@ -19,6 +19,35 @@ const lang = "pt";
   .calculator-page {
     padding: 0;
   }
+
+  /* Fundo da página: “começa” abaixo do header cobrindo a sua altura com branco.
+     Isto permite que o fundo também esteja por trás do Footer (para o raio superior). */
+  :global(body) {
+    background-image: linear-gradient(
+        to bottom,
+        var(--color-white) 0,
+        var(--color-white) var(--header-height),
+        rgba(255, 255, 255, 0) var(--header-height)
+      ),
+      url("/calculator_background-desktop.png");
+    background-size: 100% 100%, cover;
+    background-position: top left, center;
+    background-repeat: no-repeat, no-repeat;
+
+    /* Sticky footer: se faltar conteúdo, o footer desce para o fim da viewport */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  :global(main#main-content) {
+    flex: 1;
+  }
+
+  :global(.footer) {
+    /* No site, o footer tem margin-top positivo. Na calculadora não deve haver espaço extra. */
+    margin-top: 0 !important;
+  }
 </style>
 
 
